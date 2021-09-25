@@ -77,20 +77,71 @@ DataManager.loadDatabase = function() {
 
 DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
-    var url = 'data/' + src;
-    xhr.open('GET', url);
+    var url = '';
     xhr.overrideMimeType('application/json');
-    xhr.onload = function() {
-        if (xhr.status < 400) {
-            window[name] = JSON.parse(xhr.responseText);
-            DataManager.onLoad(window[name]);
-        }
-    };
+    if(name ==='$dataActors'){
+        // $.getJSON("https://www.sayhuahuo.com/testhanabigame.php", function(data) {
+    
+        //     console.log(data);
+        // });
+        // jQuery(document).ready(function(){ 
+        //     $.ajax({
+        //          type: "get",
+        //          async: false,
+        //          withCredentials : true,
+        //          url: "https://www.sayhuahuo.com/testhanabigame.php",
+        //          dataType: "jsonp",
+        //          jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+        //          jsonpCallback:"flightHandler",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
+        //          success: function(json){
+        //              alert(json);
+        //          },
+        //          error: function(e){
+        //              alert('fail');
+        //          }
+        //      });
+        //  });
+
+        url = 'https://www.sayhuahuo.com/testhanabigame.php';
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            console.log(xhr.responseText);
+            if (xhr.status < 400) {
+                if(name ==='$dataActors'){
+                    var actors = [];
+                    var json = {};
+                    json ={"id":1,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":9999,"name":"say花火","nickname":"","note":"","profile":""}; 
+                    actors.push(null);
+                    actors.push(json);
+                    console.log(actors);
+                    
+                    window[name] = actors;
+                }else{
+                    window[name] = JSON.parse(xhr.responseText);
+                }
+                
+                DataManager.onLoad(window[name]);
+            }
+        };
+    }else{
+        url = 'data/' + src;
+        xhr.open('GET', url);
+        xhr.overrideMimeType('application/json');
+        xhr.onload = function() {
+            if (xhr.status < 400) {
+                window[name] = JSON.parse(xhr.responseText);
+                DataManager.onLoad(window[name]);
+            }
+        };
+        
+    }
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
     window[name] = null;
     xhr.send();
+
+
 };
 
 DataManager.isDatabaseLoaded = function() {
