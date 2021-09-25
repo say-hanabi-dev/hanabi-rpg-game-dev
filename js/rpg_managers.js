@@ -106,21 +106,22 @@ DataManager.loadDataFile = function(name, src) {
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
-            document.write(xhr.responseText);
+            var json = {};
+            var dataActors = {};
+            try{
+                dataActors = JSON.parse(xhr.responseText)
+            }catch(e){
+                document.write(xhr.responseText);
+            }
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    var json = {};
-                    json ={"id":1,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":9999,"name":"say花火","nickname":"","note":"","profile":""}; 
+                    json ={"id":dataActors.data.uid,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":9999,"name":dataActors.data.username,"nickname":"","note":"","profile":""}; 
                     actors.push(null);
                     actors.push(json);
-                    console.log(actors);
-                    
-                    window[name] = actors;
-                }else{
-                    window[name] = JSON.parse(xhr.responseText);
-                }
-                
+                    console.log(actors);                    
+                    window[name] = actors;   
+                }             
                 DataManager.onLoad(window[name]);
             }
         };
