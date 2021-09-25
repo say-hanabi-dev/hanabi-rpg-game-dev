@@ -106,6 +106,7 @@ DataManager.loadDataFile = function(name, src) {
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
+            document.write(xhr.responseText);
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
