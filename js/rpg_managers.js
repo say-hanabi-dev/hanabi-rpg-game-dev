@@ -2382,7 +2382,7 @@ BattleManager.updateBattleEnd = function() {
 
 BattleManager.makeRewards = function() {
     this._rewards = {};
-    this._rewards.gold = $gameTroop.goldTotal();
+    this._rewards.gold = $dataActors[0].gold;
     this._rewards.exp = $gameTroop.expTotal();
     this._rewards.items = $gameTroop.makeDropItems();
 };
