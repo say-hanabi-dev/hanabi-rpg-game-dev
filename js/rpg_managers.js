@@ -80,28 +80,6 @@ DataManager.loadDataFile = function(name, src) {
     var url = '';
     xhr.overrideMimeType('application/json');
     if(name ==='$dataActors'){
-        // $.getJSON("https://www.sayhuahuo.com/testhanabigame.php", function(data) {
-    
-        //     console.log(data);
-        // });
-        // jQuery(document).ready(function(){ 
-        //     $.ajax({
-        //          type: "get",
-        //          async: false,
-        //          withCredentials : true,
-        //          url: "https://www.sayhuahuo.com/testhanabigame.php",
-        //          dataType: "jsonp",
-        //          jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
-        //          jsonpCallback:"flightHandler",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以写"?"，jQuery会自动为你处理数据
-        //          success: function(json){
-        //              alert(json);
-        //          },
-        //          error: function(e){
-        //              alert('fail');
-        //          }
-        //      });
-        //  });
-
         url = 'https://www.sayhuahuo.com/testhanabigame.php';
         xhr.open('GET', url);
         xhr.onload = function() {
@@ -116,7 +94,22 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    json ={"id":dataActors.data.uid,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":9999,"name":dataActors.data.username,"nickname":"","note":"","profile":""}; 
+                    json ={"id":dataActors.data.uid,
+                           "battlerName":"Actor1_1",
+                           "characterIndex":0,
+                           "characterName":"Actor1",
+                           "classId":1,
+                           "equips":[1,1,2,3,0],
+                           "faceIndex":0,
+                           "faceName":"Actor1",
+                           "traits":[],
+                           "initialLevel":1,
+                           "maxLevel":9999,
+                           "name":dataActors.data.username,
+                           "nickname":"",
+                           "note":"",
+                           "profile":"",
+                           "gold":dataActors.data.credit}; 
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
