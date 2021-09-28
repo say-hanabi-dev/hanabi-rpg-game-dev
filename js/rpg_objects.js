@@ -79,7 +79,7 @@ Game_System.prototype.initialize = function() {
     this._escapeCount = 0;
     this._saveCount = 0;
     this._versionId = 0;
-    this._framesOnSave = 0;
+    this._framesOnSave = 0; 
     this._bgmOnSave = null;
     this._bgsOnSave = null;
     this._windowTone = null;
@@ -4729,7 +4729,7 @@ Game_Party.ABILITY_DROP_ITEM_DOUBLE  = 5;
 
 Game_Party.prototype.initialize = function() {
     Game_Unit.prototype.initialize.call(this);
-    this._gold = 0;
+    this._gold = $dataActors.gold;
     this._steps = 0;
     this._lastItem = new Game_Item();
     this._menuActorId = 0;
