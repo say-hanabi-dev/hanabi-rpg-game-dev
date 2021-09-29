@@ -805,7 +805,7 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             var that = this;
             xhr.overrideMimeType('application/json');
             url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
-            xhr.open('GET', url);
+            xhr.open('GET', url,false);
             xhr.onload = function() {
                 if (xhr.status < 400) {
                    path = xhr.responseURL;   
