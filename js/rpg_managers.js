@@ -802,13 +802,14 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
         if(filename ==='Actor1'){
             var xhr = new XMLHttpRequest();
             var url = '';
+            var that = this;
             xhr.overrideMimeType('application/json');
             url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
             xhr.open('GET', url);
             xhr.onload = function() {
                 if (xhr.status < 400) {
                    path = xhr.responseURL;   
-                   bitmap =this.loadNormalBitmap(path, hue || 0);
+                   bitmap =that.loadNormalBitmap(path, hue || 0);
                    bitmap.smooth = smooth;
                    return bitmap; 
                 }
