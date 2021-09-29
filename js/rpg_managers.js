@@ -797,6 +797,24 @@ ImageManager.loadTitle2 = function(filename, hue) {
 
 ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
+        if(filename ==='Actor1'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            xhr.overrideMimeType('application/json');
+            url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
+            xhr.open('GET', url);
+            xhr.onload = function() {
+                console.log(xhr.responseText);
+                if (xhr.status < 400) {
+                                 
+                }
+            };
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            window[name] = null;
+            xhr.send();
+        }
         var path = folder + encodeURIComponent(filename) + '.png';
         var bitmap = this.loadNormalBitmap(path, hue || 0);
         bitmap.smooth = smooth;
