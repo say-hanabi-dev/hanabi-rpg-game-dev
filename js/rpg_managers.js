@@ -798,6 +798,7 @@ ImageManager.loadTitle2 = function(filename, hue) {
 ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
         var path = '';
+        var bitmap = '';
         if(filename ==='Actor1'){
             var xhr = new XMLHttpRequest();
             var url = '';
@@ -806,7 +807,10 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             xhr.open('GET', url);
             xhr.onload = function() {
                 if (xhr.status < 400) {
-                   path = xhr.responseURL;             
+                   path = xhr.responseURL;   
+                   bitmap =this.loadNormalBitmap(path, hue || 0);
+                   bitmap.smooth = smooth;
+                   return bitmap; 
                 }
             };
             xhr.onerror = function() {
@@ -816,10 +820,10 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             xhr.send();
         }else{
             path = folder + encodeURIComponent(filename) + '.png';
+            bitmap = this.loadNormalBitmap(path, hue || 0);
+            bitmap.smooth = smooth;
+            return bitmap;
         }
-        var bitmap = this.loadNormalBitmap(path, hue || 0);
-        bitmap.smooth = smooth;
-        return bitmap;
     } else {
         return this.loadEmptyBitmap();
     }
