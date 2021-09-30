@@ -101,7 +101,7 @@ DataManager.loadDataFile = function(name, src) {
                            "classId":1,
                            "equips":[1,1,2,3,0],
                            "faceIndex":0,
-                           "faceName":"Actor1",
+                           "faceName":"A",
                            "traits":[],
                            "initialLevel":1,
                            "maxLevel":9999,
@@ -799,7 +799,7 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
         var path = '';
         var bitmap = '';
-        if(filename ==='Actor1'){
+        if(filename ==='A'){
             var xhr = new XMLHttpRequest();
             var url = '';
             var that = this;
