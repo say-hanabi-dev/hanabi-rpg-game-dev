@@ -806,19 +806,17 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             xhr.overrideMimeType('application/json');
             url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
             xhr.open('GET', url,false);
-            xhr.onload = function() {
-                if (xhr.status < 400) {
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+            console.log(xhr);
+            if (xhr.status < 400) {
                    path = xhr.responseURL;   
                    bitmap =that.loadNormalBitmap(path, hue || 0);
                    bitmap.smooth = smooth;
                    return bitmap; 
-                }
-            };
-            xhr.onerror = function() {
-                DataManager._errorUrl = DataManager._errorUrl || url;
-            };
-            window[name] = null;
-            xhr.send();
+           }
         }else{
             path = folder + encodeURIComponent(filename) + '.png';
             bitmap = this.loadNormalBitmap(path, hue || 0);
