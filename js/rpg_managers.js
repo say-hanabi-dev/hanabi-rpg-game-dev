@@ -77,66 +77,20 @@ DataManager.loadDatabase = function() {
 
 DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
-    var url = '';
+    var url = 'data/' + src;
+    xhr.open('GET', url);
     xhr.overrideMimeType('application/json');
-    if(name ==='$dataActors'){
-        url = 'https://www.sayhuahuo.com/testhanabigame.php';
-        xhr.open('GET', url);
-        xhr.onload = function() {
-            console.log(xhr.responseText);
-            var json = {};
-            var dataActors = {};
-            try{
-                dataActors = JSON.parse(xhr.responseText)
-            }catch(e){
-                document.write(xhr.responseText);
-            }
-            if (xhr.status < 400) {
-                if(name ==='$dataActors'){
-                    var actors = [];
-                    json ={"id":dataActors.data.uid,
-                           "battlerName":"Actor1_1",
-                           "characterIndex":0,
-                           "characterName":"Actor1",
-                           "classId":1,
-                           "equips":[1,1,2,3,0],
-                           "faceIndex":0,
-                           "faceName":"A",
-                           "traits":[],
-                           "initialLevel":1,
-                           "maxLevel":9999,
-                           "name":dataActors.data.username,
-                           "nickname":"",
-                           "note":"",
-                           "profile":"",
-                           "gold":dataActors.data.credit}; 
-                    actors.push(null);
-                    actors.push(json);
-                    console.log(actors);                    
-                    window[name] = actors;   
-                }             
-                DataManager.onLoad(window[name]);
-            }
-        };
-    }else{
-        url = 'data/' + src;
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
-        xhr.onload = function() {
-            if (xhr.status < 400) {
-                window[name] = JSON.parse(xhr.responseText);
-                DataManager.onLoad(window[name]);
-            }
-        };
-        
-    }
+    xhr.onload = function() {
+        if (xhr.status < 400) {
+            window[name] = JSON.parse(xhr.responseText);
+            DataManager.onLoad(window[name]);
+        }
+    };
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
     window[name] = null;
     xhr.send();
-
-
 };
 
 DataManager.isDatabaseLoaded = function() {
@@ -797,32 +751,10 @@ ImageManager.loadTitle2 = function(filename, hue) {
 
 ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
-        var path = '';
-        var bitmap = '';
-        if(filename ==='A'){
-            var xhr = new XMLHttpRequest();
-            var url = '';
-            var that = this;
-            xhr.overrideMimeType('application/json');
-            url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
-            xhr.open('GET', url,false);
-            xhr.onerror = function() {
-                DataManager._errorUrl = DataManager._errorUrl || url;
-            };
-            xhr.send();
-            console.log(xhr);
-            if (xhr.status < 400) {
-                   path = xhr.responseURL;   
-                   bitmap =that.loadNormalBitmap(path, hue || 0);
-                   bitmap.smooth = smooth;
-                   return bitmap; 
-           }
-        }else{
-            path = folder + encodeURIComponent(filename) + '.png';
-            bitmap = this.loadNormalBitmap(path, hue || 0);
-            bitmap.smooth = smooth;
-            return bitmap;
-        }
+        var path = folder + encodeURIComponent(filename) + '.png';
+        var bitmap = this.loadNormalBitmap(path, hue || 0);
+        bitmap.smooth = smooth;
+        return bitmap;
     } else {
         return this.loadEmptyBitmap();
     }
