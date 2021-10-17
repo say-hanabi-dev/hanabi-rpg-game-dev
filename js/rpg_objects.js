@@ -4729,7 +4729,7 @@ Game_Party.ABILITY_DROP_ITEM_DOUBLE  = 5;
 
 Game_Party.prototype.initialize = function() {
     Game_Unit.prototype.initialize.call(this);
-    this._gold = $dataActors[0].gold;
+    this._gold = $dataActors[1].gold;
     this._steps = 0;
     this._lastItem = new Game_Item();
     this._menuActorId = 0;
