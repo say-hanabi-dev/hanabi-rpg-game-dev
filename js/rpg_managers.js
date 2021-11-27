@@ -109,7 +109,7 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.credit}; 
+                           "gold":dataActors.data.coin}; 
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
