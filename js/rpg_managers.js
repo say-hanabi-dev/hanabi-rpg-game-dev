@@ -2497,6 +2497,18 @@ BattleManager.gainDropItems = function() {
      console.log(items);
     items.forEach(function(item) {
         $gameParty.gainItem(item, 1);
+        if(item.name =='学分'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcredit';
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+        }
     });
 };
 
