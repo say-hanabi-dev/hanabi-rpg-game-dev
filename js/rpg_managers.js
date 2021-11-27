@@ -2494,7 +2494,7 @@ BattleManager.gainGold = function() {
 
 BattleManager.gainDropItems = function() {
     var items = this._rewards.items;
-     console.log(item);
+     console.log(items);
     items.forEach(function(item) {
         $gameParty.gainItem(item, 1);
     });
