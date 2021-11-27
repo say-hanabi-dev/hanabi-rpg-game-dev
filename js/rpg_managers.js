@@ -2466,10 +2466,30 @@ BattleManager.gainExp = function() {
     $gameParty.allMembers().forEach(function(actor) {
         actor.gainExp(exp);
     });
+    var xhr = new XMLHttpRequest();
+    var url = '';
+    var that = this;
+    xhr.overrideMimeType('application/json');
+    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getexp';
+    xhr.open('GET', url,false);
+    xhr.onerror = function() {
+        DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    xhr.send();
 };
 
 BattleManager.gainGold = function() {
     $gameParty.gainGold(this._rewards.gold);
+    var xhr = new XMLHttpRequest();
+    var url = '';
+    var that = this;
+    xhr.overrideMimeType('application/json');
+    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcoin&offset='+this._rewards.gold;
+    xhr.open('GET', url,false);
+    xhr.onerror = function() {
+        DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    xhr.send();
 };
 
 BattleManager.gainDropItems = function() {
