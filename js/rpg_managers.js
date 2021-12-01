@@ -77,15 +77,59 @@ DataManager.loadDatabase = function() {
 
 DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
-    var url = 'data/' + src;
-    xhr.open('GET', url);
+    var url = '';
     xhr.overrideMimeType('application/json');
-    xhr.onload = function() {
-        if (xhr.status < 400) {
-            window[name] = JSON.parse(xhr.responseText);
-            DataManager.onLoad(window[name]);
-        }
-    };
+    if(name ==='$dataActors'){
+        url = 'https://www.sayhuahuo.com/testhanabigame.php';
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            console.log(xhr.responseText);
+            var json = {};
+            var dataActors = {};
+            try{
+                dataActors = JSON.parse(xhr.responseText)
+            }catch(e){
+                document.write(xhr.responseText);
+            }
+            if (xhr.status < 400) {
+                if(name ==='$dataActors'){
+                    var actors = [];
+                    json ={"id":dataActors.data.uid,
+                           "battlerName":"Actor1_1",
+                           "characterIndex":0,
+                           "characterName":"Actor1",
+                           "classId":1,
+                           "equips":[1,1,2,3,0],
+                           "faceIndex":0,
+                           "faceName":"A",
+                           "traits":[],
+                           "initialLevel":1,
+                           "maxLevel":9999,
+                           "name":dataActors.data.username,
+                           "nickname":"",
+                           "note":"",
+                           "profile":"",
+                           "gold":dataActors.data.coin}; 
+                    actors.push(null);
+                    actors.push(json);
+                    console.log(actors);                    
+                    window[name] = actors;   
+                }             
+                DataManager.onLoad(window[name]);
+            }
+        };
+    }else{
+        url = 'data/' + src;
+        xhr.open('GET', url);
+        xhr.overrideMimeType('application/json');
+        xhr.onload = function() {
+            if (xhr.status < 400) {
+                window[name] = JSON.parse(xhr.responseText);
+                DataManager.onLoad(window[name]);
+            }
+        };
+        
+    }
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
@@ -751,10 +795,32 @@ ImageManager.loadTitle2 = function(filename, hue) {
 
 ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
-        var path = folder + encodeURIComponent(filename) + '.png';
-        var bitmap = this.loadNormalBitmap(path, hue || 0);
-        bitmap.smooth = smooth;
-        return bitmap;
+        var path = '';
+        var bitmap = '';
+        if(filename ==='A'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+            console.log(xhr);
+            if (xhr.status < 400) {
+                   path = xhr.responseURL;   
+                   bitmap =that.loadNormalBitmap(path, hue || 0);
+                   bitmap.smooth = smooth;
+                   return bitmap; 
+           }
+        }else{
+            path = folder + encodeURIComponent(filename) + '.png';
+            bitmap = this.loadNormalBitmap(path, hue || 0);
+            bitmap.smooth = smooth;
+            return bitmap;
+        }
     } else {
         return this.loadEmptyBitmap();
     }
@@ -2400,16 +2466,49 @@ BattleManager.gainExp = function() {
     $gameParty.allMembers().forEach(function(actor) {
         actor.gainExp(exp);
     });
+    var xhr = new XMLHttpRequest();
+    var url = '';
+    var that = this;
+    xhr.overrideMimeType('application/json');
+    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getexp';
+    xhr.open('GET', url,false);
+    xhr.onerror = function() {
+        DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    xhr.send();
 };
 
 BattleManager.gainGold = function() {
     $gameParty.gainGold(this._rewards.gold);
+    var xhr = new XMLHttpRequest();
+    var url = '';
+    var that = this;
+    xhr.overrideMimeType('application/json');
+    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcoin&offset='+this._rewards.gold;
+    xhr.open('GET', url,false);
+    xhr.onerror = function() {
+        DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    xhr.send();
 };
 
 BattleManager.gainDropItems = function() {
     var items = this._rewards.items;
+     console.log(items);
     items.forEach(function(item) {
         $gameParty.gainItem(item, 1);
+        if(item.name =='学分'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcredit';
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+        }
     });
 };
 
