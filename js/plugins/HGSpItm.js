@@ -7,6 +7,8 @@
  * @author c2h6o
  *
  * @help Allows the player to increase the rarity of a equipment by 1.
+ * 
+ * This plugin works with HGPlgCore.
  */
 
 var HGSpItm = window.HGSpItm || {} ;
@@ -18,7 +20,7 @@ HGSpItm.equipAdvInfo = {
 HGSpItm.equipLst = [];
 HGSpItm.equipAdv = function(){
     this.equipLst = $gameActors.actor(1).equips().filter((item) => {return item && (item._itemId!=0);}).concat($gameParty.equipItems());
-    $gameMessage.setChoices(this.equipLst.map((item)=>{return item.name;}).concat(this.ccMes), this.equipAdvInfo.defaultInd, this.equipLst.length);
+    $gameMessage.setChoices(HGPlgCore.toNameChoices(this.equipLst, this.ccMes), this.equipAdvInfo.defaultInd, this.equipLst.length);
     $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
         let offset =  $gameActors.actor(1).equips().filter((item) => {return item && (item._itemId!=0);}).length;
         if(x < offset){

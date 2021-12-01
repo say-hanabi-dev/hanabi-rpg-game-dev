@@ -25,15 +25,12 @@ HGGdCnf.guardConfirmInfo = {
     defaultInd: 0,
     cancelInd: 1
 };
-HGGdCnf._std_commandGuard = function(){
-    BattleManager.inputtingAction().setGuard();
-    SceneManager._scene.selectNextCommand();
-};
-HGGdCnf.guardConfirm = function(){
+HGGdCnf._std_commandGuard = Scene_Battle.prototype.commandGuard;
+HGGdCnf.guardConfirm = function(scBatPtr){
     $gameMessage.setChoices(this.guardConfirmInfo.choices, this.guardConfirmInfo.defaultInd, this.guardConfirmInfo.cancelInd);
     $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
         if(x == 0){
-            this._std_commandGuard();
+            this._std_commandGuard.call(scBatPtr);
             SceneManager._scene._actorCommandWindow.deactivate();//essential to continue updating
         }else{
             SceneManager._scene._actorCommandWindow.open();//closed due to showing text
@@ -42,5 +39,5 @@ HGGdCnf.guardConfirm = function(){
     $gameMessage.add(this.guardConfirmInfo.message);
 };
 Scene_Battle.prototype.commandGuard = function() {
-    HGGdCnf.guardConfirm();
+    HGGdCnf.guardConfirm(this);
 };
