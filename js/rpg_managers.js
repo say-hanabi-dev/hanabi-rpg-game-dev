@@ -2497,7 +2497,7 @@ BattleManager.gainDropItems = function() {
      console.log(items);
     items.forEach(function(item) {
         $gameParty.gainItem(item, 1);
-        if(item.name =='学分'){
+        if(item.name =='花火学分'){
             var xhr = new XMLHttpRequest();
             var url = '';
             var that = this;
