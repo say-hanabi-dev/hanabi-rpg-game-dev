@@ -10,6 +10,7 @@
  *  - reflects half of the damage deals back to user
  *  - absolute critical damage
  *  - customized repeats
+ *  - turn based damage by states
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -35,6 +36,9 @@ Game_Action.prototype.executeDamage = function(target, value){
     }
 };
 HGSkEffExt.reflDmg = function(target, value){
+    this.dmg(target, value);
+};
+HGSkEffExt.dmg = function(target, value){
     target.gainHp(-value);
     if (value > 0) {
         target.onDamage(value);
@@ -62,5 +66,27 @@ Game_Action.prototype.numRepeats = function(){
     }
     return HGSkEffExt._GameAction_numRepeats.call(this);
 };
+
+HGSkEffExt.name = "HGSkEffExt";
+HGSkEffExt.tnDmgStId = [//turn based damage by states
+    {id: 21, dmg: 500, perc: false},
+    {id: 24, dmg: 500, perc: false},
+    {id: 28, dmg: 1, perc: true}
+];
+HGSkEffExt._GameBattlerBase_updateStateTurns = Game_BattlerBase.prototype.updateStateTurns;
+Game_Battler.prototype.updateStateTurns = function(){
+    this._states.forEach(function(stateId) {
+        if (this._stateTurns[stateId] > 0) {
+            for(let i = 0; i < HGSkEffExt.tnDmgStId.length; i++){
+                let st = HGSkEffExt.tnDmgStId[i];
+                if(st.id == stateId){
+                    HGSkEffExt.dmg(this, ((st.perc)?(Math.round((this._hp)/100)):(st.dmg)));
+                }
+            }
+        }
+    }, this);
+    HGSkEffExt._GameBattlerBase_updateStateTurns.call(this);
+};
+
 
 HGSkEffExt.poiStId = 44;
