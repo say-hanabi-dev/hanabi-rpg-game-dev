@@ -9,6 +9,7 @@
  * @help Extended effects for skills.
  *  - reflects half of the damage deals back to user
  *  - absolute critical damage
+ *  - customized repeats
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -16,6 +17,10 @@
  * at rpg_objects.js
  *      Method "Game_Action.prototype.executeDamage" is overwritten in 
  *      this plugin, 
+ *      Method "Game_Action.prototype.makeDamageValue" is overwritten in 
+ *      this plugin, 
+ *      Method "Game_Action.prototype.numRepeats" is overwritten in 
+ *      this plugin.
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
 
@@ -43,5 +48,19 @@ Game_Action.prototype.makeDamageValue = function(target, critical) {
         (critical || ((DataManager.isSkill(this.item())) && (HGSkEffExt.acritSkId.includes(this.item().id)))));
 };
 
+HGSkEffExt.custRepSkId = [//customized repeats
+    {id: 36, repeat: 12},
+    {id: 89, repeat: 10},
+    {id: 90, repeat: 12}
+];
+HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
+Game_Action.prototype.numRepeats = function(){
+    for(let i = 0; i < HGSkEffExt.custRepSkId.length; i++){
+        if((DataManager.isSkill(this.item())) && ((this.item().id) == (HGSkEffExt.custRepSkId[i].id))){
+            return HGSkEffExt.custRepSkId.repeat;
+        }
+    }
+    return HGSkEffExt._GameAction_numRepeats.call(this);
+};
 
 HGSkEffExt.poiStId = 44;
