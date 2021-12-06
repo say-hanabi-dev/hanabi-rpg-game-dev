@@ -10,6 +10,7 @@
  *  - 70% damage of magic skills when magic weapon not equipped
  *  - 20% additional damage of critical hits when sword equipped 
  *  - shields skills: require shield/Large shield; large shield skills: require Large shield
+ *  - sword skills: require swords; gun skills: require guns
  *  - add taunt state when guard with shield/Large shield equipped
  * 
  * This plugin works with HGPlgCore.
@@ -29,7 +30,7 @@
  */
 
 var HGSkEqpRel = window.HGSkEqpRel || {} ;
-HGSkEqpRel.magWpTId = 4;
+HGSkEqpRel.magWpTId = 4;//70% damage of magic skills when magic weapon not equipped
 HGSkEqpRel.rule = [
     {spec: (skill)=>((skill.stypeId == 5)||(skill.stypeId == 6)), cond:()=>(!HGPlgCore.isWpTpEqp(HGSkEqpRel.magWpTId)), opr:(dmg)=>(dmg*0.7)}
 ];
@@ -47,32 +48,50 @@ Game_Action.prototype.evalDamageFormula = function(target){
     return res;
 };
 
-HGSkEqpRel.swordTId = 1;
+HGSkEqpRel.swordTId = 1;//20% additional damage of critical hits when sword equipped 
 HGSkEqpRel._GameAction_applyCritical = Game_Action.prototype.applyCritical;
 Game_Action.prototype.applyCritical = function(damage) {
     return HGSkEqpRel._GameAction_applyCritical.call(this, damage) * ((HGPlgCore.isWpTpEqp(HGSkEqpRel.swordTId)?(1.2):1));
 };
 
-HGSkEqpRel.shdSkTId = 3;
+HGSkEqpRel.shdSkTId = 3;//shields skills: require shield/Large shield; large shield skills: require Large shield
 HGSkEqpRel.shdTId = 5;
 HGSkEqpRel.bshdTId = 6;
 HGSkEqpRel.megBshdTId = 2;
+HGSkEqpRel.swordSkTId = 2;//sword skills: require swords
+HGSkEqpRel.gunTId = 5;//gun skills: require guns
+HGSkEqpRel.gunSkTId = 4;
 HGSkEqpRel._GameActor_isSkillWtypeOk = Game_Actor.prototype.isSkillWtypeOk;
 Game_Actor.prototype.isSkillWtypeOk = function(skill){
-    return HGSkEqpRel._GameActor_isSkillWtypeOk.call(this, skill) && HGSkEqpRel.shdSkOk(skill);
+    return HGSkEqpRel._GameActor_isSkillWtypeOk.call(this, skill) && HGSkEqpRel.eqpSkOk(skill);
+};
+HGSkEqpRel.eqpSkOk = function(skill){
+    return this.shdSkOk(skill) && this.swSkOk(skill) && this.gnSkOk(skill);
+};
+HGSkEqpRel.swSkOk = function(skill){
+    if(skill.stypeId == this.swordSkTId){
+        return HGPlgCore.isWpTpEqp(this.swordTId);
+    }
+    return true;
+};
+HGSkEqpRel.gnSkOk = function(skill){
+    if(skill.stypeId == this.gunSkTId){
+        return HGPlgCore.isWpTpEqp(this.gunTId);
+    }
+    return true;
 };
 HGSkEqpRel.shdSkOk = function(skill){
-    if(skill.stypeId == HGSkEqpRel.shdSkTId){
-        if(HGPlgCore.isAmTpEqp(HGSkEqpRel.bshdTId)||HGPlgCore.isAmTpEqp(HGSkEqpRel.megBshdTId)){
+    if(skill.stypeId == this.shdSkTId){
+        if(HGPlgCore.isAmTpEqp(this.bshdTId)||HGPlgCore.isAmTpEqp(this.megBshdTId)){
             return true;
         }else{
-            return (skill.id >= 13 && skill.id <= 15) && (HGPlgCore.isAmTpEqp(HGSkEqpRel.shdTId));
+            return (skill.id >= 13 && skill.id <= 15) && (HGPlgCore.isAmTpEqp(this.shdTId));
         }
     }
     return true;
 };
 
-HGSkEqpRel.tauntId = 13;
+HGSkEqpRel.tauntId = 13;//add taunt state when guard with shield/Large shield equipped
 HGSkEqpRel._SceneBattle_commandGuard = Scene_Battle.prototype.commandGuard;
 Scene_Battle.prototype.commandGuard = function(){
     if(HGPlgCore.isAmTpEqp(HGSkEqpRel.bshdTId)||HGPlgCore.isAmTpEqp(HGSkEqpRel.megBshdTId)||(HGPlgCore.isAmTpEqp(HGSkEqpRel.shdTId))){
@@ -81,12 +100,12 @@ Scene_Battle.prototype.commandGuard = function(){
     HGSkEqpRel._SceneBattle_commandGuard.call(this);
 };
 HGSkEqpRel.taunt = function(){
-    if (BattleManager.actor().isStateAddable(HGSkEqpRel.tauntId)) {
-        if (!BattleManager.actor().isStateAffected(HGSkEqpRel.tauntId)) {
-            BattleManager.actor().addNewState(HGSkEqpRel.tauntId);
+    if (BattleManager.actor().isStateAddable(this.tauntId)) {
+        if (!BattleManager.actor().isStateAffected(this.tauntId)) {
+            BattleManager.actor().addNewState(this.tauntId);
             BattleManager.actor().refresh();
         }
-        BattleManager.actor().resetStateCounts(HGSkEqpRel.tauntId);
-        BattleManager.actor()._result.pushAddedState(HGSkEqpRel.tauntId);
+        BattleManager.actor().resetStateCounts(this.tauntId);
+        BattleManager.actor()._result.pushAddedState(this.tauntId);
     }
 };

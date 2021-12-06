@@ -7,6 +7,8 @@
  * @author c2h6o
  *
  * @help Extended effects for skills.
+ *  - reflects half of the damage deals back to user
+ *  - absolute critical damage
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -17,7 +19,7 @@
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
 
-HGSkEffExt.reflDmgIds = [
+HGSkEffExt.reflDmgIds = [//reflects half of the damage deals back to user
     {id: 8, ratio: 0.5}
 ];
 HGSkEffExt._GameAction_exeDmg = Game_Action.prototype.executeDamage;
@@ -33,5 +35,13 @@ HGSkEffExt.reflDmg = function(target, value){
         target.onDamage(value);
     }
 };
+
+HGSkEffExt.acritSkId = [34, 54, 91];//absolute critical damage
+HGSkEffExt._GameAction_makeDamageValue = Game_Action.prototype.makeDamageValue;
+Game_Action.prototype.makeDamageValue = function(target, critical) {
+    return HGSkEffExt._GameAction_makeDamageValue.call(this, target, 
+        (critical || ((DataManager.isSkill(this.item())) && (HGSkEffExt.acritSkId.includes(this.item().id)))));
+};
+
 
 HGSkEffExt.poiStId = 44;
