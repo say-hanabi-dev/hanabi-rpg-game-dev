@@ -11,6 +11,7 @@
  *  - absolute critical damage
  *  - customized repeats
  *  - turn based damage by states
+ *  - post state effect: next state
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -21,6 +22,10 @@
  *      Method "Game_Action.prototype.makeDamageValue" is overwritten in 
  *      this plugin, 
  *      Method "Game_Action.prototype.numRepeats" is overwritten in 
+ *      this plugin.
+ *      Method "Game_Battler.prototype.updateStateTurns" is overwritten in 
+ *      this plugin.
+ *      Method "Game_Battler.prototype.removeStatesAuto" is overwritten in 
  *      this plugin.
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
@@ -67,7 +72,6 @@ Game_Action.prototype.numRepeats = function(){
     return HGSkEffExt._GameAction_numRepeats.call(this);
 };
 
-HGSkEffExt.name = "HGSkEffExt";
 HGSkEffExt.tnDmgStId = [//turn based damage by states
     {id: 21, dmg: 500, perc: false},
     {id: 24, dmg: 500, perc: false},
@@ -88,5 +92,23 @@ Game_Battler.prototype.updateStateTurns = function(){
     HGSkEffExt._GameBattlerBase_updateStateTurns.call(this);
 };
 
+HGSkEffExt.aftEffStId = [//post state effect: next state
+    {id: 26, nid: 14},
+    {id: 27, nid: 14}
+];
+HGSkEffExt._GameBattler_removeStatesAuto = Game_Battler.prototype.removeStatesAuto;
+Game_Battler.prototype.removeStatesAuto = function(timing){
+    for(let j=0; j< this.states().length; j++){
+        let st = this.states()[j];
+        if (this.isStateExpired(st.id) && st.autoRemovalTiming === timing) {
+            for(let i = 0; i < HGSkEffExt.aftEffStId.length; i++){
+                if((String(HGSkEffExt.aftEffStId[i].id)) == (String(st.id))){
+                    this.addState(HGSkEffExt.aftEffStId[i].nid);
+                }
+            }
+        }
+    }
+    HGSkEffExt._GameBattler_removeStatesAuto.call(this, timing);
+};
 
 HGSkEffExt.poiStId = 44;
