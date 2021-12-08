@@ -28,6 +28,8 @@
  *      this plugin.
  *      Method "Game_Battler.prototype.removeStatesAuto" is overwritten in 
  *      this plugin.
+ *      Method "Game_Action.prototype.evalDamageFormula" is overwritten in 
+ *      this plugin.
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
 
