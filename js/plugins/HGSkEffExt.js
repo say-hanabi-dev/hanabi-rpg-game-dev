@@ -12,7 +12,7 @@
  *  - customized repeats
  *  - turn based damage by states
  *  - post state effect: next state
- *  - state dependent defense absence
+ *  - state dependent damage formula parse
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -112,27 +112,31 @@ Game_Battler.prototype.removeStatesAuto = function(timing){
     HGSkEffExt._GameBattler_removeStatesAuto.call(this, timing);
 };
 
-// HGSkEffExt.condDfAbstId = [//state dependent defense absence
-//     {skId: 56, stId: 23, addFormula: "+ b.mdf * 2"}
-// ];
-// HGSkEffExt._GameAction_evalDamageFormula = Game_Action.prototype.evalDamageFormula;
-// Game_Action.prototype.evalDamageFormula = function(target){
-//     try{
-//         let res =  HGSkEffExt._GameAction_evalDamageFormula.call(this, target);
-//         for(let i = 0; i<HGSkEffExt.condDfAbstId.length; i++){
-//             if((DataManager.isSkill(this.item())) && (this.item().id == HGSkEffExt.condDfAbstId[i].skId) 
-//             && (target.isStateAffected(HGSkEffExt.condDfAbstId[i].stId))){
-//                 var item = this.item();
-//                 var a = this.subject();
-//                 var b = target;
-//                 var v = $gameVariables._data;
-//                 var sign = ([3, 4].contains(item.damage.type) ? -1 : 1);
-//                 return Math.max(eval(item.damage.formula+(HGSkEffExt.condDfAbstId[i].addFormula)), 0) * sign;
-//             }
-//         }
-//     }catch(e){
-//         return 0;
-//     }
-// };
+HGSkEffExt.stDepDmgPrsInfo = [//state dependent damage formula parse
+    {skId: 56, stId: [23], addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
+    {skId: 48, stId: [21, 24, 28], addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
+    {skId: 32, stId: [23], addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
+    {skId: -1, stId: [29], addFormulaHead: "(", addFormulaEnd: ") * 1.15"}//<0: any skill
+];
+HGSkEffExt._GameAction_evalDamageFormula = Game_Action.prototype.evalDamageFormula;
+Game_Action.prototype.evalDamageFormula = function(target){
+    try{
+        let res =  HGSkEffExt._GameAction_evalDamageFormula.call(this, target);
+        for(let i = 0; i<HGSkEffExt.stDepDmgPrsInfo.length; i++){
+            if((DataManager.isSkill(this.item())) && ((this.item().id == HGSkEffExt.stDepDmgPrsInfo[i].skId)||HGSkEffExt.stDepDmgPrsInfo[i].skId < 0) 
+            && ((HGSkEffExt.stDepDmgPrsInfo[i].stId).some((id)=>(target.isStateAffected(id))))){
+                var item = this.item();
+                var a = this.subject();
+                var b = target;
+                var v = $gameVariables._data;
+                var sign = ([3, 4].contains(item.damage.type) ? -1 : 1);
+                return Math.max(eval((HGSkEffExt.stDepDmgPrsInfo[i].addFormulaHead)+item.damage.formula+(HGSkEffExt.stDepDmgPrsInfo[i].addFormulaEnd)), 0) * sign;
+            }
+        }
+        return res;
+    }catch(e){
+        return 0;
+    }
+};
 
 HGSkEffExt.poiStId = 44;
