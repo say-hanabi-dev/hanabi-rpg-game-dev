@@ -7,7 +7,7 @@
  * @author c2h6o
  *
  * @help Effects to skills by which equipped:
- *  - 70% damage of magic skills when magic weapon not equipped
+ *  - 70% damage of magic skills when magic weapon not equipped & no equipment is enchanted
  *  - 20% additional damage of critical hits when sword equipped 
  *  - shields skills: require shield/Large shield; large shield skills: require Large shield
  *  - sword skills: require swords; gun skills: require guns
@@ -30,9 +30,9 @@
  */
 
 var HGSkEqpRel = window.HGSkEqpRel || {} ;
-HGSkEqpRel.magWpTId = 4;//70% damage of magic skills when magic weapon not equipped
+HGSkEqpRel.magWpTId = 4;//70% damage of magic skills when magic weapon not equipped & no equipment is enchanted
 HGSkEqpRel.rule = [
-    {spec: (skill)=>((skill.stypeId == 5)||(skill.stypeId == 6)), cond:()=>(!HGPlgCore.isWpTpEqp(HGSkEqpRel.magWpTId)), opr:(dmg)=>(dmg*0.7)}
+    {spec: (skill)=>((skill.stypeId == 5)||(skill.stypeId == 6)), cond:()=>(!(this.magOn())), opr:(dmg)=>(dmg*0.7)}
 ];
 HGSkEqpRel._GameAction_evalDamageFormula = Game_Action.prototype.evalDamageFormula;
 Game_Action.prototype.evalDamageFormula = function(target){
@@ -46,6 +46,30 @@ Game_Action.prototype.evalDamageFormula = function(target){
     }catch(e){
     }
     return res;
+};
+HGSkEqpRel.enchantedWpId = [8, 16, 24, 66, 74, 82];
+HGSkEqpRel.enchantedAmId = [27, 35, 43, 52, 60, 68];
+HGSkEqpRel.magOn = function(){
+    if(HGPlgCore.isWpTpEqp(HGSkEqpRel.magWpTId)){
+        return true;
+    }
+    let curWp = $gameActors.actor(1).weapons().filter((item) => {return item && (item._itemId!=0);});
+    for(let i=0; i<HGSkEqpRel.enchantedWpId.length; i++){
+        for(let j=0; j<curWp.length; j++){
+            if(HGSkEqpRel.enchantedWpId[i] == curWp[j].id){
+                return true;
+            }
+        }
+    }
+    let curAm = $gameActors.actor(1).armors().filter((item) => {return item && (item._itemId!=0);});
+    for(let i=0; i<HGSkEqpRel.enchantedAmId.length; i++){
+        for(let j=0; j<curAm.length; j++){
+            if(HGSkEqpRel.enchantedAmId[i] == curAm[j].id){
+                return true;
+            }
+        }
+    }
+    return false;
 };
 
 HGSkEqpRel.swordTId = 1;//20% additional damage of critical hits when sword equipped 
