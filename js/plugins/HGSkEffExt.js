@@ -13,6 +13,7 @@
  *  - turn based damage by states
  *  - post state effect: next state
  *  - state dependent damage formula parse
+ *  - state dependent absolute hit
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -139,6 +140,21 @@ Game_Action.prototype.evalDamageFormula = function(target){
     }catch(e){
         return 0;
     }
+};
+
+HGSkEffExt.stDepAbsHit = [//state dependent absolute hit
+    {skId: 54, stId: [23]}
+];
+HGSkEffExt._GameAction_apply = Game_Action.prototype.apply;
+Game_Action.prototype.apply = function(target){
+    for(let i=0; i<HGSkEffExt.stDepAbsHit.length; i++){
+        if((DataManager.isSkill(this.item())) && ((this.item().id == HGSkEffExt.stDepAbsHit[i].skId)||HGSkEffExt.stDepAbsHit[i].skId < 0) 
+            && ((HGSkEffExt.stDepAbsHit[i].stId).some((id)=>(target.isStateAffected(id))))){
+            target._result.isHit = function(){ return true; };
+            break;      
+        }
+    }
+    HGSkEffExt._GameAction_apply.call(this, target);
 };
 
 HGSkEffExt.poiStId = 44;
