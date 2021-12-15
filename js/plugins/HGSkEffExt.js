@@ -11,7 +11,7 @@
  *  - absolute critical damage
  *  - customized repeats
  *  - turn based damage by states
- *  - post state effect: next state
+ *  - post state effect: next state, in state effect: give state
  *  - state dependent damage formula parse
  *  - state dependent absolute hit
  * 
@@ -100,10 +100,19 @@ HGSkEffExt.aftEffStId = [//post state effect: next state
     {id: 26, nid: 14},
     {id: 27, nid: 14}
 ];
+HGSkEffExt.inEffStId = [//in state effect: give state
+    {id: 30, gid: 14, perc: 10}
+];
 HGSkEffExt._GameBattler_removeStatesAuto = Game_Battler.prototype.removeStatesAuto;
 Game_Battler.prototype.removeStatesAuto = function(timing){
     for(let j=0; j< this.states().length; j++){
         let st = this.states()[j];
+        for(let i = 0; i < HGSkEffExt.inEffStId.length; i++){
+            if(((String(HGSkEffExt.inEffStId[i].id)) == (String(st.id))) 
+                && (Math.random()*100 < (HGSkEffExt.inEffStId[i].perc))){
+                this.addState(HGSkEffExt.inEffStId[i].gid);
+            }
+        }        
         if (this.isStateExpired(st.id) && st.autoRemovalTiming === timing) {
             for(let i = 0; i < HGSkEffExt.aftEffStId.length; i++){
                 if((String(HGSkEffExt.aftEffStId[i].id)) == (String(st.id))){
