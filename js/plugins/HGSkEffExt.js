@@ -11,9 +11,10 @@
  *  - absolute critical damage
  *  - customized repeats
  *  - turn based damage by states
- *  - post state effect: next state, in state effect: give state
+ *  - post state effect: next state, in state effect: add state
  *  - state dependent damage formula parse
  *  - state dependent absolute hit
+ *  - state restricted usage of skills
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -100,7 +101,7 @@ HGSkEffExt.aftEffStId = [//post state effect: next state
     {id: 26, nid: 14},
     {id: 27, nid: 14}
 ];
-HGSkEffExt.inEffStId = [//in state effect: give state
+HGSkEffExt.inEffStId = [//in state effect: add state
     {id: 30, gid: 14, perc: 10}
 ];
 HGSkEffExt._GameBattler_removeStatesAuto = Game_Battler.prototype.removeStatesAuto;
@@ -135,7 +136,7 @@ Game_Action.prototype.evalDamageFormula = function(target){
     try{
         let res =  HGSkEffExt._GameAction_evalDamageFormula.call(this, target);
         for(let i = 0; i<HGSkEffExt.stDepDmgPrsInfo.length; i++){
-            if((DataManager.isSkill(this.item())) && ((this.item().id == HGSkEffExt.stDepDmgPrsInfo[i].skId)||HGSkEffExt.stDepDmgPrsInfo[i].skId < 0) 
+            if((DataManager.isSkill(this.item())) && ((this.item().id == HGSkEffExt.stDepDmgPrsInfo[i].skId) || (HGSkEffExt.stDepDmgPrsInfo[i].skId < 0)) 
             && ((HGSkEffExt.stDepDmgPrsInfo[i].stId).some((id)=>(target.isStateAffected(id))))){
                 var item = this.item();
                 var a = this.subject();
@@ -154,6 +155,11 @@ Game_Action.prototype.evalDamageFormula = function(target){
 HGSkEffExt.stDepAbsHit = [//state dependent absolute hit
     {skId: 54, stId: [23]}
 ];
+HGSkEffExt.stDepAddSt = [//state dependent add state
+    {skId: 50, stId: [22], gid: 14},
+    {skId: 53, stId: [23], gid: 14},
+    {skId: 20, perc: 20, gid: 14}
+];
 HGSkEffExt._GameAction_apply = Game_Action.prototype.apply;
 Game_Action.prototype.apply = function(target){
     for(let i=0; i<HGSkEffExt.stDepAbsHit.length; i++){
@@ -163,7 +169,50 @@ Game_Action.prototype.apply = function(target){
             break;      
         }
     }
+    for(let i=0; i<HGSkEffExt.stDepAddSt.length; i++){
+        if((DataManager.isSkill(this.item())) && ((this.item().id == HGSkEffExt.stDepAddSt[i].skId)||HGSkEffExt.stDepAddSt[i].skId < 0) 
+        && ((!('stId' in (HGSkEffExt.stDepAddSt[i]))) || ((HGSkEffExt.stDepAddSt[i].stId).some((id)=>(target.isStateAffected(id)))))
+        && ((!('perc' in (HGSkEffExt.stDepAddSt[i]))) || (Math.random() * 100 < HGSkEffExt.stDepAddSt[i].perc))){
+            target.addState(HGSkEffExt.stDepAddSt[i].gid);
+            break;      
+        }
+    }
     HGSkEffExt._GameAction_apply.call(this, target);
+};
+
+HGSkEffExt.stResSkIds = [//state restricted usage of skills
+    {skId: 53, stId: [23], invalidMes: "只能对处于寒霜状态的敌方使用。"}
+];
+HGSkEffExt._SceneBattle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
+Scene_Battle.prototype.onEnemyOk = function(){
+    if((DataManager.isSkill(BattleManager.inputtingAction().item()))){
+        let notMetInd = (HGSkEffExt.stResNotMet(BattleManager.inputtingAction().item(), this._enemyWindow.enemyIndex()));
+        if(notMetInd > -1){
+                $gameMessage.setChoices(["取消使用"], 0, 0);
+                $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
+                    SceneManager._scene._actorCommandWindow.open();//closed due to showing text
+                    Scene_Battle.prototype.onEnemyCancel.call(this);
+                });
+                $gameMessage.add(HGSkEffExt.stResSkIds[notMetInd].invalidMes);
+                return;
+        }
+    }
+    HGSkEffExt._SceneBattle_onEnemyOk.call(this);
+};
+HGSkEffExt.stResNotMet = function(skill, enemyInd){//returns index of not met condition
+    for(let i=0; i<this.stResSkIds.length; i++){
+        if(skill.id == this.stResSkIds[i].skId){
+            if (!(this.stResSkIds[i].stId).reduce((pre, curStId)=>{
+                return pre && (HGSkEffExt.enemyHasState(curStId, enemyInd));
+            }, true)){
+                return i;
+            }
+        }
+    }
+    return -1;
+};
+HGSkEffExt.enemyHasState = function(stId, enemyId){//in battle
+    return $gameTroop.members()[enemyId].isStateAffected(stId);
 };
 
 HGSkEffExt.poiStId = 44;
