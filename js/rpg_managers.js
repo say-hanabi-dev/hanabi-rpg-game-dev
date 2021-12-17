@@ -80,7 +80,7 @@ DataManager.loadDataFile = function(name, src) {
     var url = '';
     xhr.overrideMimeType('application/json');
     if(name ==='$dataActors'){
-        url = 'https://www.sayhuahuo.com/testhanabigame.php';
+        url = '/hanabigame-api.html';
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
@@ -802,7 +802,7 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             var url = '';
             var that = this;
             xhr.overrideMimeType('application/json');
-            url = 'https://www.sayhuahuo.com/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
+            url = '/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
             xhr.open('GET', url,false);
             xhr.onerror = function() {
                 DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2470,7 +2470,7 @@ BattleManager.gainExp = function() {
     var url = '';
     var that = this;
     xhr.overrideMimeType('application/json');
-    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getexp';
+    url = '/hanabigame-api.html?action=getexp';
     xhr.open('GET', url,false);
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2484,7 +2484,7 @@ BattleManager.gainGold = function() {
     var url = '';
     var that = this;
     xhr.overrideMimeType('application/json');
-    url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcoin&offset='+this._rewards.gold;
+    url = '/hanabigame-api.html?action=getcoin&offset='+this._rewards.gold;
     xhr.open('GET', url,false);
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2502,7 +2502,7 @@ BattleManager.gainDropItems = function() {
             var url = '';
             var that = this;
             xhr.overrideMimeType('application/json');
-            url = 'https://www.sayhuahuo.com/testhanabigame.php?action=getcredit';
+            url = '/hanabigame-api.html?action=getcredit';
             xhr.open('GET', url,false);
             xhr.onerror = function() {
                 DataManager._errorUrl = DataManager._errorUrl || url;
