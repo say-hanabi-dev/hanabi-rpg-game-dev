@@ -15,6 +15,7 @@
  *  - state dependent damage formula parse
  *  - state dependent absolute hit
  *  - state restricted usage of skills
+ *  - state dependent on damage add state
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -38,11 +39,19 @@ var HGSkEffExt = window.HGSkEffExt || {} ;
 HGSkEffExt.reflDmgIds = [//reflects half of the damage deals back to user
     {id: 8, ratio: 0.5}
 ];
+HGSkEffExt.stDepOnDmgStIds = [//state dependent on damage add state
+    {onDmgStId: 202, gid: 29}
+];
 HGSkEffExt._GameAction_exeDmg = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
     HGSkEffExt._GameAction_exeDmg.call(this, target, value);
     if((this._item) && (this._item.isSkill()) && (HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId()))){
         HGSkEffExt.reflDmg(this.subject(), Math.round(value*(HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId())).ratio));
+    }
+    for(let i=0; i<HGSkEffExt.stDepOnDmgStIds.length; i++){
+        if(target.isStateAffected(HGSkEffExt.stDepOnDmgStIds[i].onDmgStId)){
+            target.addState(HGSkEffExt.stDepOnDmgStIds[i].gid);
+        }
     }
 };
 HGSkEffExt.reflDmg = function(target, value){
