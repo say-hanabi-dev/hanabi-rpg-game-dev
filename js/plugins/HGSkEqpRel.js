@@ -31,8 +31,12 @@
 
 var HGSkEqpRel = window.HGSkEqpRel || {} ;
 HGSkEqpRel.magWpTId = 4;//70% damage of magic skills when magic weapon not equipped & no equipment is enchanted
+HGSkEqpRel.outMagSkId = [27, 28, 29, 30, 31, 32, 37, 38];
 HGSkEqpRel.rule = [
-    {spec: (skill)=>((skill.stypeId == 5)||(skill.stypeId == 6)), cond:()=>(!(this.magOn())), opr:(dmg)=>(dmg*0.7)}
+    {
+        spec: (skill)=>((skill.stypeId == 5)||(skill.stypeId == 6)||(HGSkEqpRel.outMagSkId.includes(skill.id))), 
+        cond:()=>(!(this.magOn())), opr:(dmg)=>(dmg*0.7)
+    }
 ];
 HGSkEqpRel._GameAction_evalDamageFormula = Game_Action.prototype.evalDamageFormula;
 Game_Action.prototype.evalDamageFormula = function(target){

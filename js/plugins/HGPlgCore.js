@@ -10,6 +10,16 @@
  */
 
 var HGPlgCore = window.HGPlgCore || {} ;
+
+HGPlgCore.locallyTesting = function(){return true;};//*****for local testing
+HGPlgCore.localTestURLParse = function(url){
+    if(this.locallyTesting()){
+        return 'https://www.sayhuahuo.com' + url;
+    }else{
+        return url;
+    }
+};//*****for local testing: called in rpg_manager.js
+
 HGPlgCore.toNameChoices = function(arr, ccMes = "取消"){
     return arr.map((item)=>{return item.name;}).concat(ccMes);
 };

@@ -81,6 +81,7 @@ DataManager.loadDataFile = function(name, src) {
     xhr.overrideMimeType('application/json');
     if(name ==='$dataActors'){
         url = '/hanabigame-api.html';
+        url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
@@ -803,6 +804,7 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             var that = this;
             xhr.overrideMimeType('application/json');
             url = '/uc_server/avatar.php?uid='+$dataActors[1].id+'&size=big';
+            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
             xhr.open('GET', url,false);
             xhr.onerror = function() {
                 DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2471,6 +2473,7 @@ BattleManager.gainExp = function() {
     var that = this;
     xhr.overrideMimeType('application/json');
     url = '/hanabigame-api.html?action=getexp';
+    url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
     xhr.open('GET', url,false);
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2485,6 +2488,7 @@ BattleManager.gainGold = function() {
     var that = this;
     xhr.overrideMimeType('application/json');
     url = '/hanabigame-api.html?action=getcoin&offset='+this._rewards.gold;
+    url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
     xhr.open('GET', url,false);
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
@@ -2503,6 +2507,7 @@ BattleManager.gainDropItems = function() {
             var that = this;
             xhr.overrideMimeType('application/json');
             url = '/hanabigame-api.html?action=getcredit';
+            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
             xhr.open('GET', url,false);
             xhr.onerror = function() {
                 DataManager._errorUrl = DataManager._errorUrl || url;

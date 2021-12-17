@@ -74,13 +74,16 @@ Game_Action.prototype.makeDamageValue = function(target, critical) {
 HGSkEffExt.custRepSkId = [//customized repeats
     {id: 36, repeat: 12},
     {id: 89, repeat: 10},
-    {id: 90, repeat: 12}
+    {id: 90, repeat: 12},
+    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){
     for(let i = 0; i < HGSkEffExt.custRepSkId.length; i++){
         if((DataManager.isSkill(this.item())) && ((this.item().id) == (HGSkEffExt.custRepSkId[i].id))){
-            return HGSkEffExt.custRepSkId.repeat;
+            return HGSkEffExt.custRepSkId[i].repeat 
+                + ((('add' in HGSkEffExt.custRepSkId[i]) && 
+                    ((!('cond' in HGSkEffExt.custRepSkId[i])) || (HGSkEffExt.custRepSkId[i].cond(this.item))))?(HGSkEffExt.custRepSkId[i].add):0);
         }
     }
     return HGSkEffExt._GameAction_numRepeats.call(this);
@@ -140,6 +143,12 @@ HGSkEffExt.stDepDmgPrsInfo = [//state dependent damage formula parse
     {skId: 32, stId: [23], addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
     {skId: -1, stId: [29], addFormulaHead: "(", addFormulaEnd: ") * 1.15"}//<0: any skill
 ];
+HGSkEffExt.stDepPropPtTransInfo = [//state dependent property point transfer
+    {stId: 203, trans:[
+        {from: "b.def", to: "( b.atk + b.def )"},
+        {from: "b.mdf", to: "( b.mat + b.mdf )"}
+    ]}
+];
 HGSkEffExt._GameAction_evalDamageFormula = Game_Action.prototype.evalDamageFormula;
 Game_Action.prototype.evalDamageFormula = function(target){
     try{
@@ -152,13 +161,26 @@ Game_Action.prototype.evalDamageFormula = function(target){
                 var b = target;
                 var v = $gameVariables._data;
                 var sign = ([3, 4].contains(item.damage.type) ? -1 : 1);
-                return Math.max(eval((HGSkEffExt.stDepDmgPrsInfo[i].addFormulaHead)+item.damage.formula+(HGSkEffExt.stDepDmgPrsInfo[i].addFormulaEnd)), 0) * sign;
+                return Math.max(eval(
+                    HGSkEffExt.stDepPropPtTrans(target, (HGSkEffExt.stDepDmgPrsInfo[i].addFormulaHead)+item.damage.formula+(HGSkEffExt.stDepDmgPrsInfo[i].addFormulaEnd))
+                    ), 0) * sign;
             }
         }
         return res;
     }catch(e){
         return 0;
     }
+};
+HGSkEffExt.stDepPropPtTrans = function(target, formula){
+    let res = formula;
+    for(let i=0; i<this.stDepPropPtTransInfo.length; i++){
+        if(target.isStateAffected(this.stDepPropPtTransInfo[i].stId)){
+            for(let j=0; j<this.stDepPropPtTransInfo[i].trans.length; j++){
+                res = res.replace(this.stDepPropPtTransInfo[i].trans[j].from, this.stDepPropPtTransInfo[i].trans[j].to);
+            }
+        }
+    }
+    return res;
 };
 
 HGSkEffExt.stDepAbsHit = [//state dependent absolute hit
