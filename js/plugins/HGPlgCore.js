@@ -11,7 +11,7 @@
 
 var HGPlgCore = window.HGPlgCore || {} ;
 
-HGPlgCore.locallyTesting = function(){return true;};//*****for local testing
+HGPlgCore.locallyTesting = function(){return false;};//*****for local testing
 HGPlgCore.localTestURLParse = function(url){
     if(this.locallyTesting()){
         return 'https://www.sayhuahuo.com' + url;
