@@ -19,6 +19,53 @@ HGPlgCore.localTestURLParse = function(url){
         return url;
     }
 };//*****for local testing: called in rpg_manager.js
+HGPlgCore.localTestMethods = function(){
+    if(this.locallyTesting()){
+        DataManager.loadDataFile = function(name, src) {
+            var xhr = new XMLHttpRequest();
+            var url = 'data/' + src;
+            xhr.open('GET', url);
+            xhr.overrideMimeType('application/json');
+            xhr.onload = function() {
+                if (xhr.status < 400) {
+                    window[name] = JSON.parse(xhr.responseText);
+                    DataManager.onLoad(window[name]);
+                }
+            };
+            xhr.onerror = this._mapLoader || function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            window[name] = null;
+            xhr.send();
+        };
+        ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
+            if (filename) {
+                var path = folder + encodeURIComponent(filename) + '.png';
+                var bitmap = this.loadNormalBitmap(path, hue || 0);
+                bitmap.smooth = smooth;
+                return bitmap;
+            } else {
+                return this.loadEmptyBitmap();
+            }
+        };
+        BattleManager.gainExp = function() {
+            var exp = this._rewards.exp;
+            $gameParty.allMembers().forEach(function(actor) {
+                actor.gainExp(exp);
+            });
+        };
+        BattleManager.gainGold = function() {
+            $gameParty.gainGold(this._rewards.gold);
+        };
+        BattleManager.gainDropItems = function() {
+            var items = this._rewards.items;
+            items.forEach(function(item) {
+                $gameParty.gainItem(item, 1);
+            });
+        };
+   }
+};
+HGPlgCore.localTestMethods();
 
 HGPlgCore.toNameChoices = function(arr, ccMes = "取消"){
     return arr.map((item)=>{return item.name;}).concat(ccMes);

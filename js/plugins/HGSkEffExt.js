@@ -43,6 +43,8 @@
  * at rpg_scenes.js
  *      Method "Scene_Battle.prototype.onEnemyOk" is overwritten in 
  *      this plugin.
+ *      Method "Scene_Battle.prototype.onSkillOk" is overwritten in 
+ *      this plugin.
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
 
@@ -50,7 +52,7 @@ HGSkEffExt.reflDmgIds = [//reflects half of the damage deals back to user
     {id: 8, ratio: 0.5}
 ];
 HGSkEffExt.stDepOnDmgStIds = [//state dependent on damage add state
-    {onDmgStId: 202, gid: 29}
+    {onDmgStId: 202, gid: 206}
 ];
 HGSkEffExt.dmgShareInfo = [//state dependent damage sharing
     {stId: 204, shPerc: 100},
@@ -72,7 +74,7 @@ HGSkEffExt.executeDamage_t_GameAction_postShare = function(target, value){//_pos
     }
     for(let i=0; i<HGSkEffExt.stDepOnDmgStIds.length; i++){
         if(target.isStateAffected(HGSkEffExt.stDepOnDmgStIds[i].onDmgStId)){
-            target.addState(HGSkEffExt.stDepOnDmgStIds[i].gid);
+            this.subject().addState(HGSkEffExt.stDepOnDmgStIds[i].gid);
         }
     }
 };
@@ -170,7 +172,8 @@ Game_Battler.prototype.updateStateTurns = function(){
 
 HGSkEffExt.aftEffStId = [//post state effect: next state
     {id: 26, nid: 14},
-    {id: 27, nid: 14}
+    {id: 27, nid: 14},
+    {id: 206, nid: 29}
 ];
 HGSkEffExt.inEffStId = [//in state effect: add state
     {id: 30, gid: 14, perc: 10}
@@ -270,30 +273,30 @@ Game_Action.prototype.apply = function(target){
     HGSkEffExt._GameAction_apply.call(this, target);
 };
 
-HGSkEffExt.stResSkIds = [//state restricted usage of skills
+HGSkEffExt.enemyStResSkIds = [//state-of-enemy restricted usage of skills
     {skId: 53, stId: [23], invalidMes: "只能对处于寒霜状态的敌方使用。"}
 ];
 HGSkEffExt._SceneBattle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
 Scene_Battle.prototype.onEnemyOk = function(){
     if((DataManager.isSkill(BattleManager.inputtingAction().item()))){
-        let notMetInd = (HGSkEffExt.stResNotMet(BattleManager.inputtingAction().item(), this._enemyWindow.enemyIndex()));
+        let notMetInd = (HGSkEffExt.enemyStResNotMet(BattleManager.inputtingAction().item(), this._enemyWindow.enemyIndex()));
         if(notMetInd > -1){
                 $gameMessage.setChoices(["取消使用"], 0, 0);
                 $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
                     SceneManager._scene._actorCommandWindow.open();//closed due to showing text
                     Scene_Battle.prototype.onEnemyCancel.call(this);
                 });
-                $gameMessage.add(HGSkEffExt.stResSkIds[notMetInd].invalidMes);
+                $gameMessage.add(HGSkEffExt.enemyStResSkIds[notMetInd].invalidMes);
                 return;
         }
     }
     HGSkEffExt._SceneBattle_onEnemyOk.call(this);
 };
-HGSkEffExt.stResNotMet = function(skill, enemyInd){//returns index of not met condition
-    for(let i=0; i<this.stResSkIds.length; i++){
-        if(skill.id == this.stResSkIds[i].skId){
-            if (!(this.stResSkIds[i].stId).reduce((pre, curStId)=>{
-                return pre && (HGSkEffExt.enemyHasState(curStId, enemyInd));
+HGSkEffExt.enemyStResNotMet = function(skill, enemyInd){//returns index of not met condition
+    for(let i=0; i<this.enemyStResSkIds.length; i++){
+        if(skill.id == this.enemyStResSkIds[i].skId){
+            if (!(this.enemyStResSkIds[i].stId).reduce((pre, curStId)=>{
+                return pre && (HGSkEffExt.enemyHasState(curStId, enemyInd));//all states present to proceed
             }, true)){
                 return i;
             }
@@ -305,8 +308,44 @@ HGSkEffExt.enemyHasState = function(stId, enemyId){//in battle
     return $gameTroop.members()[enemyId].isStateAffected(stId);
 };
 
+HGSkEffExt.actorStResSkIds = [//state-of-actor restricted usage of skills
+    {skId: [14, 15, 17, 18, 43], stId: [205], invalidMes: "圣盾不可与其他防御力提升技能叠加。"},
+    {skId: [17], stId: [43, 44, 33, 36, 203, 46, 205], invalidMes: "圣盾不可与其他防御力提升技能叠加。"}
+];
+HGSkEffExt._SceneBattle_onSkillOk = Scene_Battle.prototype.onSkillOk;
+Scene_Battle.prototype.onSkillOk = function(){
+    BattleManager.inputtingAction().setSkill(this._skillWindow.item().id);
+    if((DataManager.isSkill(BattleManager.inputtingAction().item()))){
+        let notMetInd = (HGSkEffExt.actorStResNotMet(BattleManager.inputtingAction().item()));
+        if(notMetInd > -1){
+                $gameMessage.setChoices(["取消使用"], 0, 0);
+                $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
+                    SceneManager._scene._actorCommandWindow.open();//closed due to showing text
+                    Scene_Battle.prototype.onEnemyCancel.call(this);
+                });
+                $gameMessage.add(HGSkEffExt.actorStResSkIds[notMetInd].invalidMes);
+                return;
+        }
+    }
+    HGSkEffExt._SceneBattle_onSkillOk.call(this);
+};
+HGSkEffExt.actorStResNotMet = function(skill){//returns index of not met condition
+    for(let i=0; i<this.actorStResSkIds.length; i++){
+        if(this.actorStResSkIds[i].skId.some((skId)=>(skill.id == skId))){
+            if ((this.actorStResSkIds[i].stId).some((stId)=>(HGSkEffExt.actorHasState(stId)))){//some state present then stop
+                return i;
+            }
+        }
+    }
+    return -1;
+};
+HGSkEffExt.actorHasState = function(stId){//in battle
+    return BattleManager.actor().isStateAffected(stId);
+};
+
+
 HGSkEffExt.noCostateInfo = [//no co-state rules
-    {stIds: [205], ncStIds:[14, 15, 17, 18, 43]}
+    // {stIds: [205], ncStIds:[43, 44, 33, 36, 203, 46, 205]} 
 ];
 HGSkEffExt._GameBattler_isStateAddable = Game_Battler.prototype.isStateAddable;
 Game_Battler.prototype.isStateAddable = function(stateId){
