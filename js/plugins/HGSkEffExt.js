@@ -8,7 +8,7 @@
  *
  * @help Extended effects for skills.
  *  - reflects half of the damage deals back to user
- *  - absolute critical damage
+ *  - absolute critical/not critical damage
  *  - customized repeats
  *  - turn based damage by states
  *  - post state effect: next state, in state effect: add state
@@ -18,6 +18,7 @@
  *  - state dependent on damage add state
  *  - state dependent damage sharing
  *  - state dependent possible damage void
+ *  - no co-state rules
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -34,6 +35,13 @@
  *      Method "Game_Battler.prototype.removeStatesAuto" is overwritten in 
  *      this plugin.
  *      Method "Game_Action.prototype.evalDamageFormula" is overwritten in 
+ *      this plugin.
+ *      Method "Game_Action.prototype.apply" is overwritten in 
+ *      this plugin.
+ *      Method "Game_Battler.prototype.isStateAddable" is overwritten in 
+ *      this plugin.
+ * at rpg_scenes.js
+ *      Method "Scene_Battle.prototype.onEnemyOk" is overwritten in 
  *      this plugin.
 */
 var HGSkEffExt = window.HGSkEffExt || {} ;
@@ -113,10 +121,13 @@ HGSkEffExt.dmgVoid = function(target, value){//return resulting value
 };
 
 HGSkEffExt.acritSkId = [34, 54, 91];//absolute critical damage
+HGSkEffExt.ancritSkId = [8];//absolute not critical damage
 HGSkEffExt._GameAction_makeDamageValue = Game_Action.prototype.makeDamageValue;
 Game_Action.prototype.makeDamageValue = function(target, critical) {
     return HGSkEffExt._GameAction_makeDamageValue.call(this, target, 
-        (critical || ((DataManager.isSkill(this.item())) && (HGSkEffExt.acritSkId.includes(this.item().id)))));
+        (critical || ((DataManager.isSkill(this.item())) 
+            && (HGSkEffExt.acritSkId.includes(this.item().id)) 
+            && (!(HGSkEffExt.ancritSkId.includes(this.item().id))))));
 };
 
 HGSkEffExt.custRepSkId = [//customized repeats
@@ -294,4 +305,19 @@ HGSkEffExt.enemyHasState = function(stId, enemyId){//in battle
     return $gameTroop.members()[enemyId].isStateAffected(stId);
 };
 
-HGSkEffExt.poiStId = 44;
+HGSkEffExt.noCostateInfo = [//no co-state rules
+    {stIds: [205], ncStIds:[14, 15, 17, 18, 43]}
+];
+HGSkEffExt._GameBattler_isStateAddable = Game_Battler.prototype.isStateAddable;
+Game_Battler.prototype.isStateAddable = function(stateId){
+    let res = HGSkEffExt._GameBattler_isStateAddable.call(this, stateId);
+    for(let i=0; i<HGSkEffExt.noCostateInfo.length; i++){
+        if(HGSkEffExt.noCostateInfo[i].stIds.some((stId)=>(this.isStateAffected(stId)), this)){
+            return !(HGSkEffExt.noCostateInfo[i].ncStIds.some((stId)=>(stId == stateId), this));
+        }
+        if(HGSkEffExt.noCostateInfo[i].ncStIds.some((stId)=>(this.isStateAffected(stId)), this)){
+            return !(HGSkEffExt.noCostateInfo[i].stIds.some((stId)=>(stId == stateId), this));
+        }
+    }
+    return res;
+};
