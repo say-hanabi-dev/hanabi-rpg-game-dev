@@ -42,9 +42,17 @@ HGSkEffExt.reflDmgIds = [//reflects half of the damage deals back to user
 HGSkEffExt.stDepOnDmgStIds = [//state dependent on damage add state
     {onDmgStId: 202, gid: 29}
 ];
-HGSkEffExt._GameAction_exeDmg = Game_Action.prototype.executeDamage;
+HGSkEffExt.dmgShareInfo = [//damage target shift
+    {stId: 204, shPerc: 100},
+    {stId: 205, shPerc: 50}
+];
+HGSkEffExt._GameAction_executeDamage = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
-    HGSkEffExt._GameAction_exeDmg.call(this, target, value);
+    value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
+    HGSkEffExt.executeDamage_t_GameAction_postShare.apply(this, [target, value]);
+};
+HGSkEffExt.executeDamage_t_GameAction_postShare = function(target, value){//_postShare for excluding share in recurring case
+    HGSkEffExt._GameAction_executeDamage.call(this, target, value);
     if((this._item) && (this._item.isSkill()) && (HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId()))){
         HGSkEffExt.reflDmg(this.subject(), Math.round(value*(HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId())).ratio));
     }
@@ -58,10 +66,35 @@ HGSkEffExt.reflDmg = function(target, value){
     this.dmg(target, value);
 };
 HGSkEffExt.dmg = function(target, value){
+    value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.dmg_postShare);
+    HGSkEffExt.dmg_postShare.apply(this, [target, value]);
+};
+HGSkEffExt.dmg_postShare = function(target, value){//_postShare for excluding share in recurring case
     target.gainHp(-value);
     if (value > 0) {
         target.onDamage(value);
     }
+};
+HGSkEffExt.dmgShare = function(target, value, dmgFunc){//dmgFunc(target, value), return value left to dmg
+    let valLeft = value;
+    if(target.isActor()){
+        for(let i=0; i<$gameParty.members().length; i++){
+            for(let j=0; j<this.dmgShareInfo.length; j++){
+                if($gameParty.members()[i].isStateAffected(this.dmgShareInfo[j].stId)){
+                    if(valLeft > 0){
+                        dmgFunc($gameParty.members()[i], Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
+                        valLeft -= (Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
+                    }else{
+                        break;
+                    }
+                }
+            }
+            if(valLeft <= 0){
+                break;
+            }
+        }
+    }
+    return Math.round((valLeft <= 0)? 0 : valLeft);
 };
 
 HGSkEffExt.acritSkId = [34, 54, 91];//absolute critical damage
