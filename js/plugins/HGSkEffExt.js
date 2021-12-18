@@ -16,6 +16,8 @@
  *  - state dependent absolute hit
  *  - state restricted usage of skills
  *  - state dependent on damage add state
+ *  - state dependent damage sharing
+ *  - state dependent possible damage void
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -42,12 +44,16 @@ HGSkEffExt.reflDmgIds = [//reflects half of the damage deals back to user
 HGSkEffExt.stDepOnDmgStIds = [//state dependent on damage add state
     {onDmgStId: 202, gid: 29}
 ];
-HGSkEffExt.dmgShareInfo = [//damage target shift
+HGSkEffExt.dmgShareInfo = [//state dependent damage sharing
     {stId: 204, shPerc: 100},
     {stId: 205, shPerc: 50}
 ];
+HGSkEffExt.dmgVoidInfo = [//state dependent possible damage void
+    {stId: 204, vdPerc: 22}
+];
 HGSkEffExt._GameAction_executeDamage = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
+    value = HGSkEffExt.dmgVoid(target, value);
     value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
     HGSkEffExt.executeDamage_t_GameAction_postShare.apply(this, [target, value]);
 };
@@ -66,6 +72,7 @@ HGSkEffExt.reflDmg = function(target, value){
     this.dmg(target, value);
 };
 HGSkEffExt.dmg = function(target, value){
+    value = HGSkEffExt.dmgVoid(target, value);
     value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.dmg_postShare);
     HGSkEffExt.dmg_postShare.apply(this, [target, value]);
 };
@@ -80,7 +87,7 @@ HGSkEffExt.dmgShare = function(target, value, dmgFunc){//dmgFunc(target, value),
     if(target.isActor()){
         for(let i=0; i<$gameParty.members().length; i++){
             for(let j=0; j<this.dmgShareInfo.length; j++){
-                if($gameParty.members()[i].isStateAffected(this.dmgShareInfo[j].stId)){
+                if($gameParty.members()[i].isStateAffected(this.dmgShareInfo[j].stId) && (i != target.actorId())){
                     if(valLeft > 0){
                         dmgFunc($gameParty.members()[i], Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
                         valLeft -= (Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
@@ -95,6 +102,14 @@ HGSkEffExt.dmgShare = function(target, value, dmgFunc){//dmgFunc(target, value),
         }
     }
     return Math.round((valLeft <= 0)? 0 : valLeft);
+};
+HGSkEffExt.dmgVoid = function(target, value){//return resulting value
+    for(let i=0; i<HGSkEffExt.dmgVoidInfo.length; i++){//damage void prior to sharing
+        if(target.isStateAffected(HGSkEffExt.dmgVoidInfo[i].stId)){
+            value *= ((Math.random() * 100 < HGSkEffExt.dmgVoidInfo[i].vdPerc)?0:1);
+        }
+    }
+    return value;
 };
 
 HGSkEffExt.acritSkId = [34, 54, 91];//absolute critical damage
