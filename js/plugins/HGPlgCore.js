@@ -11,7 +11,7 @@
 
 var HGPlgCore = window.HGPlgCore || {} ;
 
-HGPlgCore.locallyTesting = function(){return false;};//*****for local testing
+HGPlgCore.locallyTesting = function(){return true;};//*****for local testing
 HGPlgCore.localTestURLParse = function(url){
     if(this.locallyTesting()){
         return 'https://www.sayhuahuo.com' + url;
@@ -46,6 +46,16 @@ HGPlgCore.isWpTpEqp = function(wtId){
 HGPlgCore.isAmTpEqp = function(atId){
     return $gameActors.actor(1).armors().some(function(armor) {
         return armor.atypeId === atId;
+    });
+};
+HGPlgCore.isWpEqp = function(wpId){
+    return $gameActors.actor(1).weapons().some(function(weapon) {
+        return weapon.id === wpId;
+    });
+};
+HGPlgCore.isAmEqp = function(amId){
+    return $gameActors.actor(1).armors().some(function(armor) {
+        return armor.id === amId;
     });
 };
 HGPlgCore.getIdObj = function(arr, oid){

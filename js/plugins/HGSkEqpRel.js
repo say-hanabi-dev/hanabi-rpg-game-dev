@@ -7,7 +7,7 @@
  * @author c2h6o
  *
  * @help Effects to skills by which equipped:
- *  - 70% damage of magic skills when magic weapon not equipped & no equipment is enchanted
+ *  - 70% damage of magic/enchanted sword skills when magic weapon not equipped & no equipment is enchanted
  *  - 20% additional damage of critical hits when sword equipped 
  *  - shields skills: require shield/Large shield; large shield skills: require Large shield
  *  - sword skills: require swords; gun skills: require guns
@@ -30,7 +30,7 @@
  */
 
 var HGSkEqpRel = window.HGSkEqpRel || {} ;
-HGSkEqpRel.magWpTId = 4;//70% damage of magic skills when magic weapon not equipped & no equipment is enchanted
+HGSkEqpRel.magWpTId = 4;//70% damage of magic/enchanted sword skills when magic weapon not equipped & no equipment is enchanted
 HGSkEqpRel.outMagSkId = [27, 28, 29, 30, 31, 32, 37, 38];
 HGSkEqpRel.rule = [
     {
@@ -89,12 +89,16 @@ HGSkEqpRel.megBshdTId = 2;
 HGSkEqpRel.swordSkTId = 2;//sword skills: require swords
 HGSkEqpRel.gunTId = 5;//gun skills: require guns
 HGSkEqpRel.gunSkTId = 4;
+HGSkEqpRel.mahousjSkIds = [102, 103, 104];//mahou shoujo skills: require mahou shoujo trans
+HGSkEqpRel.mahousjTrIds = [50, 51, 52, 53, 54, 55, 56, 57];
+HGSkEqpRel.dbTransSkIds = [105];//double transformation skills: require mahou shoujo trans and kamen rider trans
+HGSkEqpRel.kamenrdTrIds = [13, 14, 15, 16, 17];
 HGSkEqpRel._GameActor_isSkillWtypeOk = Game_Actor.prototype.isSkillWtypeOk;
 Game_Actor.prototype.isSkillWtypeOk = function(skill){
     return HGSkEqpRel._GameActor_isSkillWtypeOk.call(this, skill) && HGSkEqpRel.eqpSkOk(skill);
 };
 HGSkEqpRel.eqpSkOk = function(skill){
-    return this.shdSkOk(skill) && this.swSkOk(skill) && this.gnSkOk(skill);
+    return this.shdSkOk(skill) && this.swSkOk(skill) && this.gnSkOk(skill) && this.mahousjSkOk(skill) && this.dbTransOk(skill);
 };
 HGSkEqpRel.swSkOk = function(skill){
     if(skill.stypeId == this.swordSkTId){
@@ -115,6 +119,18 @@ HGSkEqpRel.shdSkOk = function(skill){
         }else{
             return (skill.id >= 13 && skill.id <= 15) && (HGPlgCore.isAmTpEqp(this.shdTId));
         }
+    }
+    return true;
+};
+HGSkEqpRel.mahousjSkOk = function(skill){
+    if(this.mahousjSkIds.some((skId)=>((String(skill.id)) == (String(skId))))){
+        return this.mahousjTrIds.some((trId)=>(HGPlgCore.isWpEqp(trId)));
+    }
+    return true;
+};
+HGSkEqpRel.dbTransOk = function(skill){
+    if(this.dbTransSkIds.some((skId)=>((String(skill.id)) == (String(skId))))){
+        return (this.mahousjTrIds.some((trId)=>(HGPlgCore.isWpEqp(trId)))) && (this.kamenrdTrIds.some((trId)=>(HGPlgCore.isAmEqp(trId))));
     }
     return true;
 };
