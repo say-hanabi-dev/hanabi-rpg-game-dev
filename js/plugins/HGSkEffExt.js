@@ -321,7 +321,7 @@ Scene_Battle.prototype.onSkillOk = function(){
                 $gameMessage.setChoices(["取消使用"], 0, 0);
                 $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
                     SceneManager._scene._actorCommandWindow.open();//closed due to showing text
-                    Scene_Battle.prototype.onEnemyCancel.call(this);
+                    Scene_Battle.prototype.onSkillCancel.call(this);
                 });
                 $gameMessage.add(HGSkEffExt.actorStResSkIds[notMetInd].invalidMes);
                 return;
