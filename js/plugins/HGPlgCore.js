@@ -5,13 +5,17 @@
 /*:
  * @plugindesc Core of plugins by c2h6o for Hanabi Gakuen
  * @author c2h6o
+ * @param localTesting
  *
  * @help Support common functions for other plugins and the system
  */
 
+var parameters = PluginManager.parameters('HGPlgCore');
+var unknownData = String(parameters['localTesting'] || 0);
+
 var HGPlgCore = window.HGPlgCore || {} ;
 
-HGPlgCore.locallyTesting = function(){return false;};//*****for local testing
+HGPlgCore.locallyTesting = function(){return (unknownData == "1");};//*****for local testing
 HGPlgCore.localTestURLParse = function(url){
     if(this.locallyTesting()){
         return 'https://www.sayhuahuo.com' + url;
