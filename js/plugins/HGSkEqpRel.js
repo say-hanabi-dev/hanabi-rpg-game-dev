@@ -136,20 +136,23 @@ HGSkEqpRel.dbTransOk = function(skill){
 };
 
 HGSkEqpRel.tauntId = 13;//add taunt state when guard with shield/Large shield equipped
-HGSkEqpRel._SceneBattle_commandGuard = Scene_Battle.prototype.commandGuard;
-Scene_Battle.prototype.commandGuard = function(){
-    if(HGPlgCore.isAmTpEqp(HGSkEqpRel.bshdTId)||HGPlgCore.isAmTpEqp(HGSkEqpRel.megBshdTId)||(HGPlgCore.isAmTpEqp(HGSkEqpRel.shdTId))){
-        HGSkEqpRel.taunt();
+HGSkEqpRel._GameAction_Guard = Game_Action.prototype.setGuard;
+Game_Action.prototype.setGuard = function() {
+    if((this.subject().isActor()) &&
+        (HGPlgCore.isAmTpEqp(HGSkEqpRel.bshdTId, this.subject().actorId())
+            ||HGPlgCore.isAmTpEqp(HGSkEqpRel.megBshdTId, this.subject().actorId())
+            ||(HGPlgCore.isAmTpEqp(HGSkEqpRel.shdTId, this.subject().actorId())))){
+        HGSkEqpRel.taunt(this);
     }
-    HGSkEqpRel._SceneBattle_commandGuard.call(this);
+    HGSkEqpRel._GameAction_Guard.call(this);
 };
-HGSkEqpRel.taunt = function(){
-    if (BattleManager.actor().isStateAddable(this.tauntId)) {
-        if (!BattleManager.actor().isStateAffected(this.tauntId)) {
-            BattleManager.actor().addNewState(this.tauntId);
-            BattleManager.actor().refresh();
+HGSkEqpRel.taunt = function(thisArg){
+    if (thisArg.subject().isStateAddable(this.tauntId)) {
+        if (!thisArg.subject().isStateAffected(this.tauntId)) {
+            thisArg.subject().addNewState(this.tauntId);
+            thisArg.subject().refresh();
         }
-        BattleManager.actor().resetStateCounts(this.tauntId);
-        BattleManager.actor()._result.pushAddedState(this.tauntId);
+        thisArg.subject().resetStateCounts(this.tauntId);
+        thisArg.subject()._result.pushAddedState(this.tauntId);
     }
 };

@@ -64,11 +64,11 @@ HGSkEffExt.dmgVoidInfo = [//state dependent possible damage void
 HGSkEffExt._GameAction_executeDamage = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
     value = HGSkEffExt.dmgVoid(target, value);
-    value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
-    HGSkEffExt.executeDamage_t_GameAction_postShare.apply(this, [target, value]);
+    value = HGSkEffExt.dmgShare(this, target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
+    HGSkEffExt.executeDamage_t_GameAction_postShare.apply(this, [this, target, value]);
 };
-HGSkEffExt.executeDamage_t_GameAction_postShare = function(target, value){//_postShare for excluding share in recurring case
-    HGSkEffExt._GameAction_executeDamage.call(this, target, value);
+HGSkEffExt.executeDamage_t_GameAction_postShare = function(thisArg, target, value){//_postShare for excluding share in recurring case
+    HGSkEffExt._GameAction_executeDamage.call(thisArg, target, value);
     if((this._item) && (this._item.isSkill()) && (HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId()))){
         HGSkEffExt.reflDmg(this.subject(), Math.round(value*(HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId())).ratio));
     }
@@ -84,22 +84,22 @@ HGSkEffExt.reflDmg = function(target, value){
 HGSkEffExt.dmg = function(target, value){
     value = HGSkEffExt.dmgVoid(target, value);
     value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.dmg_postShare);
-    HGSkEffExt.dmg_postShare.apply(this, [target, value]);
+    HGSkEffExt.dmg_postShare.apply(this, [this, target, value]);
 };
-HGSkEffExt.dmg_postShare = function(target, value){//_postShare for excluding share in recurring case
+HGSkEffExt.dmg_postShare = function(thisArg, target, value){//_postShare for excluding share in recurring case
     target.gainHp(-value);
     if (value > 0) {
         target.onDamage(value);
     }
 };
-HGSkEffExt.dmgShare = function(target, value, dmgFunc){//dmgFunc(target, value), return value left to dmg
+HGSkEffExt.dmgShare = function(thisArg, target, value, dmgFunc){//dmgFunc(thisArg, target, value), return value left to dmg
     let valLeft = value;
     if(target.isActor()){
         for(let i=0; i<$gameParty.members().length; i++){
             for(let j=0; j<this.dmgShareInfo.length; j++){
-                if($gameParty.members()[i].isStateAffected(this.dmgShareInfo[j].stId) && (i != target.actorId())){
+                if($gameParty.members()[i].isStateAffected(this.dmgShareInfo[j].stId) && (i != (target.actorId() - 1))){
                     if(valLeft > 0){
-                        dmgFunc($gameParty.members()[i], Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
+                        dmgFunc.apply(thisArg, [thisArg, $gameParty.members()[i], Math.round(value * (this.dmgShareInfo[j].shPerc / 100))]);
                         valLeft -= (Math.round(value * (this.dmgShareInfo[j].shPerc / 100)));
                     }else{
                         break;
@@ -136,7 +136,7 @@ HGSkEffExt.custRepSkId = [//customized repeats
     {id: 36, repeat: 12},
     {id: 89, repeat: 10},
     {id: 90, repeat: 12},
-    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
+    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){

@@ -87,21 +87,21 @@ HGPlgCore.curLvDone = function(){
     }
     return false;
 };
-HGPlgCore.isWpTpEqp = function(wtId){
-    return $gameActors.actor(1).isWtypeEquipped(wtId);
+HGPlgCore.isWpTpEqp = function(wtId, actorId = 1){
+    return $gameActors.actor(actorId).isWtypeEquipped(wtId);
 };
-HGPlgCore.isAmTpEqp = function(atId){
-    return $gameActors.actor(1).armors().some(function(armor) {
+HGPlgCore.isAmTpEqp = function(atId, actorId = 1){
+    return $gameActors.actor(actorId).armors().some(function(armor) {
         return armor.atypeId === atId;
     });
 };
-HGPlgCore.isWpEqp = function(wpId){
-    return $gameActors.actor(1).weapons().some(function(weapon) {
+HGPlgCore.isWpEqp = function(wpId, actorId = 1){
+    return $gameActors.actor(actorId).weapons().some(function(weapon) {
         return weapon.id === wpId;
     });
 };
-HGPlgCore.isAmEqp = function(amId){
-    return $gameActors.actor(1).armors().some(function(armor) {
+HGPlgCore.isAmEqp = function(amId, actorId = 1){
+    return $gameActors.actor(actorId).armors().some(function(armor) {
         return armor.id === amId;
     });
 };
