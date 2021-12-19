@@ -86,7 +86,7 @@ HGPlgCore.curLvDone = function(){
     let done = $gameVariables.value(20);
     for(let i=1; i<$dataMapInfos.length; i++){
         if(($dataMapInfos[i]) && ($dataMapInfos[i].id == mpid)){
-            return (isNaN($dataMapInfos[i].name.charAt(0))) && (done >= parseInt($dataMapInfos[i].name.charAt(0)));
+            return (!isNaN($dataMapInfos[i].name.charAt(0))) && (done >= parseInt($dataMapInfos[i].name.charAt(0)));
         }
     }
     return false;
