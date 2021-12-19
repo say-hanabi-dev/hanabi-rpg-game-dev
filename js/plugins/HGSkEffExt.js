@@ -83,7 +83,7 @@ HGSkEffExt.reflDmg = function(target, value){
 };
 HGSkEffExt.dmg = function(target, value){
     value = HGSkEffExt.dmgVoid(target, value);
-    value = HGSkEffExt.dmgShare(target, value, HGSkEffExt.dmg_postShare);
+    value = HGSkEffExt.dmgShare(null, target, value, HGSkEffExt.dmg_postShare);
     HGSkEffExt.dmg_postShare.apply(this, [this, target, value]);
 };
 HGSkEffExt.dmg_postShare = function(thisArg, target, value){//_postShare for excluding share in recurring case
@@ -92,7 +92,8 @@ HGSkEffExt.dmg_postShare = function(thisArg, target, value){//_postShare for exc
         target.onDamage(value);
     }
 };
-HGSkEffExt.dmgShare = function(thisArg, target, value, dmgFunc){//dmgFunc(thisArg, target, value), return value left to dmg
+//dmgFunc(thisArg, target, value), thisArg is only for dmgFunc in this method. Returns value left to dmg.
+HGSkEffExt.dmgShare = function(thisArg, target, value, dmgFunc){
     let valLeft = value;
     if(target.isActor()){
         for(let i=0; i<$gameParty.members().length; i++){
