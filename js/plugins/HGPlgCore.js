@@ -77,7 +77,7 @@ HGPlgCore.toNameChoices = function(arr, ccMes = "取消"){
 HGPlgCore.alertObj = function(obj){
     alert(JSON.stringify(obj));
 };
-HGPlgCore.lvAbsDnMapId = [10, 11, 19, 12, 16, 17, 20, 18, 21];
+HGPlgCore.lvAbsDnMapId = [10, 11, 19, 12, 16, 17, 20, 18, 21, 9];
 HGPlgCore.curLvDone = function(){
     let mpid = $gameMap.mapId();
     if(this.lvAbsDnMapId.includes(mpid)){
@@ -86,7 +86,7 @@ HGPlgCore.curLvDone = function(){
     let done = $gameVariables.value(20);
     for(let i=1; i<$dataMapInfos.length; i++){
         if(($dataMapInfos[i]) && ($dataMapInfos[i].id == mpid)){
-            return done >= parseInt($dataMapInfos[i].name.charAt(0));
+            return (isNaN($dataMapInfos[i].name.charAt(0))) && (done >= parseInt($dataMapInfos[i].name.charAt(0)));
         }
     }
     return false;

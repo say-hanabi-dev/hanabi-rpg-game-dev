@@ -24,6 +24,9 @@ HGSpItm.equipAdv = function(){
     $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
         let offset =  $gameActors.actor(1).equips().filter((item) => {return item && (item._itemId!=0);}).length;
         if(x < offset){
+            if(($gameActors.actor(1).equips()[x]) == null){
+                alert(x+" "+offset+" |iiiii| "+JSON.stringify($gameActors.actor(1).equips())+" |iiiii| "+JSON.stringify(HGSpItm.equipLst));
+            }
             let resId = this.equipRUp($gameActors.actor(1).equips()[x].name, $gameActors.actor(1).equips()[x].id);
             if(resId < 0){
                 $gameParty.gainItem($dataItems[this.equipAdvID], 1, true);//return the card not used                
