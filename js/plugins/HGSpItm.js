@@ -37,7 +37,7 @@ HGSpItm.equipAdv = function(){
             $gameParty.loseItem($gameActors.actor(1).equips()[x], 1, true);
             $gameActors.actor(1).changeEquip(x, newItm);
         }else if(x < $gameParty.equipItems().length){
-            let resId = this.equipRUp($gameParty.equipItems()[x - offset].name, $gameParty.equipItems()[x - offset].id);
+            let resId = this.equipRUp($gameParty.equipItems()[x - offset]);
             if(resId < 0){
                 $gameParty.gainItem($dataItems[this.equipAdvID], 1, true);//return the card not used                
                 return;
@@ -51,10 +51,10 @@ HGSpItm.equipAdv = function(){
     });
     $gameMessage.add(this.equipAdvInfo.message);
 };
-HGSpItm.equipRUp = function(name, id){
-    if(name.includes("超稀有")){
-        return id+3;
-    }else if(name.includes("量产") || name.includes("稀有")){
+HGSpItm.equipRUp = function(equip){//armor/weapon listing order: ascending rarity, corresponding gift
+    if(equip.name.includes("超稀有")){
+        return equip.id+((equip.etypeId > 1)?2:3);
+    }else if(equip.name.includes("量产") || equip.name.includes("稀有")){
         return id+1;
     }else{
         return -1;
