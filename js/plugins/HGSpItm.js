@@ -17,24 +17,31 @@ HGSpItm.equipAdvID = 23;
 HGSpItm.equipAdvInfo = { 
     message: "进阶哪一件装备?", defaultInd: 0 
 };
+HGSpItm.actEqpLst = [];
+HGSpItm.nnActEqpLst = [];
 HGSpItm.equipLst = [];
 HGSpItm.equipAdv = function(){
-    this.equipLst = $gameActors.actor(1).equips().filter((item) => {return item && (item._itemId!=0);}).concat($gameParty.equipItems());
+    this.actEqpLst = $gameActors.actor(1).equips();
+    this.nnActEqpLst = this.actEqpLst.filter((item) => {return item && (item._itemId!=0);});
+    this.equipLst = this.nnActEqpLst.concat($gameParty.equipItems());
     $gameMessage.setChoices(HGPlgCore.toNameChoices(this.equipLst, this.ccMes), this.equipAdvInfo.defaultInd, this.equipLst.length);
     $gameMessage.setChoiceCallback((x)=>{//everything after the choice is made
-        let offset =  $gameActors.actor(1).equips().filter((item) => {return item && (item._itemId!=0);}).length;
+        let offset =  this.nnActEqpLst.length;
         if(x < offset){
-            if(($gameActors.actor(1).equips()[x]) == null){
-                alert(x+" "+offset+" |iiiii| "+JSON.stringify($gameActors.actor(1).equips())+" |iiiii| "+JSON.stringify(HGSpItm.equipLst));
+            for(let i=0; i<this.actEqpLst.length; i++){
+                if(((this.actEqpLst)[i]) && ((this.actEqpLst)[i].id == this.nnActEqpLst[x].id)
+                    && ((this.actEqpLst)[i].etypeId == this.nnActEqpLst[x].etypeId)){
+                    x = i;
+                }
             }
-            let resId = this.equipRUp($gameActors.actor(1).equips()[x].name, $gameActors.actor(1).equips()[x].id);
+            let resId = this.equipRUp((this.actEqpLst)[x]);
             if(resId < 0){
                 $gameParty.gainItem($dataItems[this.equipAdvID], 1, true);//return the card not used                
                 return;
             }
             let newItm = ((x == 0)?($dataWeapons):($dataArmors))[resId];
             $gameParty.gainItem(newItm, 1, true);
-            $gameParty.loseItem($gameActors.actor(1).equips()[x], 1, true);
+            $gameParty.loseItem(this.actEqpLst[x], 1, true);
             $gameActors.actor(1).changeEquip(x, newItm);
         }else if(x < $gameParty.equipItems().length){
             let resId = this.equipRUp($gameParty.equipItems()[x - offset]);
