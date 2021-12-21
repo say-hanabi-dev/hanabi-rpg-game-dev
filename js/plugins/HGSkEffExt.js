@@ -63,18 +63,22 @@ HGSkEffExt.dmgVoidInfo = [//state dependent possible damage void
 ];
 HGSkEffExt._GameAction_executeDamage = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
-    value = HGSkEffExt.dmgVoid(target, value);
-    value = HGSkEffExt.dmgShare(this, target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
+    if(!this.isRecover()){
+        value = HGSkEffExt.dmgVoid(target, value);
+        value = HGSkEffExt.dmgShare(this, target, value, HGSkEffExt.executeDamage_t_GameAction_postShare);
+    }
     HGSkEffExt.executeDamage_t_GameAction_postShare.apply(this, [this, target, value]);
 };
 HGSkEffExt.executeDamage_t_GameAction_postShare = function(thisArg, target, value){//_postShare for excluding share in recurring case
     HGSkEffExt._GameAction_executeDamage.call(thisArg, target, value);
-    if((this._item) && (this._item.isSkill()) && (HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId()))){
-        HGSkEffExt.reflDmg(this.subject(), Math.round(value*(HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId())).ratio));
-    }
-    for(let i=0; i<HGSkEffExt.stDepOnDmgStIds.length; i++){
-        if(target.isStateAffected(HGSkEffExt.stDepOnDmgStIds[i].onDmgStId)){
-            this.subject().addState(HGSkEffExt.stDepOnDmgStIds[i].gid);
+    if(!this.isRecover()){
+        if((this._item) && (this._item.isSkill()) && (HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId()))){
+            HGSkEffExt.reflDmg(this.subject(), Math.round(value*(HGPlgCore.getIdObj(HGSkEffExt.reflDmgIds, this._item.itemId())).ratio));
+        }
+        for(let i=0; i<HGSkEffExt.stDepOnDmgStIds.length; i++){
+            if(target.isStateAffected(HGSkEffExt.stDepOnDmgStIds[i].onDmgStId)){
+                this.subject().addState(HGSkEffExt.stDepOnDmgStIds[i].gid);
+            }
         }
     }
 };
