@@ -155,10 +155,25 @@ Game_Action.prototype.numRepeats = function(){
     return HGSkEffExt._GameAction_numRepeats.call(this);
 };
 
+HGSkEffExt.stInfo = [
+    {name: "burn_500", stId: [21, 24]},
+    {name: "burn_50", stId: [65]},
+    {name: "burn_1perc", stId: [28]},
+    {name: "frost_d10atk", stId: [23, 66]}
+];
+HGSkEffExt.getStId = function(stName){
+    let res = [];
+    for(let i=0; i<this.stInfo.length; i++){
+        if(this.stInfo[i].name.includes(stName)){
+            res = res.concat(this.stInfo[i].stId);
+        }
+    }
+    return res;
+};
 HGSkEffExt.tnDmgStId = [//turn based damage by states
-    {id: 21, dmg: 500, perc: false},
-    {id: 24, dmg: 500, perc: false},
-    {id: 28, dmg: 1, perc: true}
+    {id: HGSkEffExt.getStId("burn_500"), dmg: 500, perc: false},
+    {id: HGSkEffExt.getStId("burn_50"), dmg: 50, perc: false},
+    {id: HGSkEffExt.getStId("burn_1perc"), dmg: 1, perc: true}
 ];
 HGSkEffExt._GameBattlerBase_updateStateTurns = Game_BattlerBase.prototype.updateStateTurns;
 Game_Battler.prototype.updateStateTurns = function(){
@@ -166,7 +181,7 @@ Game_Battler.prototype.updateStateTurns = function(){
         if (this._stateTurns[stateId] > 0) {
             for(let i = 0; i < HGSkEffExt.tnDmgStId.length; i++){
                 let st = HGSkEffExt.tnDmgStId[i];
-                if(st.id == stateId){
+                if(st.id.some((id)=>(id == stateId))){
                     HGSkEffExt.dmg(this, ((st.perc)?(Math.round((this._hp)/100)):(st.dmg)));
                 }
             }
@@ -205,9 +220,9 @@ Game_Battler.prototype.removeStatesAuto = function(timing){
 };
 
 HGSkEffExt.stDepDmgPrsInfo = [//state dependent damage formula parse
-    {skId: 56, stId: [23], addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
-    {skId: 48, stId: [21, 24, 28], addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
-    {skId: 32, stId: [23], addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
+    {skId: 56, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
+    {skId: 48, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
+    {skId: 32, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
     {skId: -1, stId: [29], addFormulaHead: "(", addFormulaEnd: ") * 1.15"}//<0: any skill
 ];
 HGSkEffExt.stDepPropPtTransInfo = [//state dependent property point transfer
