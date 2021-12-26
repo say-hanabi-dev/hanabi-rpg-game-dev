@@ -759,7 +759,7 @@ ImageManager.loadCharacter = function(filename, hue) {
 };
 
 ImageManager.loadFace = function(filename, hue) {
-    return this.loadBitmap('img/faces/', filename, hue, true);
+    return this.loadBitmap1('img/faces/', filename, hue, true);
 };
 
 ImageManager.loadParallax = function(filename, hue) {
@@ -794,7 +794,7 @@ ImageManager.loadTitle2 = function(filename, hue) {
     return this.loadBitmap('img/titles2/', filename, hue, true);
 };
 
-ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
+ImageManager.loadBitmap1 = function(folder, filename, hue, smooth) {
     if (filename) {
         var path = '';
         var bitmap = '';
@@ -823,6 +823,19 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
             bitmap.smooth = smooth;
             return bitmap;
         }
+    } else {
+        return this.loadEmptyBitmap();
+    }
+};
+
+ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
+    if (filename) {
+        var path = '';
+        var bitmap = '';
+        path = folder + encodeURIComponent(filename) + '.png';
+        bitmap = this.loadNormalBitmap(path, hue || 0);
+        bitmap.smooth = smooth;
+        return bitmap;
     } else {
         return this.loadEmptyBitmap();
     }
@@ -2483,17 +2496,6 @@ BattleManager.gainExp = function() {
 
 BattleManager.gainGold = function() {
     $gameParty.gainGold(this._rewards.gold);
-    var xhr = new XMLHttpRequest();
-    var url = '';
-    var that = this;
-    xhr.overrideMimeType('application/json');
-    url = '/hanabigame-api.html?action=getcoin&offset='+this._rewards.gold;
-    url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-    xhr.open('GET', url,false);
-    xhr.onerror = function() {
-        DataManager._errorUrl = DataManager._errorUrl || url;
-    };
-    xhr.send();
 };
 
 BattleManager.gainDropItems = function() {
@@ -2507,6 +2509,19 @@ BattleManager.gainDropItems = function() {
             var that = this;
             xhr.overrideMimeType('application/json');
             url = '/hanabigame-api.html?action=getcredit';
+            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+        }
+        if(item.name =='勋章兑换券'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = '/hanabigame-api.html?action=getcoin';
             url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
             xhr.open('GET', url,false);
             xhr.onerror = function() {
