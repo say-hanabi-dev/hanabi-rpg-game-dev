@@ -798,7 +798,7 @@ ImageManager.loadBitmap = function(folder, filename, hue, smooth) {
     if (filename) {
         var path = '';
         var bitmap = '';
-        if(filename ==='A'){
+        if(filename ==='A' || filename ==='Actor1'){
             var xhr = new XMLHttpRequest();
             var url = '';
             var that = this;
