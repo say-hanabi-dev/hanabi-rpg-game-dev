@@ -156,9 +156,7 @@ Game_Action.prototype.numRepeats = function(){
 };
 
 HGSkEffExt.stInfo = [
-    {name: "burn_500", stId: [21, 24]},
-    {name: "burn_50", stId: [65]},
-    {name: "burn_1perc", stId: [28]},
+    {name: "burn_50", stId: [21, 24, 28, 65]},
     {name: "frost_d10atk", stId: [23, 66]}
 ];
 HGSkEffExt.getStId = function(stName){
