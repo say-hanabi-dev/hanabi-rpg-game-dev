@@ -156,8 +156,11 @@ Game_Action.prototype.numRepeats = function(){
 };
 
 HGSkEffExt.stInfo = [
-    {name: "burn_50", stId: [21, 24, 28, 65]},
-    {name: "frost_d10atk", stId: [23, 66]}
+    {name: "burn_500$", stId: [21, 24]},
+    {name: "burn_50$", stId: [65]},
+    {name: "burn_1perc$", stId: [28]},
+    {name: "frost_d10atk2$", stId: [23, 66]},
+    {name: "frost_d10atk3$", stId: [25]}
 ];
 HGSkEffExt.getStId = function(stName){
     let res = [];
@@ -169,9 +172,9 @@ HGSkEffExt.getStId = function(stName){
     return res;
 };
 HGSkEffExt.tnDmgStId = [//turn based damage by states
-    {id: HGSkEffExt.getStId("burn_500"), dmg: 500, perc: false},
-    {id: HGSkEffExt.getStId("burn_50"), dmg: 50, perc: false},
-    {id: HGSkEffExt.getStId("burn_1perc"), dmg: 1, perc: true}
+    {id: HGSkEffExt.getStId("burn_500$"), dmg: 500, perc: false},
+    {id: HGSkEffExt.getStId("burn_50$"), dmg: 50, perc: false},
+    {id: HGSkEffExt.getStId("burn_1perc$"), dmg: 1, perc: true}
 ];
 HGSkEffExt._GameBattlerBase_updateStateTurns = Game_BattlerBase.prototype.updateStateTurns;
 Game_Battler.prototype.updateStateTurns = function(){
@@ -180,7 +183,7 @@ Game_Battler.prototype.updateStateTurns = function(){
             for(let i = 0; i < HGSkEffExt.tnDmgStId.length; i++){
                 let st = HGSkEffExt.tnDmgStId[i];
                 if(st.id.some((id)=>(id == stateId))){
-                    HGSkEffExt.dmg(this, ((st.perc)?(Math.round((this._hp)/100)):(st.dmg)));
+                    HGSkEffExt.dmg(this, st.dmg*((st.perc)?(Math.round((this._hp)/100)):(1)));
                 }
             }
         }
@@ -264,11 +267,11 @@ HGSkEffExt.stDepPropPtTrans = function(target, formula){
 };
 
 HGSkEffExt.stDepAbsHit = [//state dependent absolute hit
-    {skId: 54, stId: [23]}
+    {skId: 54, stId: HGSkEffExt.getStId("frost")}
 ];
 HGSkEffExt.stDepAddSt = [//state dependent add state
     {skId: 50, stId: [22], gid: 14},
-    {skId: 53, stId: [23], gid: 14},
+    {skId: 53, stId: HGSkEffExt.getStId("frost"), gid: 14},
     {skId: 20, perc: 20, gid: 14}
 ];
 HGSkEffExt._GameAction_apply = Game_Action.prototype.apply;
@@ -292,7 +295,7 @@ Game_Action.prototype.apply = function(target){
 };
 
 HGSkEffExt.enemyStResSkIds = [//state-of-enemy restricted usage of skills
-    {skId: 53, stId: [23], invalidMes: "只能对处于寒霜状态的敌方使用。"}
+    {skId: 53, stId: HGSkEffExt.getStId("frost"), invalidMes: "只能对处于寒霜状态的敌方使用。"}
 ];
 HGSkEffExt._SceneBattle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
 Scene_Battle.prototype.onEnemyOk = function(){
@@ -313,9 +316,7 @@ Scene_Battle.prototype.onEnemyOk = function(){
 HGSkEffExt.enemyStResNotMet = function(skill, enemyInd){//returns index of not met condition
     for(let i=0; i<this.enemyStResSkIds.length; i++){
         if(skill.id == this.enemyStResSkIds[i].skId){
-            if (!(this.enemyStResSkIds[i].stId).reduce((pre, curStId)=>{
-                return pre && (HGSkEffExt.enemyHasState(curStId, enemyInd));//all states present to proceed
-            }, true)){
+            if (!(this.enemyStResSkIds[i].stId).some((stId)=>(HGSkEffExt.enemyHasState(stId, enemyInd)))){//no state present then stop
                 return i;
             }
         }
