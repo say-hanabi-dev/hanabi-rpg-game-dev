@@ -41,7 +41,7 @@
  *      this plugin.
  *      Method "Game_Battler.prototype.isStateAddable" is overwritten in 
  *      this plugin.
- *      Method "Game_BattlerBase.prototype.paramRate" is overwritten in 
+ *      Method "Game_BattlerBase.prototype.paramPlus" is overwritten in 
  *      this plugin.
  * at rpg_scenes.js
  *      Method "Scene_Battle.prototype.onEnemyOk" is overwritten in 
@@ -419,12 +419,12 @@ HGSkEffExt.stDepCustParam = [
     {stId: 223, prmId: 3, formula: (mat)=>(65 + (mat)* 2.6)},
     {stId: 223, prmId: 5, formula: (mat)=>(65 + (mat)* 2.6)}
 ];
-HGSkEffExt._GameBattlerBase_paramRate = Game_BattlerBase.prototype.paramRate;
-Game_BattlerBase.prototype.paramRate = function(paramId){
-    let curMat = HGSkEffExt._GameBattlerBase_paramRate.call(this, 4);
-    return HGSkEffExt._GameBattlerBase_paramRate.call(this, paramId) + HGSkEffExt.getParamRate(this, paramId, curMat);
+HGSkEffExt._GameBattlerBase_paramPlus = Game_BattlerBase.prototype.paramPlus;
+Game_BattlerBase.prototype.paramPlus = function(paramId){
+    let curMat = HGSkEffExt._GameBattlerBase_paramPlus.call(this, 4);
+    return HGSkEffExt._GameBattlerBase_paramPlus.call(this, paramId) + HGSkEffExt.getParamPlus(this, paramId, curMat);
 };
-HGSkEffExt.getParamRate = function(battler, paramId, mat){
+HGSkEffExt.getParamPlus = function(battler, paramId, mat){
     return (HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).length == 0)?
     0:
     Math.round(HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).reduce((r, info)=>{
