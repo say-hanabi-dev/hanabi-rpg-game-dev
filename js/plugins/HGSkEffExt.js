@@ -399,7 +399,25 @@ HGSkEffExt.stDepCustParam = [
     {stId: 213, prmId: 3, formula: (mat)=>(50 + (mat)* 1.5)},
     {stId: 213, prmId: 5, formula: (mat)=>(50 + (mat)* 1.5)},
     {stId: 214, prmId: 3, formula: (mat)=>(50 + (mat)* 2)},
-    {stId: 214, prmId: 5, formula: (mat)=>(50 + (mat)* 2)}
+    {stId: 214, prmId: 5, formula: (mat)=>(50 + (mat)* 2)},
+
+//宇宙
+    {stId: 216, prmId: 2, formula: (mat)=>(13 + (mat)* 0.65)},
+    {stId: 216, prmId: 4, formula: (mat)=>(13 + (mat)* 0.65)},
+    {stId: 217, prmId: 2, formula: (mat)=>(39 + (mat)* 1.3)},
+    {stId: 217, prmId: 4, formula: (mat)=>(39 + (mat)* 1.3)},
+    {stId: 218, prmId: 2, formula: (mat)=>(65 + (mat)* 1.95)},
+    {stId: 218, prmId: 4, formula: (mat)=>(65 + (mat)* 1.95)},
+    {stId: 219, prmId: 2, formula: (mat)=>(65 + (mat)* 2.6)},
+    {stId: 219, prmId: 4, formula: (mat)=>(65 + (mat)* 2.6)},
+    {stId: 220, prmId: 3, formula: (mat)=>(13 + (mat)* 0.65)},
+    {stId: 220, prmId: 5, formula: (mat)=>(13 + (mat)* 0.65)},
+    {stId: 221, prmId: 3, formula: (mat)=>(39 + (mat)* 1.3)},
+    {stId: 221, prmId: 5, formula: (mat)=>(39 + (mat)* 1.3)},
+    {stId: 222, prmId: 3, formula: (mat)=>(65 + (mat)* 1.95)},
+    {stId: 222, prmId: 5, formula: (mat)=>(65 + (mat)* 1.95)},
+    {stId: 223, prmId: 3, formula: (mat)=>(65 + (mat)* 2.6)},
+    {stId: 223, prmId: 5, formula: (mat)=>(65 + (mat)* 2.6)}
 ];
 HGSkEffExt._GameBattlerBase_paramRate = Game_BattlerBase.prototype.paramRate;
 Game_BattlerBase.prototype.paramRate = function(paramId){
