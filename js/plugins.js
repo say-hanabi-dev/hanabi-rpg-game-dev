@@ -9,5 +9,6 @@ var $plugins =
 {"name":"HGPlgCore","status":true,"description":"Core of plugins by c2h6o for Hanabi Gakuen","parameters":{"localTesting":"0"}},
 {"name":"HGSkEffExt","status":true,"description":"Skill Effect Extension by c2h6o for Hanabi Gakuen","parameters":{}},
 {"name":"HGSkEqpRel","status":true,"description":"Relationships of Skills & Equipments by c2h6o for Hanabi Gakuen","parameters":{}},
-{"name":"HGSkLn","status":true,"description":"Skill learning by c2h6o for Hanabi Gakuen","parameters":{}}
+{"name":"HGSkLn","status":true,"description":"Skill learning by c2h6o for Hanabi Gakuen","parameters":{}},
+{"name":"HGEqpGft","status":false,"description":"Gifts of Equipments by c2h6o for Hanabi Gakuen","parameters":{}}
 ];

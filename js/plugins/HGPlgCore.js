@@ -104,6 +104,11 @@ HGPlgCore.isWpEqp = function(wpId, actorId = 1){
         return weapon.id === wpId;
     });
 };
+HGPlgCore.isThisWpEqp = function(wpId, thisArg){
+    return (typeof thisArg.weapons === 'function') && (thisArg.weapons().some(function(weapon) {
+        return weapon.id === wpId;
+    }));
+};
 HGPlgCore.isAmEqp = function(amId, actorId = 1){
     return $gameActors.actor(actorId).armors().some(function(armor) {
         return armor.id === amId;

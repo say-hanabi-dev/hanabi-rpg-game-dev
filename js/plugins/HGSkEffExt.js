@@ -425,7 +425,9 @@ Game_BattlerBase.prototype.paramRate = function(paramId){
     return HGSkEffExt._GameBattlerBase_paramRate.call(this, paramId) + HGSkEffExt.getParamRate(this, paramId, curMat);
 };
 HGSkEffExt.getParamRate = function(battler, paramId, mat){
-    return Math.round(HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).reduce((r, info)=>{
+    return (HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).length == 0)?
+    0:
+    Math.round(HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).reduce((r, info)=>{
         return r * info.formula(mat);
     }, 1));
 };
