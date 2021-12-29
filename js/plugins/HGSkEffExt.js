@@ -19,6 +19,7 @@
  *  - state dependent damage sharing
  *  - state dependent possible damage void
  *  - no co-state rules
+ *  - state dependent customized buff (param)
  * 
  * This plugin works with HGPlgCore.
  * 
@@ -39,6 +40,8 @@
  *      Method "Game_Action.prototype.apply" is overwritten in 
  *      this plugin.
  *      Method "Game_Battler.prototype.isStateAddable" is overwritten in 
+ *      this plugin.
+ *      Method "Game_BattlerBase.prototype.paramRate" is overwritten in 
  *      this plugin.
  * at rpg_scenes.js
  *      Method "Scene_Battle.prototype.onEnemyOk" is overwritten in 
@@ -378,4 +381,33 @@ Game_Battler.prototype.isStateAddable = function(stateId){
         }
     }
     return res;
+};
+
+HGSkEffExt.stDepCustParam = [
+    {stId: 207, prmId: 2, formula: (mat)=>(10 + (mat)* 0.5)},
+    {stId: 207, prmId: 4, formula: (mat)=>(10 + (mat)* 0.5)},
+    {stId: 208, prmId: 2, formula: (mat)=>(30 + (mat)* 1)},
+    {stId: 208, prmId: 4, formula: (mat)=>(30 + (mat)* 1)},
+    {stId: 209, prmId: 2, formula: (mat)=>(50 + (mat)* 1.5)},
+    {stId: 209, prmId: 4, formula: (mat)=>(50 + (mat)* 1.5)},
+    {stId: 210, prmId: 2, formula: (mat)=>(50 + (mat)* 2)},
+    {stId: 210, prmId: 4, formula: (mat)=>(50 + (mat)* 2)},
+    {stId: 211, prmId: 3, formula: (mat)=>(10 + (mat)* 0.5)},
+    {stId: 211, prmId: 5, formula: (mat)=>(10 + (mat)* 0.5)},
+    {stId: 212, prmId: 3, formula: (mat)=>(30 + (mat)* 1)},
+    {stId: 212, prmId: 5, formula: (mat)=>(30 + (mat)* 1)},
+    {stId: 213, prmId: 3, formula: (mat)=>(50 + (mat)* 1.5)},
+    {stId: 213, prmId: 5, formula: (mat)=>(50 + (mat)* 1.5)},
+    {stId: 214, prmId: 3, formula: (mat)=>(50 + (mat)* 2)},
+    {stId: 214, prmId: 5, formula: (mat)=>(50 + (mat)* 2)}
+];
+HGSkEffExt._GameBattlerBase_paramRate = Game_BattlerBase.prototype.paramRate;
+Game_BattlerBase.prototype.paramRate = function(paramId){
+    let curMat = HGSkEffExt._GameBattlerBase_paramRate.call(this, 4);
+    return HGSkEffExt._GameBattlerBase_paramRate.call(this, paramId) + HGSkEffExt.getParamRate(this, paramId, curMat);
+};
+HGSkEffExt.getParamRate = function(battler, paramId, mat){
+    return Math.round(HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).reduce((r, info)=>{
+        return r * info.formula(mat);
+    }, 1));
 };
