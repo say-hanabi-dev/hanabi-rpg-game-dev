@@ -90,6 +90,7 @@ HGDlyMxPp.getUnit = function(lpid){
 HGDlyMxPp._GameTroop_makeDropItems = Game_Troop.prototype.makeDropItems;
 Game_Troop.prototype.makeDropItems = function() {
     let res = HGDlyMxPp._GameTroop_makeDropItems.call(this);
+    console.log(res);
     let i = 0;
     let offset = 0;
     let curItem = 0;
