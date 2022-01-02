@@ -4963,6 +4963,32 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
         var lastNumber = this.numItems(item);
         var newNumber = lastNumber + amount;
         container[item.id] = newNumber.clamp(0, this.maxItems(item));
+        if(item.name =='花火学分'){//moved from rpg_managers.js: BattleManager.gainDropItems
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = '/hanabigame-api.html?action=getcredit';
+            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+        }
+        if(item.name =='勋章兑换券'){
+            var xhr = new XMLHttpRequest();
+            var url = '';
+            var that = this;
+            xhr.overrideMimeType('application/json');
+            url = '/hanabigame-api.html?action=getcoin';
+            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+            xhr.open('GET', url,false);
+            xhr.onerror = function() {
+                DataManager._errorUrl = DataManager._errorUrl || url;
+            };
+            xhr.send();
+        }
         if (container[item.id] === 0) {
             delete container[item.id];
         }

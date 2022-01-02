@@ -2502,33 +2502,7 @@ BattleManager.gainDropItems = function() {
     var items = this._rewards.items;
      console.log(items);
     items.forEach(function(item) {
-        $gameParty.gainItem(item, 1);
-        if(item.name =='花火学分'){
-            var xhr = new XMLHttpRequest();
-            var url = '';
-            var that = this;
-            xhr.overrideMimeType('application/json');
-            url = '/hanabigame-api.html?action=getcredit';
-            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-            xhr.open('GET', url,false);
-            xhr.onerror = function() {
-                DataManager._errorUrl = DataManager._errorUrl || url;
-            };
-            xhr.send();
-        }
-        if(item.name =='勋章兑换券'){
-            var xhr = new XMLHttpRequest();
-            var url = '';
-            var that = this;
-            xhr.overrideMimeType('application/json');
-            url = '/hanabigame-api.html?action=getcoin';
-            url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-            xhr.open('GET', url,false);
-            xhr.onerror = function() {
-                DataManager._errorUrl = DataManager._errorUrl || url;
-            };
-            xhr.send();
-        }
+        $gameParty.gainItem(item, 1);//code blocks of http requests moved to rpg_objects.js: Game_Party.prototype.gainItem
     });
 };
 
