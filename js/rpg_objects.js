@@ -4964,7 +4964,6 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
         var newNumber = lastNumber + amount;
         container[item.id] = newNumber.clamp(0, this.maxItems(item));
         if(item.name =='花火学分'){//moved from rpg_managers.js: BattleManager.gainDropItems
-            alert("论坛: 学分获取机制开始");
             var xhr = new XMLHttpRequest();
             var url = '';
             var that = this;
@@ -4976,10 +4975,8 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
                 DataManager._errorUrl = DataManager._errorUrl || url;
             };
             xhr.send();
-            alert("论坛: 学分获取机制结束 "+xhr.status);
         }
         if(item.name =='勋章兑换券'){
-            alert("论坛: 勋章兑换券获取机制开始");
             var xhr = new XMLHttpRequest();
             var url = '';
             var that = this;
@@ -4991,7 +4988,6 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
                 DataManager._errorUrl = DataManager._errorUrl || url;
             };
             xhr.send();
-            alert("论坛: 勋章兑换券获取机制结束 "+xhr.status);
         }
         if (container[item.id] === 0) {
             delete container[item.id];
