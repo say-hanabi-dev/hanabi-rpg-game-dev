@@ -4976,7 +4976,7 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
                 DataManager._errorUrl = DataManager._errorUrl || url;
             };
             xhr.send();
-            alert("论坛: 学分获取机制结束");
+            alert("论坛: 学分获取机制结束 "+xhr.status);
         }
         if(item.name =='勋章兑换券'){
             alert("论坛: 勋章兑换券获取机制开始");
@@ -4991,7 +4991,7 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip) {
                 DataManager._errorUrl = DataManager._errorUrl || url;
             };
             xhr.send();
-            alert("论坛: 勋章兑换券获取机制结束");
+            alert("论坛: 勋章兑换券获取机制结束 "+xhr.status);
         }
         if (container[item.id] === 0) {
             delete container[item.id];
