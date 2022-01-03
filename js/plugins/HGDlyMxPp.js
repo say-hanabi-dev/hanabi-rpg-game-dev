@@ -25,7 +25,8 @@ var HGDlyMxPp = window.HGDlyMxPp || {} ;
 
 HGDlyMxPp.lplst = [
     {propID: 7, limit: 9, unit: 3, date: 0, cnt: 0},
-    {propID: 8, limit: 25, unit: 1, date: 0, cnt: 0}
+    {propID: 8, limit: 25, unit: 1, date: 0, cnt: 0},
+    {propID: 22, limit: 2, unit: 1, date: 0, cnt: 0}
 ];//values here for init. for new saves, loading saves will overwrite this data
 
 HGDlyMxPp.proCnt = function(lpid){//return quantity of items counted | -1
