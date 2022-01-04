@@ -142,9 +142,25 @@ Game_Action.prototype.makeDamageValue = function(target, critical) {
 
 HGSkEffExt.custRepSkId = [//customized repeats
     {id: 36, repeat: 12},
+    {id: 154, repeat: 12},
+    {id: 224, repeat: 12},
+    {id: 294, repeat: 12},
+
     {id: 89, repeat: 10},
+    {id: 184, repeat: 10},
+    {id: 254, repeat: 10},
+    {id: 324, repeat: 10},
+
     {id: 90, repeat: 12},
-    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
+    {id: 185, repeat: 12},
+    {id: 255, repeat: 12},
+    {id: 325, repeat: 12},
+
+    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
+    {id: 169, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
+    {id: 239, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
+    {id: 309, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
+    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){
