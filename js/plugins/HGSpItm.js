@@ -62,7 +62,7 @@ HGSpItm.equipRUp = function(equip){//armor/weapon listing order: ascending rarit
     if(equip.name.includes("超稀有")){
         return equip.id+((equip.etypeId > 1)?2:3);
     }else if(equip.name.includes("量产") || equip.name.includes("稀有")){
-        return id+1;
+        return equip.id+1;
     }else{
         return -1;
     }
