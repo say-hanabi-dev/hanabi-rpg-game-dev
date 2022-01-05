@@ -64,6 +64,6 @@ HGSpItm.equipRUp = function(equip){//armor/weapon listing order: ascending rarit
     }else if(equip.name.includes("量产") || equip.name.includes("稀有")){
         return equip.id+1;
     }else{
-        return 0;
+        return -1;//<0: top rarity/invalid equipment, cannot ascend
     }
 };
