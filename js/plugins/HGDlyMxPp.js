@@ -23,6 +23,7 @@
 
 var HGDlyMxPp = window.HGDlyMxPp || {} ;
 
+HGDlyMxPp.lastDate = 0;
 HGDlyMxPp.lplst = [
     {propID: 7, limit: 9, unit: 3, date: 0, cnt: 0},
     {propID: 8, limit: 25, unit: 1, date: 0, cnt: 0},
@@ -33,7 +34,7 @@ HGDlyMxPp.proCnt = function(lpid){//return quantity of items counted | -1
     if((this.getDate(lpid)) == 0){
         this.initData(lpid);
     }
-    if(this.sameDay(lpid)){
+    if(this.lpSameDay(lpid)){
         if(this.getCount(lpid) < this.lplst[lpid].limit){
             let addAmount = (this.getCount(lpid) + this.getUnit(lpid) <= this.lplst[lpid].limit)?(this.getUnit(lpid)):
                 (this.lplst[lpid].limit - this.getCount(lpid));
@@ -51,30 +52,33 @@ HGDlyMxPp.proCnt = function(lpid){//return quantity of items counted | -1
 };
 
 //information format: yyyymmddc
-HGDlyMxPp.getYear = function(lpid){
-    return Math.floor((this.lplst[lpid].date)/10000);
+HGDlyMxPp.getYear = function(timeDat){
+    return Math.floor((timeDat)/10000);
 };
-HGDlyMxPp.getMonth = function(lpid){
-    return Math.floor(((this.lplst[lpid].date)%10000)/100);
+HGDlyMxPp.getMonth = function(timeDat){
+    return Math.floor(((timeDat)%10000)/100);
 };
-HGDlyMxPp.getDate = function(lpid){
-    return Math.floor((this.lplst[lpid].date)%100);
+HGDlyMxPp.getDate = function(timeDat){
+    return Math.floor((timeDat)%100);
 };
 HGDlyMxPp.getCount = function(lpid){
     return this.lplst[lpid].cnt;
 };
 HGDlyMxPp.saveData = function(lpid, year, month, date, c = getCount()){
-    this.lplst[lpid].date = year*10000 + month* 100 + date;
+    this.lplst[lpid].date = this.toTimeDat(year, month, date);
     this.lplst[lpid].cnt = c;
+};
+HGDlyMxPp.toTimeDat = function(year, month, date){
+    return year*10000 + month* 100 + date;
 };
 HGDlyMxPp.addToCnt = function(lpid, x){
     this.lplst[lpid].cnt += x; 
 };
-HGDlyMxPp.sameDay = function(lpid){
+HGDlyMxPp.lpSameDay = function(lpid){
     let nowT = new Date();
-    return ( (nowT.getFullYear() == this.getYear(lpid))
-        && (nowT.getMonth() == this.getMonth(lpid))
-        && (nowT.getDate() == this.getDate(lpid)) );
+    return ( (nowT.getFullYear() == this.getYear(this.lplst[lpid].date))
+        && (nowT.getMonth() == this.getMonth(this.lplst[lpid].date))
+        && (nowT.getDate() == this.getDate(this.lplst[lpid].date)) );
 };
 HGDlyMxPp.isProp = function(item){//return index of limited prop in lplst | -1
     for(let i=0; i<this.lplst.length; i++){
@@ -125,12 +129,46 @@ HGDlyMxPp.initData = function(lpid){
 HGDlyMxPp._DataManager_makeSaveContents = DataManager.makeSaveContents;
 DataManager.makeSaveContents = function() {
     let res = HGDlyMxPp._DataManager_makeSaveContents.call(this);
-    res.dataHGDlyMxPp = HGDlyMxPp.lplst;
+    res.dataHGDlyMxPp = HGDlyMxPp.makeGameSaveContents();
     return res;
+};
+HGDlyMxPp.makeGameSaveContents = function(){
+    return {date: HGDlyMxPp.lastDate, data: HGDlyMxPp.lplst};
 };
 
 HGDlyMxPp._DataManager_extractSaveContents = DataManager.extractSaveContents;
 DataManager.extractSaveContents = function(contents) {
     HGDlyMxPp._DataManager_extractSaveContents.call(this, contents);
-    HGDlyMxPp.lplst = contents.dataHGDlyMxPp;
+    HGDlyMxPp.extractGameSaveContents(contents.dataHGDlyMxPp);
+};
+HGDlyMxPp.extractGameSaveContents = function(contProp){
+    if('date' in contProp){
+        HGDlyMxPp.lastDate = contProp.date;
+        HGDlyMxPp.lplst = contProp.data;
+    }else{
+        HGDlyMxPp.lplst = contProp;
+    }
+    HGDlyMxPp.onLoad();
+};
+
+HGDlyMxPp.onLoad = function(){
+    if(!this.sameDay()){
+        HGDlyMxPp.dlyProc();
+    }
+};
+HGDlyMxPp.sameDay = function(){
+    if(this.lastDate == 0){
+        let nowT = new Date();
+        this.lastDate = this.toTimeDat(nowT.getFullYear(), nowT.getMonth(), nowT.getDate());
+        return false;
+    }
+    let nowT = new Date();
+    return ( (nowT.getFullYear() == this.getYear(this.lastDate))
+        && (nowT.getMonth() == this.getMonth(this.lastDate))
+        && (nowT.getDate() == this.getDate(this.lastDate)) );
+};
+
+HGDlyMxPp.dlySwitchId = 121;
+HGDlyMxPp.dlyProc = function(){
+    $gameSwitches.setValue(this.dlySwitchId, false);
 };
