@@ -414,7 +414,17 @@ DataManager.saveGameWithoutRescue = function(savefileId) {
     if (json.length >= 200000) {
         console.warn('Save data too big!');
     }
-    console.log(json)
+    var xhr = new XMLHttpRequest();
+    var url = '';
+    var that = this;
+    xhr.overrideMimeType('application/json');
+    url = '/hanabigame-api.html?action=save';
+    url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+    xhr.open('POST', url,true);
+    xhr.onerror = function() {
+        DataManager._errorUrl = DataManager._errorUrl || url;
+    };
+    xhr.send(json);
     StorageManager.save(savefileId, json);
     this._lastAccessedId = savefileId;
     var globalInfo = this.loadGlobalInfo() || [];
