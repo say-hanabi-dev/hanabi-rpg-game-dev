@@ -285,6 +285,7 @@ DataManager.loadGlobalInfo = function() {
         console.error(e);
         return [];
     }
+    console.log(json)
     if (json) {
         var globalInfo = JSON.parse(json);
         for (var i = 1; i <= this.maxSavefiles(); i++) {
@@ -292,6 +293,7 @@ DataManager.loadGlobalInfo = function() {
                 delete globalInfo[i];
             }
         }
+        console.log(globalInfo)
         return globalInfo;
     } else {
         return [];
@@ -299,6 +301,7 @@ DataManager.loadGlobalInfo = function() {
 };
 
 DataManager.saveGlobalInfo = function(info) {
+    console.log(info)
     StorageManager.save(0, JSON.stringify(info));
 };
 
@@ -374,6 +377,7 @@ DataManager.maxSavefiles = function() {
 };
 
 DataManager.saveGame = function(savefileId) {
+     console.log(savefileId)
     try {
         return this.saveGameWithoutRescue(savefileId);
     } catch (e) {
@@ -388,6 +392,7 @@ DataManager.saveGame = function(savefileId) {
 
 DataManager.loadGame = function(savefileId) {
     try {
+        console.log(savefileId)
         return this.loadGameWithoutRescue(savefileId);
     } catch (e) {
         console.error(e);
@@ -409,6 +414,7 @@ DataManager.saveGameWithoutRescue = function(savefileId) {
     if (json.length >= 200000) {
         console.warn('Save data too big!');
     }
+    console.log(json)
     StorageManager.save(savefileId, json);
     this._lastAccessedId = savefileId;
     var globalInfo = this.loadGlobalInfo() || [];
@@ -421,6 +427,7 @@ DataManager.loadGameWithoutRescue = function(savefileId) {
     var globalInfo = this.loadGlobalInfo();
     if (this.isThisGameFile(savefileId)) {
         var json = StorageManager.load(savefileId);
+        console.log(json)
         this.createGameObjects();
         this.extractSaveContents(JsonEx.parse(json));
         this._lastAccessedId = savefileId;
