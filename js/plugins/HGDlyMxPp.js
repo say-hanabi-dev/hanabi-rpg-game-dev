@@ -81,6 +81,9 @@ HGDlyMxPp.lpSameDay = function(lpid){
         && (nowT.getDate() == this.getDate(this.lplst[lpid].date)) );
 };
 HGDlyMxPp.isProp = function(item){//return index of limited prop in lplst | -1
+    if((!(item)) || (!('id' in item))){
+        return -1;
+    }
     for(let i=0; i<this.lplst.length; i++){
         if(this.lplst[i].propID == item.id){
             return i;
@@ -91,7 +94,7 @@ HGDlyMxPp.isProp = function(item){//return index of limited prop in lplst | -1
 HGDlyMxPp.getUnit = function(lpid){
     return this.lplst[lpid].unit;
 }
-
+/* //for limitations on drop items only
 HGDlyMxPp._GameTroop_makeDropItems = Game_Troop.prototype.makeDropItems;
 Game_Troop.prototype.makeDropItems = function() {
     let res = HGDlyMxPp._GameTroop_makeDropItems.call(this);
@@ -119,6 +122,25 @@ Game_Troop.prototype.makeDropItems = function() {
         i+= (1-offset);
     };
     return res;
+};
+ */
+HGDlyMxPp._GameParty_GainItem = Game_Party.prototype.gainItem;
+Game_Party.prototype.gainItem = function(item, amount, includeEquip){
+    let lpid = HGDlyMxPp.isProp(item);
+    if(lpid >= 0){
+        let cntAmount = amount;
+        amount = 0;
+        while(cntAmount > 0){
+            let cnt = HGDlyMxPp.proCnt(lpid);
+            if(cnt < 0){//limit reached: cannot gain
+                break;
+            }else{
+                cntAmount -= cnt;
+                amount += cnt;
+            }
+        }
+    }
+    HGDlyMxPp._GameParty_GainItem.call(this, item, amount, includeEquip);
 };
 
 HGDlyMxPp.initData = function(lpid){
