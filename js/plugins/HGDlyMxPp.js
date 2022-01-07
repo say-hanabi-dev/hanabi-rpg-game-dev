@@ -6,7 +6,7 @@
  * @plugindesc Daily Maximum Prop Limit by c2h6o for Hanabi Gakuen
  * @author c2h6o
  *
- * @help Item id ${propID} is limited to have ${limit} times daily,
+ * @help "Item" id ${propID} is limited to have ${limit} times daily,
  *      each one drop of the item in setting will be replaced with ${unit} drops
  *      without exceeding the daily maximum.
  * 
@@ -45,7 +45,7 @@ HGDlyMxPp.proCnt = function(lpid){//return quantity of items counted | -1
         }
     }else{
         let nowT = new Date();
-        let addAmount = Math.max(this.getUnit(lpid), this.lplst[lpid].limit);
+        let addAmount = Math.min(this.getUnit(lpid), this.lplst[lpid].limit);
         this.saveData(lpid, nowT.getFullYear(), nowT.getMonth(), nowT.getDate(), addAmount);
         return addAmount;
     }
@@ -81,7 +81,7 @@ HGDlyMxPp.lpSameDay = function(lpid){
         && (nowT.getDate() == this.getDate(this.lplst[lpid].date)) );
 };
 HGDlyMxPp.isProp = function(item){//return index of limited prop in lplst | -1
-    if((!(item)) || (!('id' in item))){
+    if((!(DataManager.isItem(item))) || (!('id' in item))){
         return -1;
     }
     for(let i=0; i<this.lplst.length; i++){
@@ -135,8 +135,9 @@ Game_Party.prototype.gainItem = function(item, amount, includeEquip){
             if(cnt < 0){//limit reached: cannot gain
                 break;
             }else{
-                cntAmount -= cnt;
-                amount += cnt;
+                let dedcAmount = Math.min(cntAmount, cnt);
+                cntAmount -= dedcAmount;
+                amount += dedcAmount;
             }
         }
     }
