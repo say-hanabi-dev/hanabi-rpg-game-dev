@@ -8,7 +8,7 @@
  *
  * @help Extended effects for skills.
  *  - reflects half of the damage deals back to user
- *  - absolute critical/not critical damage
+ *  - absolute critical/not/state dependent critical damage
  *  - customized repeats
  *  - turn based damage by states
  *  - post state effect: next state, in state effect: add state
@@ -130,14 +130,44 @@ HGSkEffExt.dmgVoid = function(target, value){//return resulting value
     return value;
 };
 
-HGSkEffExt.acritSkId = [34, 54, 91];//absolute critical damage
+HGSkEffExt.stInfo = [
+    {name: "burn_500$", stId: [21, 24]},
+    {name: "burn_50$", stId: [65]},
+    {name: "burn_1perc$", stId: [28]},
+    {name: "frost_d10atk2$", stId: [23, 66]},
+    {name: "frost_d10atk3$", stId: [25]}
+];
+HGSkEffExt.getStId = function(stName){
+    let res = [];
+    for(let i=0; i<this.stInfo.length; i++){
+        if(this.stInfo[i].name.includes(stName)){
+            res = res.concat(this.stInfo[i].stId);
+        }
+    }
+    return res;
+};
+HGSkEffExt.acritSkId = [34, 91];//absolute critical damage
 HGSkEffExt.ancritSkId = [8];//absolute not critical damage
+HGSkEffExt.stDepCritSkId = [
+    {skId: 54, stId: HGSkEffExt.getStId("frost")}
+];//state dependent critical damage
 HGSkEffExt._GameAction_makeDamageValue = Game_Action.prototype.makeDamageValue;
 Game_Action.prototype.makeDamageValue = function(target, critical) {
     return HGSkEffExt._GameAction_makeDamageValue.call(this, target, 
-        (critical || ((DataManager.isSkill(this.item())) 
-            && (HGSkEffExt.acritSkId.includes(this.item().id)) 
-            && (!(HGSkEffExt.ancritSkId.includes(this.item().id))))));
+        (critical || HGSkEffExt.critical(this, target)));
+};
+HGSkEffExt.critical = function(action, target){
+    return (DataManager.isSkill(action.item())) 
+    && (((HGSkEffExt.acritSkId.includes(action.item().id)) && (!(HGSkEffExt.ancritSkId.includes(action.item().id))))
+     || this.stDepCritical(action.item().id, target)) ;
+};
+HGSkEffExt.stDepCritical = function(skId, target){
+    for(let i=0; i<HGSkEffExt.stDepCritSkId.length; i++){
+        if(skId == HGSkEffExt.stDepCritSkId[i].skId){
+            return HGSkEffExt.stDepCritSkId[i].stId.some((st)=>(target.isStateAffected(st)));
+        }
+    }
+    return false;
 };
 
 HGSkEffExt.custRepSkId = [//customized repeats
@@ -174,22 +204,6 @@ Game_Action.prototype.numRepeats = function(){
     return HGSkEffExt._GameAction_numRepeats.call(this);
 };
 
-HGSkEffExt.stInfo = [
-    {name: "burn_500$", stId: [21, 24]},
-    {name: "burn_50$", stId: [65]},
-    {name: "burn_1perc$", stId: [28]},
-    {name: "frost_d10atk2$", stId: [23, 66]},
-    {name: "frost_d10atk3$", stId: [25]}
-];
-HGSkEffExt.getStId = function(stName){
-    let res = [];
-    for(let i=0; i<this.stInfo.length; i++){
-        if(this.stInfo[i].name.includes(stName)){
-            res = res.concat(this.stInfo[i].stId);
-        }
-    }
-    return res;
-};
 HGSkEffExt.tnDmgStId = [//turn based damage by states
     {id: HGSkEffExt.getStId("burn_500$"), dmg: 500, perc: false},
     {id: HGSkEffExt.getStId("burn_50$"), dmg: 50, perc: false},
