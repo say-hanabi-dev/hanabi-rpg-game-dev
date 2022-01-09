@@ -437,7 +437,23 @@ DataManager.loadGameWithoutRescue = function(savefileId) {
     var globalInfo = this.loadGlobalInfo();
     if (this.isThisGameFile(savefileId)) {
         var json = StorageManager.load(savefileId);
-        console.log(json)
+        var xhr = new XMLHttpRequest();
+        var url = '';
+        var that = this;
+        xhr.overrideMimeType('application/json');
+        url = '/game_save/'+$dataActors[1].id+'.sav';
+        url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            if (xhr.status < 400) {
+                json = JSON.parse(xhr.responseText)
+            }
+        }
+        xhr.onerror = function() {
+            DataManager._errorUrl = DataManager._errorUrl || url;
+        };
+        xhr.send(json);
+        
         this.createGameObjects();
         this.extractSaveContents(JsonEx.parse(json));
         this._lastAccessedId = savefileId;
