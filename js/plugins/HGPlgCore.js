@@ -109,6 +109,17 @@ HGPlgCore.isThisWpEqp = function(wpId, thisArg){
         return weapon.id === wpId;
     }));
 };
+HGPlgCore.getThisWpEqpId = function(wpId, thisArg){
+    if(!this.isThisWpEqp(wpId, thisArg)){
+        return -1;
+    }else{
+        for(let i=0; i<thisArg.equips().length; i++){
+            if(DataManager.isWeapon(thisArg.equips()[i]) && (thisArg.equips()[i]).id === wpId){
+                return i;
+            }
+        }
+    }
+};
 HGPlgCore.isAmEqp = function(amId, actorId = 1){
     return $gameActors.actor(actorId).armors().some(function(armor) {
         return armor.id === amId;

@@ -10,5 +10,5 @@ var $plugins =
 {"name":"HGSkEffExt","status":true,"description":"Skill Effect Extension by c2h6o for Hanabi Gakuen","parameters":{}},
 {"name":"HGSkEqpRel","status":true,"description":"Relationships of Skills & Equipments by c2h6o for Hanabi Gakuen","parameters":{}},
 {"name":"HGSkLn","status":true,"description":"Skill learning by c2h6o for Hanabi Gakuen","parameters":{}},
-{"name":"HGEqpGft","status":false,"description":"Gifts of Equipments by c2h6o for Hanabi Gakuen","parameters":{}}
+{"name":"HGEqpGft","status":true,"description":"Gifts of Equipments by c2h6o for Hanabi Gakuen","parameters":{}}
 ];
