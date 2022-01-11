@@ -48,3 +48,35 @@ Game_Battler.prototype.gainHp = function(value){
     }
     HGEqpGft._GameBattler_gainHp.call(this, value);
 };
+
+HGEqpGft.bhBdWpIds = 0;
+HGEqpGft.bhBdStId = 225;
+HGEqpGft.percBhBd = 5;//percentage: prob. of getting bhbd
+HGEqpGft.bhbdEff = {loss: 0.05, gainDmg: 0.15};
+HGEqpGft._BattleManager_startAction = BattleManager.startAction;
+BattleManager.startAction = function(){
+    HGEqpGft._BattleManager_startAction.call(this);
+    HGEqpGft.bhBdWpIds = HGEqpGft.getGftWpIdLst("浴血");
+    if(HGEqpGft.bhBdWpIds.some((wpId)=>(HGPlgCore.isThisWpEqp(wpId, this._subject)))){
+        if(HGPlgCore.rand(HGEqpGft.percBhBd)){
+            this._subject.gainHp(-Math.ceil((HGEqpGft.bhbdEff.loss)*(this._subject.mhp)));
+            this._subject.addState(HGEqpGft.bhBdStId);
+        }
+    }
+};
+HGEqpGft._GameAction_executeDamage = Game_Action.prototype.executeDamage;
+Game_Action.prototype.executeDamage = function(target, value){
+    if((!this.isRecover())){
+        if(this.subject().isStateAffected(HGEqpGft.bhBdStId)){
+            let bhbdVal = Math.ceil(value * (HGEqpGft.bhbdEff.gainDmg));
+            this.subject().gainHp(bhbdVal);
+            value -= bhbdVal;
+        }
+        if(target.isStateAffected(HGEqpGft.bhBdStId)){
+            let bhbdVal = Math.ceil(value * (HGEqpGft.bhbdEff.gainDmg));
+            target.gainHp(bhbdVal);
+            value -= bhbdVal;
+        }
+    }
+    HGEqpGft._GameAction_executeDamage.call(this, target, value);
+};

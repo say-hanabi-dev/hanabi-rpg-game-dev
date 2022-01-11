@@ -133,3 +133,6 @@ HGPlgCore.getIdObj = function(arr, oid){
     }
     return null;
 };
+HGPlgCore.rand = function(perc, testing = false){
+    return (Math.random() < (1/perc)) || testing;
+};
