@@ -125,6 +125,11 @@ HGPlgCore.isAmEqp = function(amId, actorId = 1){
         return armor.id === amId;
     });
 };
+HGPlgCore.isThisAmEqp = function(amId, thisArg){
+    return (typeof thisArg.armors === 'function') && (thisArg.armors().some(function(armor) {
+        return armor.id === amId;
+    }));
+};
 HGPlgCore.getIdObj = function(arr, oid){
     for(let i=0; i<arr.length; i++){
         if(arr[i].id == oid){

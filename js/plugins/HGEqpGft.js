@@ -22,13 +22,20 @@ var HGEqpGft = window.HGEqpGft || {} ;
 HGEqpGft.getGftWpIdLst = function(gft){
     return $dataWeapons.filter((weapon)=>((weapon)&&(weapon.description.includes("天赋"))&&(weapon.description.includes(gft)))).map((weapon)=>(weapon.id));
 };
+HGEqpGft.getGftAmIdLst = function(gft){
+    return $dataArmors.filter((armor)=>((armor)&&(armor.description.includes("天赋"))&&(armor.description.includes(gft)))).map((armor)=>(armor.id));
+};
 
 HGEqpGft.bsfcSlot = 0;
 HGEqpGft.bsfcWpIds = 0;
+HGEqpGft.shltWpIds = 0;
+HGEqpGft.percShlt = 5;
+HGEqpGft.shltEff = {redDmg: 0.20};
 HGEqpGft._GameBattler_gainHp = Game_Battler.prototype.gainHp;
 Game_Battler.prototype.gainHp = function(value){
     if((value < 0) && (this.isActor())){
         HGEqpGft.bsfcWpIds = HGEqpGft.getGftWpIdLst("底力");
+        HGEqpGft.shltWpIds = HGEqpGft.getGftAmIdLst("庇护");
         let bfWpEqpId = -1;
         for(let i=0; i<HGEqpGft.bsfcWpIds.length; i++){
             bfWpEqpId = HGPlgCore.getThisWpEqpId(HGEqpGft.bsfcWpIds[i], this);
@@ -44,6 +51,11 @@ Game_Battler.prototype.gainHp = function(value){
                 this.equips()[bfWpEqpId].params[3] += 1;
             }
             HGEqpGft.bsfcSlot = valLeft;
+        }
+        if(HGEqpGft.shltWpIds.some((amId)=>(HGPlgCore.isThisAmEqp(amId, this)))){
+            if(HGPlgCore.rand(HGEqpGft.percShlt)){
+                value *= Math.ceil(1 - HGEqpGft.shltEff.redDmg);
+            }
         }
     }
     HGEqpGft._GameBattler_gainHp.call(this, value);
