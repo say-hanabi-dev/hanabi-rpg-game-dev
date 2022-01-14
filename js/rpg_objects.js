@@ -8921,7 +8921,9 @@ Game_Interpreter.prototype.executeCommand = function() {
         this._params = command.parameters;
         this._indent = command.indent;
         var methodName = 'command' + command.code;
+        alert("excommand "+methodName)
         if (typeof this[methodName] === 'function') {
+            alert(methodName+" isFunc");
             if (!this[methodName]()) {
                 return false;
             }
