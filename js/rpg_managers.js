@@ -76,7 +76,6 @@ DataManager.loadDatabase = function() {
 };
 
 DataManager.loadDataFile = function(name, src) {
-    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');

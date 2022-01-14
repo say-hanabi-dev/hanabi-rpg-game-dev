@@ -8672,6 +8672,7 @@ Game_Event.prototype.clearPageSettings = function() {
 };
 
 Game_Event.prototype.setupPageSettings = function() {
+    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     var page = this.page();
     var image = page.image;
     if (image.tileId > 0) {
