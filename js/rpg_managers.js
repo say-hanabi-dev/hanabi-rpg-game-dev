@@ -70,6 +70,7 @@ DataManager.loadDatabase = function() {
         var src = this._databaseFiles[i].src;
         this.loadDataFile(name, prefix + src);
     }
+    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     if (this.isEventTest()) {
         this.loadDataFile('$testEvent', prefix + 'Event.json');
     }
@@ -253,7 +254,6 @@ DataManager.createGameObjects = function() {
 };
 
 DataManager.setupNewGame = function() {
-    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     this.createGameObjects();
     this.selectSavefileForNewGame();
     $gameParty.setupStartingMembers();
