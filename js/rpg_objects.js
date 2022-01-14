@@ -4890,7 +4890,7 @@ Game_Party.prototype.addActor = function(actorId) {
     if (!this._actors.contains(actorId)) {
         alert("pushing actor "+actorId);
         this._actors.push(actorId);
-        alert("pushed actor "+actorId);
+        alert("pushed actor "+(this._actors));
         $gamePlayer.refresh();
         $gameMap.requestRefresh();
     }
