@@ -253,6 +253,7 @@ DataManager.createGameObjects = function() {
 };
 
 DataManager.setupNewGame = function() {
+    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     this.createGameObjects();
     this.selectSavefileForNewGame();
     $gameParty.setupStartingMembers();

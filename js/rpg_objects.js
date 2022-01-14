@@ -8699,6 +8699,7 @@ Game_Event.prototype.setupPageSettings = function() {
     this.setMoveRoute(page.moveRoute);
     this._moveType = page.moveType;
     this._trigger = page.trigger;
+    console.log("--- "+(this._trigger));
     if (this._trigger === 4) {
         this._interpreter = new Game_Interpreter();
     } else {
