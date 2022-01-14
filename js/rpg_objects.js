@@ -9600,7 +9600,9 @@ Game_Interpreter.prototype.command128 = function() {
 
 // Change Party Member
 Game_Interpreter.prototype.command129 = function() {
+    alert("129");
     var actor = $gameActors.actor(this._params[0]);
+    alert("add? "+(this._params[0])+$gameActors.actor(this._params[0]));
     if (actor) {
         if (this._params[1] === 0) {  // Add
             if (this._params[2]) {   // Initialize
