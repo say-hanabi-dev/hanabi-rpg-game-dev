@@ -4886,15 +4886,11 @@ Game_Party.prototype.highestLevel = function() {
 };
 
 Game_Party.prototype.addActor = function(actorId) {
-    console.log("adding actor "+  actorId);
     if (!this._actors.contains(actorId)) {
-        console.log("pushing actor "+actorId);
         this._actors.push(actorId);
-        console.log("pushed actor "+(this._actors));
         $gamePlayer.refresh();
         $gameMap.requestRefresh();
     }
-    console.log("added actor "+actorId);
 };
 
 Game_Party.prototype.removeActor = function(actorId) {
@@ -8672,7 +8668,6 @@ Game_Event.prototype.clearPageSettings = function() {
 };
 
 Game_Event.prototype.setupPageSettings = function() {
-    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     var page = this.page();
     var image = page.image;
     if (image.tileId > 0) {
@@ -8700,7 +8695,6 @@ Game_Event.prototype.setupPageSettings = function() {
     this.setMoveRoute(page.moveRoute);
     this._moveType = page.moveType;
     this._trigger = page.trigger;
-    console.log("--- "+(this._trigger));
     if (this._trigger === 4) {
         this._interpreter = new Game_Interpreter();
     } else {
@@ -8923,9 +8917,7 @@ Game_Interpreter.prototype.executeCommand = function() {
         this._params = command.parameters;
         this._indent = command.indent;
         var methodName = 'command' + command.code;
-        console.log("excommand "+methodName)
         if (typeof this[methodName] === 'function') {
-            console.log(methodName+" isFunc");
             if (!this[methodName]()) {
                 return false;
             }
@@ -9055,7 +9047,6 @@ Game_Interpreter.prototype.changeHp = function(target, value, allowDeath) {
 
 // Show Text
 Game_Interpreter.prototype.command101 = function() {
-    console.log("101");
     if (!$gameMessage.isBusy()) {
         $gameMessage.setFaceImage(this._params[0], this._params[1]);
         $gameMessage.setBackground(this._params[2]);
@@ -9605,9 +9596,7 @@ Game_Interpreter.prototype.command128 = function() {
 
 // Change Party Member
 Game_Interpreter.prototype.command129 = function() {
-    console.log("129");
     var actor = $gameActors.actor(this._params[0]);
-    console.log("add? "+(this._params[0])+$gameActors.actor(this._params[0]));
     if (actor) {
         if (this._params[1] === 0) {  // Add
             if (this._params[2]) {   // Initialize

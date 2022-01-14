@@ -85,7 +85,6 @@ DataManager.loadDataFile = function(name, src) {
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
-            console.log("rpg_manager has been modified: yes");
             var json = {};
             var dataActors = {};
             try{
