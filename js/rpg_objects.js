@@ -4886,11 +4886,15 @@ Game_Party.prototype.highestLevel = function() {
 };
 
 Game_Party.prototype.addActor = function(actorId) {
+    alert("adding actor "+  actorId);
     if (!this._actors.contains(actorId)) {
+        alert("pushing actor "+actorId);
         this._actors.push(actorId);
+        alert("pushed actor "+actorId);
         $gamePlayer.refresh();
         $gameMap.requestRefresh();
     }
+    alert("added actor "+actorId);
 };
 
 Game_Party.prototype.removeActor = function(actorId) {
