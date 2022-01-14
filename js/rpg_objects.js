@@ -9053,6 +9053,7 @@ Game_Interpreter.prototype.changeHp = function(target, value, allowDeath) {
 
 // Show Text
 Game_Interpreter.prototype.command101 = function() {
+    alert("101");
     if (!$gameMessage.isBusy()) {
         $gameMessage.setFaceImage(this._params[0], this._params[1]);
         $gameMessage.setBackground(this._params[2]);
