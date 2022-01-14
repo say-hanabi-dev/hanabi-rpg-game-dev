@@ -70,13 +70,13 @@ DataManager.loadDatabase = function() {
         var src = this._databaseFiles[i].src;
         this.loadDataFile(name, prefix + src);
     }
-    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     if (this.isEventTest()) {
         this.loadDataFile('$testEvent', prefix + 'Event.json');
     }
 };
 
 DataManager.loadDataFile = function(name, src) {
+    console.log("========== System Versison ID "+($dataSystem.versionId)+" ==========");
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
