@@ -15,6 +15,8 @@
  *      this plugin
  *      Method "Scene_Title.prototype.terminate" is overwritten in 
  *      this plugin
+ *      Method "Scene_Menu.prototype.commandSave" is overwritten in 
+ *      this plugin
  */
 
 var HGSkipLdLst = window.HGSkipLdLst || {} ;
