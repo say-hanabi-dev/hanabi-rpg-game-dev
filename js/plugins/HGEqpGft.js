@@ -34,24 +34,7 @@ HGEqpGft.shltEff = {redDmg: 0.20};
 HGEqpGft._GameBattler_gainHp = Game_Battler.prototype.gainHp;
 Game_Battler.prototype.gainHp = function(value){
     if((value < 0) && (this.isActor())){
-        HGEqpGft.bsfcWpIds = HGEqpGft.getGftWpIdLst("底力");
         HGEqpGft.shltWpIds = HGEqpGft.getGftAmIdLst("庇护");
-        let bfWpEqpId = -1;
-        for(let i=0; i<HGEqpGft.bsfcWpIds.length; i++){
-            bfWpEqpId = HGPlgCore.getThisWpEqpId(HGEqpGft.bsfcWpIds[i], this);
-            if(bfWpEqpId >= 0){
-                break;
-            }
-        }
-        if(bfWpEqpId >= 0){
-            let valLeft = (0-value) + HGEqpGft.bsfcSlot;
-            while(valLeft >= Math.ceil(this.mhp * 0.05)){
-                valLeft -= (Math.ceil(this.mhp * 0.05));
-                this.equips()[bfWpEqpId].params[2] += 1;
-                this.equips()[bfWpEqpId].params[3] += 1;
-            }
-            HGEqpGft.bsfcSlot = valLeft;
-        }
         if(HGEqpGft.shltWpIds.some((amId)=>(HGPlgCore.isThisAmEqp(amId, this)))){
             if(HGPlgCore.rand(HGEqpGft.percShlt)){
                 value *= Math.ceil(1 - HGEqpGft.shltEff.redDmg);
@@ -59,6 +42,28 @@ Game_Battler.prototype.gainHp = function(value){
         }
     }
     HGEqpGft._GameBattler_gainHp.call(this, value);
+};
+Game_Actor.prototype.paramPlus = function(paramId) {
+    var value = Game_Battler.prototype.paramPlus.call(this, paramId);
+    var equips = this.equips();
+    if(paramId == 2 || paramId == 3){
+        let bfWpEqpId = -1;
+        HGEqpGft.bsfcWpIds = HGEqpGft.getGftWpIdLst("底力");
+        for(let i=0; i<HGEqpGft.bsfcWpIds.length; i++){
+            bfWpEqpId = HGPlgCore.getThisWpEqpId(HGEqpGft.bsfcWpIds[i], this);
+            if(bfWpEqpId >= 0){
+                value += Math.ceil((this.mhp - this.hp)/(this.mhp * 0.05));
+                break;
+            }
+        }
+    }
+    for (var i = 0; i < equips.length; i++) {
+        var item = equips[i];
+        if (item) {
+            value += item.params[paramId];
+        }
+    }
+    return value;
 };
 
 HGEqpGft.bhBdWpIds = 0;
