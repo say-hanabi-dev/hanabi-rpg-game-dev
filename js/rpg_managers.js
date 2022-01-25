@@ -443,15 +443,16 @@ DataManager.loadGameWithoutRescue = function(savefileId) {
         xhr.overrideMimeType('application/json');
         url = '/game_save/'+$dataActors[1].id+'.sav';
         url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-        xhr.open('GET', url,false);
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            if (xhr.status < 400) {
+                json = JSON.parse(xhr.responseText)
+            }
+        }
         xhr.onerror = function() {
             DataManager._errorUrl = DataManager._errorUrl || url;
         };
         xhr.send(json);
-        
-        if (xhr.status === 200) {
-            json = JSON.parse(xhr.responseText)
-        }
         
         this.createGameObjects();
         this.extractSaveContents(JsonEx.parse(json));
