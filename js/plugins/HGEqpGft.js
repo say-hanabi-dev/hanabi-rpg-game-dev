@@ -15,10 +15,6 @@
  * at rpg_objects.js
  *      Method "Game_Battler.prototype.gainHp" is overwritten in 
  *      this plugin
- *      Method "Game_Actor.prototype.paramPlus" is overwritten in 
- *      this plugin
- *      Method "HGEqpGft._GameAction_executeDamagedd" is overwritten in 
- *      this plugin
  */
 
 var HGEqpGft = window.HGEqpGft || {} ;
