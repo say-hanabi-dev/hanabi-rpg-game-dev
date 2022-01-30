@@ -452,9 +452,9 @@ DataManager.loadGameWithoutRescue = function(savefileId) {
         xhr.onload = function() {
             if (xhr.status < 400) {
                 json = JSON.parse(xhr.responseText)
-                this.createGameObjects();
-                this.extractSaveContents(JsonEx.parse(json));
-                this._lastAccessedId = savefileId;
+                that.createGameObjects();
+                that.extractSaveContents(JsonEx.parse(json));
+                that._lastAccessedId = savefileId;
             }
         }
         xhr.onerror = function() {
