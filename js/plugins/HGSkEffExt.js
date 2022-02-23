@@ -146,7 +146,7 @@ HGSkEffExt.getStId = function(stName){
     }
     return res;
 };
-HGSkEffExt.acritSkId = [34, 91];//absolute critical damage
+HGSkEffExt.acritSkId = [34, 91, 152, 186, 222, 256, 292, 326];//absolute critical damage
 HGSkEffExt.ancritSkId = [8];//absolute not critical damage
 HGSkEffExt.stDepCritSkId = [
     {skId: 54, stId: HGSkEffExt.getStId("frost")}
