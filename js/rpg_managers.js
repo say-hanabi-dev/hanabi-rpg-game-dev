@@ -110,7 +110,7 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin},
+                           "gold":dataActors.data.coin}
                     {"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""}; 
                     actors.push(null);
                     actors.push(json);
