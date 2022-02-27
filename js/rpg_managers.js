@@ -107,7 +107,7 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试",
+                           "nickname":"",
                            "note":"",
                            "profile":"",
                            "gold":dataActors.data.coin},
