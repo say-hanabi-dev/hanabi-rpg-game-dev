@@ -94,7 +94,7 @@ DataManager.loadDataFile = function(name, src) {
             }
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
-                    /*var actors = [];
+                    var actors = [];
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
@@ -107,14 +107,14 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试1.1",
+                           "nickname":"",
                            "note":"",
                            "profile":"",
                            "gold":dataActors.data.coin}; 
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
-                    window[name] = actors;*/   
+                    window[name] = actors;   
                 }             
                 DataManager.onLoad(window[name]);
             }
