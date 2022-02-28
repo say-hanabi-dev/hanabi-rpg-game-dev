@@ -85,7 +85,7 @@ DataManager.loadDataFile = function(name, src) {
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
-            var json = {};
+            //var json = {};
             var dataActors = {};
             try{
                 dataActors = JSON.parse(xhr.responseText)
