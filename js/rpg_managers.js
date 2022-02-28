@@ -95,7 +95,8 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    json ={{"id":dataActors.data.uid,
+                    json ={[
+                           {"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
                            "characterName":"Actor1",
@@ -125,7 +126,7 @@ DataManager.loadDataFile = function(name, src) {
                            "name":dataActors.data.username,
                            "nickname":"测试2",
                            "note":"",
-                           "profile":""}}; 
+                           "profile":""}]}; 
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
