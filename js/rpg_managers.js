@@ -85,7 +85,7 @@ DataManager.loadDataFile = function(name, src) {
         xhr.open('GET', url);
         xhr.onload = function() {
             console.log(xhr.responseText);
-            //var json = {};
+            var json = {};
             var dataActors = {};
             try{
                 dataActors = JSON.parse(xhr.responseText)
@@ -95,7 +95,7 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    json ={"id":dataActors.data.uid,
+                    json ={{"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
                            "characterName":"Actor1",
@@ -107,11 +107,11 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"",
+                           "nickname":"测试1",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin};
-                    json ={"id":dataActors.data.uid+1,
+                           "gold":dataActors.data.coin},
+                           {"id":dataActors.data.uid+1,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
                            "characterName":"Actor1",
@@ -123,10 +123,9 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试",
+                           "nickname":"测试2",
                            "note":"",
-                           "profile":"",
-                           "gold":dataActors.data.coin};
+                           "profile":""}}; 
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
