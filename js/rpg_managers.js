@@ -110,7 +110,23 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin}; 
+                           "gold":dataActors.data.coin};
+                    json ={"id":dataActors.data.uid+1,
+                           "battlerName":"Actor1_1",
+                           "characterIndex":0,
+                           "characterName":"Actor1",
+                           "classId":1,
+                           "equips":[1,1,2,3,0],
+                           "faceIndex":0,
+                           "faceName":"A",
+                           "traits":[],
+                           "initialLevel":1,
+                           "maxLevel":9999,
+                           "name":dataActors.data.username,
+                           "nickname":"测试",
+                           "note":"",
+                           "profile":"",
+                           "gold":dataActors.data.coin};
                     actors.push(null);
                     actors.push(json);
                     console.log(actors);                    
