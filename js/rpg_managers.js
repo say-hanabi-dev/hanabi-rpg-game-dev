@@ -94,7 +94,7 @@ DataManager.loadDataFile = function(name, src) {
             }
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
-                    var actors = [];
+                    //var actors = [];
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
@@ -110,14 +110,12 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"测试1",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin}; 
-                    actors.push(null);
-                    actors.push(json);
-                    json ={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
-                    actors.push(json);
-                    console.log(actors);                    
-                    window[name] = actors;   
-                }             
+                           "gold":dataActors.data.coin};
+                    //actors.push(null);
+                    //actors.push(json);
+                    console.log(actors);
+                    window[name] = actors;
+                }
                 DataManager.onLoad(window[name]);
             }
         };
