@@ -107,13 +107,14 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试1",
+                           "nickname":"测试2",
                            "note":"",
                            "profile":"",
                            "gold":dataActors.data.coin};
                     //actors.push(null);
                     //actors.push(json);
-                    console.log(json);
+                    actors.splice(1,1,json);
+                    console.log(actors);
                     window[name] = JSON.parse(xhr.responseText);
                 }
                 DataManager.onLoad(window[name]);
