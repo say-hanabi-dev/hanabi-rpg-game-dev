@@ -114,9 +114,9 @@ DataManager.loadDataFile = function(name, src) {
                     //actors.push(null);
                     //actors.push(json);
                     //console.log(actors);
-                    //window[name] = actors;
+                    window[name] = JSON.parse(xhr.responseText);
                 }
-                //DataManager.onLoad(window[name]);
+                DataManager.onLoad(window[name]);
             }
         };
     }else{
