@@ -113,7 +113,7 @@ DataManager.loadDataFile = function(name, src) {
                            "gold":dataActors.data.coin};
                     //actors.push(null);
                     //actors.push(json);
-                    //console.log(actors);
+                    console.log(json);
                     window[name] = JSON.parse(xhr.responseText);
                 }
                 DataManager.onLoad(window[name]);
