@@ -113,10 +113,10 @@ DataManager.loadDataFile = function(name, src) {
                            "gold":dataActors.data.coin};
                     //actors.push(null);
                     //actors.push(json);
-                    console.log(actors);
-                    window[name] = actors;
+                    //console.log(actors);
+                    //window[name] = actors;
                 }
-                DataManager.onLoad(window[name]);
+                //DataManager.onLoad(window[name]);
             }
         };
     }else{
