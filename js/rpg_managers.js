@@ -126,7 +126,9 @@ DataManager.loadDataFile = function(name, src) {
                     mingzi[0].name=name;
                     //mingzi[0].gold=coin;
                     mingzi[0].nickname="测试";
+                    alert(123);
                     console.log(actors);
+                    alert(234);
                     window[name] = actors;   
                 }
                 DataManager.onLoad(window[name]);
