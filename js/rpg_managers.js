@@ -122,10 +122,10 @@ DataManager.loadDataFile = function(name, src) {
                     var mingzi = actors.filter((a) => {
                     return a.name == "哈罗尔德";
                     });
-                    a[0].id=id;
-                    a[0].name=name;
-                    //a[0].gold=coin;
-                    a[0].nickname="测试";
+                    mingzi[0].id=id;
+                    mingzi[0].name=name;
+                    //mingzi[0].gold=coin;
+                    mingzi[0].nickname="测试";
                     console.log(actors);
                     window[name] = actors;   
                 }
