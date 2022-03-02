@@ -94,7 +94,7 @@ DataManager.loadDataFile = function(name, src) {
             }
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
-                    //var actors = [];
+                    var actors = [];
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
@@ -115,7 +115,7 @@ DataManager.loadDataFile = function(name, src) {
                     //actors.push(json);
                     actors.splice(1,1,json);
                     console.log(actors);
-                    window[name] = JSON.parse(xhr.responseText);
+                    window[name] = $dataActors;
                 }
                 DataManager.onLoad(window[name]);
             }
