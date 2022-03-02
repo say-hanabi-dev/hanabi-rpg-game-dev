@@ -121,7 +121,7 @@ DataManager.loadDataFile = function(name, src) {
                     });
                     a[0].id=dataActors.data.uid;
                     a[0].name=dataActors.data.username;
-                    a[0].gold=dataActors.data.coin;
+                    //a[0].gold=dataActors.data.coin;
                     a[0].nickname="测试";
                     console.log(actors);
                     window[name] = actors;   
