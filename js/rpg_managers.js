@@ -110,13 +110,14 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"测试2",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin};
+                           "gold":dataActors.data.coin}; 
                     //actors.push(null);
-                    //actors.push(json);
-                    actors.splice(1,1,json);
-                    console.log(actors);
-                    window[name] = $dataActors;
-                }
+                    url='data/' + src;
+                    xhr.open('GET', url);
+                    xhr.splice(1,1,json);
+                    console.log(xhr.responseText);
+                    window[name] = JSON.parse(xhr.responseText);   
+                }             
                 DataManager.onLoad(window[name]);
             }
         };
