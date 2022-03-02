@@ -107,15 +107,17 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试2",
+                           "nickname":"测试3",
                            "note":"",
                            "profile":"",
                            "gold":dataActors.data.coin}; 
                     //actors.push(null);
                     url='data/' + src;
                     xhr.open('GET', url);
-                    xhr.splice(1,1,json);
-                    console.log(xhr.responseText);
+                    var Actors={};
+                    Actors = JSON.parse(xhr.responseText);
+                    Actors.splice(1,1,json);
+                    console.log(Actors);
                     window[name] = JSON.parse(xhr.responseText);   
                 }             
                 DataManager.onLoad(window[name]);
