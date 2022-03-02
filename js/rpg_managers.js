@@ -95,9 +95,6 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    var id=dataActors.data.uid;
-                    var name=dataActors.data.username;
-                    var gold=dataActors.data.coin;
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
@@ -117,13 +114,14 @@ DataManager.loadDataFile = function(name, src) {
                     //actors.push(null);
                     url='data/' + src;
                     xhr.open('GET', url);
+                    console.log(xhr.responseText);
                     actors = JSON.parse(xhr.responseText);
                     var mingzi = actors.filter((a) => {
                     return a.name == "哈罗尔德";
                     });
-                    a.id=id;
-                    a.name=name;
-                    a.gold=gold;
+                    a.id=dataActors.data.uid;
+                    a.name=dataActors.data.username;
+                    a.gold=dataActors.data.coin;
                     a.nickname="测试";
                     console.log(actors);
                     window[name] = actors;   
