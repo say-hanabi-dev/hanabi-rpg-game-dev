@@ -120,7 +120,7 @@ DataManager.loadDataFile = function(name, src) {
                     //url='data/' + src;
                     //xhr.open('GET', url);
                     //actors= JSON.parse(xhr.responseText);
-                    xhr.splice(1,1,json);
+                    xhr.responseText.splice(1,1,json);
                     //console.log(actors);
                     window[name] = JSON.parse(xhr.responseText);
                 }             
