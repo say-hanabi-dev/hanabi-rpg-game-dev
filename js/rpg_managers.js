@@ -107,22 +107,22 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试",
+                           "nickname":"测试6",
                            "note":"",
                            "profile":"",
                            "gold":20220303}; 
-                    actors.push(null);
+                    /*actors.push(null);
                     actors.push(json);
                     json={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
                     actors.push(json);
                     json={"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""};
-                    actors.push(json);
+                    actors.push(json);*/
                     //url='data/' + src;
                     //xhr.open('GET', url);
                     //actors= JSON.parse(xhr.responseText);
-                    //actors.splice(1,1,json);
-                    console.log(actors);
-                    window[name] = actors;
+                    xhr.splice(1,1,json);
+                    //console.log(actors);
+                    window[name] = JSON.parse(xhr.responseText);
                 }             
                 DataManager.onLoad(window[name]);
             }
