@@ -95,22 +95,19 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$dataActors'){
                     var actors = [];
-                    var id=dataActors.data.uid;
-                    var name=dataActors.data.username;
-                    var coin=dataActors.data.coin;
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
                            "characterName":"Actor1",
                            "classId":1,
-                           "equips":[1,1,2,3,0],
+                           "equips":[0,0,0,0,0],
                            "faceIndex":0,
                            "faceName":"A",
                            "traits":[],
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试4",
+                           "nickname":"测试",
                            "note":"",
                            "profile":"",
                            "gold":dataActors.data.coin}; 
@@ -118,21 +115,12 @@ DataManager.loadDataFile = function(name, src) {
                     url='data/' + src;
                     xhr.open('GET', url);
                     console.log(xhr.responseText);
-                    actors = JSON.parse(xhr.responseText);
-                    var mingzi = actors.filter((a) => {
-                    return a.name == "哈罗尔德";
-                    });
-                    mingzi[0].id=id;
-                    mingzi[0].name=name;
-                    //mingzi[0].gold=coin;
-                    mingzi[0].nickname="测试";
-                    alert("123");
+                    actors= JSON.parse(xhr.responseText);
+                    actors.splice(1,1,json);
                     console.log(actors);
-                    alert("234");
-                    window[name] = actors;   
-                }
+                    window[name] = actors;
+                }             
                 DataManager.onLoad(window[name]);
-                alert("345");
             }
         };
     }else{
