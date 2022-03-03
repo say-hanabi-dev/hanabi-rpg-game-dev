@@ -79,7 +79,7 @@ DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    /*if(name ==='$dataActors'){
+    if(name ==='$dataActors'){
         url = '/hanabigame-api.html';
         url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
         xhr.open('GET', url);
@@ -115,15 +115,15 @@ DataManager.loadDataFile = function(name, src) {
                     url='data/' + src;
                     xhr.open('GET', url);
                     console.log(xhr.responseText);
-                    actors= JSON.parse(xhr.responseText);
-                    actors.splice(1,1,json);
-                    console.log(actors);
-                    window[name] = actors;
+                    //actors= JSON.parse(xhr.responseText);
+                    //actors.splice(1,1,json);
+                    console.log(xhr.responseText);
+                    window[name] = JSON.parse(xhr.responseText);
                 }             
                 DataManager.onLoad(window[name]);
             }
         };
-    }else*/{
+    }else{
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
