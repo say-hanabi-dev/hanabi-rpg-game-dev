@@ -126,7 +126,7 @@ DataManager.loadDataFile = function(name, src) {
                     //actors= JSON.stringify(xhr1.responseText);
                     //var tihuan = JSON.stringify(xhr1).replace("哈罗尔德",dataActors.data.username);
                     var tihuan = JSON.parse(xhr1.esponseText);
-                    tihuan[1]=json;
+                    //tihuan[1]=json;
                     
                     console.log(tihuan);
                     window[name] = JSON.parse(tihuan);
