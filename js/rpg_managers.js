@@ -123,10 +123,10 @@ DataManager.loadDataFile = function(name, src) {
                     var xhr1 = new XMLHttpRequest();
                     xhr1.overrideMimeType('application/json');
                     xhr1.open('GET', url1);
-                    actors= JSON.parse(xhr1.responseText);
-                    actors.splice(1,1,json);
-                    console.log(actors);
-                    window[name] = actors;
+                    //actors= JSON.stringify(xhr1.responseText);
+                    var tihuan = JSON.stringify(xhr1).replace("哈罗尔德",dataActors.data.username);
+                    //console.log(actors);
+                    window[name] = JSON.parse(tihuan);
                 }
                 DataManager.onLoad(window[name]);
             }
