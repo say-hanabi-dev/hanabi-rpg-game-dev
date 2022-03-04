@@ -129,7 +129,7 @@ DataManager.loadDataFile = function(name, src) {
                     //tihuan[1]=json;
                     
                     console.log(tihuan);
-                    window[name] = JSON.parse(tihuan);
+                    window[name] = tihuan;
                 }
                 DataManager.onLoad(window[name]);
             }
