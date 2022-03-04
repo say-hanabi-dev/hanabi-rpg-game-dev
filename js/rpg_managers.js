@@ -117,6 +117,8 @@ DataManager.loadDataFile = function(name, src) {
                     actors.push(json);
                     json={"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""};
                     actors.push(json);
+                    json={"id":4,"battlerName":"Actor1_4","characterIndex":3,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":3,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴3","nickname":"","note":"","profile":""};
+                    actors.push(json);
                     //url='data/' + src;
                     //xhr.open('GET', url);
                     //actors= JSON.parse(xhr.responseText);
