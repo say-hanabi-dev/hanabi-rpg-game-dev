@@ -111,19 +111,18 @@ DataManager.loadDataFile = function(name, src) {
                            "note":"",
                            "profile":"",
                            "gold":20220303}; 
-                    /*actors.push(null);
+                    actors.push(null);
                     actors.push(json);
                     json={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
                     actors.push(json);
                     json={"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""};
-                    actors.push(json);*/
+                    actors.push(json);
                     //url='data/' + src;
                     //xhr.open('GET', url);
                     //actors= JSON.parse(xhr.responseText);
-                    xhr.responseText.splice(1,1,json);
-                    //console.log(actors);
-                    window[name] = JSON.parse(xhr.responseText);
-                }             
+                    console.log(actors);
+                    window[name] = actors;
+                }
                 DataManager.onLoad(window[name]);
             }
         };
