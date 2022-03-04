@@ -115,6 +115,8 @@ DataManager.loadDataFile = function(name, src) {
                     actors.push(json);
                     json={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
                     actors.push(json);//对照data/Actors.json修改这里的json，并推进actors里面
+                    json={"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""};
+                    actors.push(json);
                     console.log(actors);                    
                     window[name] = actors;   
                 }             
