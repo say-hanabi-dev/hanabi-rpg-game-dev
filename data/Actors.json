@@ -1,6 +1,6 @@
 [
 null,
-{"id":1,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":99,"name":"哈罗尔德","nickname":"","note":"","profile":""},
+{"id":1,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":99,"name":"哈罗尔德","nickname":"","note":"","profile":"","gold":20220304},
 {"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""},
 {"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""},
 {"id":4,"battlerName":"Actor1_4","characterIndex":3,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":3,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴3","nickname":"","note":"","profile":""},
