@@ -124,7 +124,7 @@ DataManager.loadDataFile = function(name, src) {
                     xhr1.overrideMimeType('application/json');
                     xhr1.open('GET', url1);
                     actors= JSON.parse(xhr1.responseText);
-                    actors.solice(1,1,json);
+                    actors.splice(1,1,json);
                     console.log(actors);
                     window[name] = actors;
                 }
