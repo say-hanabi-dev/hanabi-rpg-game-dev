@@ -124,8 +124,11 @@ DataManager.loadDataFile = function(name, src) {
                     xhr1.overrideMimeType('application/json');
                     xhr1.open('GET', url1);
                     //actors= JSON.stringify(xhr1.responseText);
-                    var tihuan = JSON.stringify(xhr1).replace("哈罗尔德",dataActors.data.username);
-                    //console.log(actors);
+                    //var tihuan = JSON.stringify(xhr1).replace("哈罗尔德",dataActors.data.username);
+                    var tihuan = JSON.parse(xhr1.esponseText);
+                    tihuan[1]=json;
+                    
+                    console.log(tihuan);
                     window[name] = JSON.parse(tihuan);
                 }
                 DataManager.onLoad(window[name]);
