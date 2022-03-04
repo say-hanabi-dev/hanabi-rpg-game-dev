@@ -79,7 +79,7 @@ DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    if(name ==='$dataActors'){
+    /*if(name ==='$dataActors'){
         url = '/hanabigame-api.html';
         url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
         xhr.open('GET', url);
@@ -107,34 +107,21 @@ DataManager.loadDataFile = function(name, src) {
                            "initialLevel":1,
                            "maxLevel":9999,
                            "name":dataActors.data.username,
-                           "nickname":"测试6",
+                           "nickname":"测试",
                            "note":"",
                            "profile":"",
-                           "gold":20220303}; 
-                    //actors.push(null);
-                    //actors.push(json);
-                    //json={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
-                    //actors.push(json);
-                    // json={"id":3,"battlerName":"Actor2_5","characterIndex":4,"characterName":"Actor2","classId":1,"equips":[0,0,0,0,0],"faceIndex":4,"faceName":"Actor2","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴2","nickname":"","note":"","profile":""};
-                    //actors.push(json);
-                    //json={"id":4,"battlerName":"Actor1_4","characterIndex":3,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":3,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴3","nickname":"","note":"","profile":""};
-                    //actors.push(json);
-                    var url1 = 'data/' + src;
-                    var xhr1 = new XMLHttpRequest();
-                    xhr1.overrideMimeType('application/json');
-                    xhr1.open('GET', url1);
-                    //actors= JSON.stringify(xhr1.responseText);
-                    //var tihuan = JSON.stringify(xhr1).replace("哈罗尔德",dataActors.data.username);
-                    var tihuan = JSON.parse(xhr1.responseText);
-                    //tihuan[1]=json;
-                    
-                    console.log(tihuan);
-                    window[name] = tihuan;
-                }
+                           "gold":dataActors.data.coin}; 
+                    actors.push(null);
+                    actors.push(json);
+                    json={"id":2,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":1,"equips":[0,0,0,0,0],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":1,"maxLevel":80,"name":"伙伴1","nickname":"","note":"","profile":""};
+                    actors.push(json);//对照data/Actors.json修改这里的json，并推进actors里面
+                    console.log(actors);                    
+                    window[name] = actors;   
+                }             
                 DataManager.onLoad(window[name]);
             }
         };
-    }else{
+    }else*/{
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
