@@ -5,7 +5,8 @@
 /*:
  * @plugindesc Gifts of Equipments by c2h6o for Hanabi Gakuen
  * @author c2h6o
- *
+ * @updated by lars
+ * 
  * @help Gifts of weapons: BaseForce
  * 
  * This plugin works with HGPlgCore.
@@ -96,4 +97,16 @@ Game_Action.prototype.executeDamage = function(target, value){
         }
     }
     HGEqpGft._GameAction_executeDamage.call(this, target, value);
+};
+
+
+Game_Action.prototype.applyCritical = function(damage) {
+    //return damage * 3;
+    if(this.subject().isActor()){
+        if(this.subject().hasWeapon($dataWeapons[1])){
+            return 321;
+        }
+    }
+    return 123;
+
 };
