@@ -79,7 +79,14 @@ HGSkEqpRel.magOn = function(){
 HGSkEqpRel.swordTId = 1;//20% additional damage of critical hits when sword equipped 
 HGSkEqpRel._GameAction_applyCritical = Game_Action.prototype.applyCritical;
 Game_Action.prototype.applyCritical = function(damage) {
-    return HGSkEqpRel._GameAction_applyCritical.call(this, damage) * ((HGPlgCore.isWpTpEqp(HGSkEqpRel.swordTId)?(1.2):1));
+    var value=HGSkEqpRel._GameAction_applyCritical.call(this, damage) * ((HGPlgCore.isWpTpEqp(HGSkEqpRel.swordTId)?(1.2):1));
+    
+    if(this.subject().isActor()){
+        if(this.subject().hasWeapon($dataWeapons[84])){
+            return value*1.5;
+        }
+    }
+    return value;
 };
 
 HGSkEqpRel.shdSkTId = 3;//shields skills: require shield/Large shield; large shield skills: require Large shield

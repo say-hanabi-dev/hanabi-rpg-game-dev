@@ -146,7 +146,7 @@ HGSkEffExt.getStId = function(stName){
     }
     return res;
 };
-HGSkEffExt.acritSkId = [34, 91, 152, 186, 222, 256, 292, 326];//absolute critical damage
+HGSkEffExt.acritSkId = [34, 91, 152, 186, 222, 256, 292, 326, 384, 385, 386, 387];//absolute critical damage
 HGSkEffExt.ancritSkId = [8];//absolute not critical damage
 HGSkEffExt.stDepCritSkId = [
     {skId: 54, stId: HGSkEffExt.getStId("frost")},
@@ -195,7 +195,12 @@ HGSkEffExt.custRepSkId = [//customized repeats
     {id: 169, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
     {id: 239, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
     {id: 309, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
+    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
+
+    {id: 404, repeat: $gameVariables.value(102)},
+    {id: 405, repeat: $gameVariables.value(102)},
+    {id: 406, repeat: $gameVariables.value(102)},
+    {id: 407, repeat: $gameVariables.value(102)}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){
@@ -475,8 +480,7 @@ HGSkEffExt.stDepCustParam = [
     {stId: 222, prmId: 3, formula: (mat)=>(65 + (mat)* 1.95)},
     {stId: 222, prmId: 5, formula: (mat)=>(65 + (mat)* 1.95)},
     {stId: 223, prmId: 3, formula: (mat)=>(65 + (mat)* 2.6)},
-    {stId: 223, prmId: 5, formula: (mat)=>(65 + (mat)* 2.6)},
-    {stId: 226, prmId: 3, formula: (mat)=>(123)}
+    {stId: 223, prmId: 5, formula: (mat)=>(65 + (mat)* 2.6)}
 ];
 HGSkEffExt._GameBattlerBase_paramPlus = Game_BattlerBase.prototype.paramPlus;
 Game_BattlerBase.prototype.paramPlus = function(paramId){

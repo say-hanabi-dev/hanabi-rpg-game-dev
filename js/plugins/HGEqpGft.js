@@ -5,8 +5,7 @@
 /*:
  * @plugindesc Gifts of Equipments by c2h6o for Hanabi Gakuen
  * @author c2h6o
- * @updated by lars
- * 
+ *
  * @help Gifts of weapons: BaseForce
  * 
  * This plugin works with HGPlgCore.
@@ -15,6 +14,8 @@
  * Warning: 
  * at rpg_objects.js
  *      Method "Game_Battler.prototype.gainHp" is overwritten in 
+ *      this plugin
+ *      Method "Game_Action.prototype.applyCritical" is overwritten in 
  *      this plugin
  */
 
@@ -40,6 +41,9 @@ Game_Battler.prototype.gainHp = function(value){
             if(HGPlgCore.rand(HGEqpGft.percShlt)){
                 value *= Math.ceil(1 - HGEqpGft.shltEff.redDmg);
             }
+        }
+        if (this.hasArmor($dataArmors[70]){//盾牌霸主：每次受伤不超过生命值上限的25%
+            value = (value>this.mhp*0.25)?this.mhp*0.25:value;
         }
     }
     HGEqpGft._GameBattler_gainHp.call(this, value);
@@ -99,14 +103,3 @@ Game_Action.prototype.executeDamage = function(target, value){
     HGEqpGft._GameAction_executeDamage.call(this, target, value);
 };
 
-
-Game_Action.prototype.applyCritical = function(damage) {
-    //return damage * 3;
-    if(this.subject().isActor()){
-        if(this.subject().hasWeapon($dataWeapons[1])){
-            return 321;
-        }
-    }
-    return 123;
-
-};
