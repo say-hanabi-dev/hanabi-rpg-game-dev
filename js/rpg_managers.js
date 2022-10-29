@@ -436,11 +436,11 @@ DataManager.lastAccessedSavefileId = function () {
 
 DataManager.saveGameWithoutRescue = function (savefileId) {
     var json = JsonEx.stringify(this.makeSaveContents());
-    var gameData = {
+    var gameData = JsonEx.stringify({
         RPGGlobal: this.makeSavefileInfo(),
         RPGFile1: this.makeSaveContents(),
         RPGConfig: ConfigManager.makeData()
-    }
+    });
     if (json.length >= 200000) {
         console.warn('Save data too big!');
     }
