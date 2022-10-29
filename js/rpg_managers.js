@@ -122,26 +122,28 @@ DataManager.loadDataFile = function (name, src) {
                     actors.push(json);
                     console.log(actors);
                     window[name] = actors;
+
+                    var xhr2 = new XMLHttpRequest();
+                    var url = '';
+                    var that = this;
+                    xhr2.overrideMimeType('application/json');
+                    url = '/game_save/' + $dataActors[1].id + '.sav';
+                    url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
+                    xhr2.open('GET', url);
+                    xhr2.onload = function () {
+                        if (xhr.status < 400) {
+                            json = JSON.parse(xhr2.responseText)
+                            localStorage.setItem('RPG Global', xhr2.responseText['RPGGlobal']);
+                            localStorage.setItem('RPG Config', xhr2.responseText['RPGConfig']);
+                            localStorage.setItem('RPG File1', xhr2.responseText['RPGFile1']);
+                        }
+                    }
+                    xhr2.onerror = function () {
+                        DataManager._errorUrl = DataManager._errorUrl || url;
+                    };
                 }
                 DataManager.onLoad(window[name]);
             }
-        };
-        var url = '';
-        var that = this;
-        xhr.overrideMimeType('application/json');
-        url = '/game_save/' + $dataActors[1].id + '.sav';
-        url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
-        xhr.open('GET', url);
-        xhr.onload = function () {
-            if (xhr.status < 400) {
-                json = JSON.parse(xhr.responseText)
-                localStorage.setItem('RPG Global', xhr.responseText['RPGGlobal']);
-                localStorage.setItem('RPG Config', xhr.responseText['RPGConfig']);
-                localStorage.setItem('RPG File1', xhr.responseText['RPGFile1']);
-            }
-        }
-        xhr.onerror = function () {
-            DataManager._errorUrl = DataManager._errorUrl || url;
         };
     } else {
         url = 'data/' + src;
@@ -152,23 +154,6 @@ DataManager.loadDataFile = function (name, src) {
                 window[name] = JSON.parse(xhr.responseText);
                 DataManager.onLoad(window[name]);
             }
-        };
-        var url = '';
-        var that = this;
-        xhr.overrideMimeType('application/json');
-        url = '/game_save/' + $dataActors[1].id + '.sav';
-        url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
-        xhr.open('GET', url);
-        xhr.onload = function () {
-            if (xhr.status < 400) {
-                json = JSON.parse(xhr.responseText)
-                localStorage.setItem('RPG Global', xhr.responseText['RPGGlobal']);
-                localStorage.setItem('RPG Config', xhr.responseText['RPGConfig']);
-                localStorage.setItem('RPG File1', xhr.responseText['RPGFile1']);
-            }
-        }
-        xhr.onerror = function () {
-            DataManager._errorUrl = DataManager._errorUrl || url;
         };
     }
     xhr.onerror = function () {
