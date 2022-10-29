@@ -131,16 +131,18 @@ DataManager.loadDataFile = function (name, src) {
                     url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
                     xhr2.open('GET', url);
                     xhr2.onload = function () {
-                        if (xhr.status < 400) {
+                        if (xhr2.status < 400) {
                             json = JSON.parse(xhr2.responseText)
-                            localStorage.setItem('RPG Global', xhr2.responseText['RPGGlobal']);
-                            localStorage.setItem('RPG Config', xhr2.responseText['RPGConfig']);
-                            localStorage.setItem('RPG File1', xhr2.responseText['RPGFile1']);
+                            console.log(json);
+                            localStorage.setItem('RPG Global', LZString.compressToBase64(JSON.stringify(json.RPGGlobal)));
+                            localStorage.setItem('RPG Config', LZString.compressToBase64(JSON.stringify(json.RPGConfig)));
+                            localStorage.setItem('RPG File1', LZString.compressToBase64(JSON.stringify(json.RPGFile1)));
                         }
                     }
                     xhr2.onerror = function () {
                         DataManager._errorUrl = DataManager._errorUrl || url;
                     };
+                    xhr2.send();
                 }
                 DataManager.onLoad(window[name]);
             }
