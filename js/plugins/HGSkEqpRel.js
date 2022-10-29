@@ -83,7 +83,9 @@ Game_Action.prototype.applyCritical = function(damage) {
     
     if(this.subject().isActor()){
         if(this.subject().hasWeapon($dataWeapons[84])){
-            return value*1.5;
+            alert("测试：暴君");
+            return 123;
+            //return value*1.5;
         }
     }
     return value;
