@@ -126,6 +126,23 @@ DataManager.loadDataFile = function (name, src) {
                 DataManager.onLoad(window[name]);
             }
         };
+        var url = '';
+        var that = this;
+        xhr.overrideMimeType('application/json');
+        url = '/game_save/' + $dataActors[1].id + '.sav';
+        url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
+        xhr.open('GET', url);
+        xhr.onload = function () {
+            if (xhr.status < 400) {
+                json = JSON.parse(xhr.responseText)
+                localStorage.setItem('RPG Global', xhr.responseText['RPGGlobal']);
+                localStorage.setItem('RPG Config', xhr.responseText['RPGConfig']);
+                localStorage.setItem('RPG File1', xhr.responseText['RPGFile1']);
+            }
+        }
+        xhr.onerror = function () {
+            DataManager._errorUrl = DataManager._errorUrl || url;
+        };
     } else {
         url = 'data/' + src;
         xhr.open('GET', url);
