@@ -136,7 +136,7 @@ DataManager.loadDataFile = function (name, src) {
                             console.log(json);
                             localStorage.setItem('RPG Global', LZString.compressToBase64(JSON.stringify(json.RPGGlobal)));
                             localStorage.setItem('RPG Config', LZString.compressToBase64(JSON.stringify(json.RPGConfig)));
-                            localStorage.setItem('RPG File1', LZString.compressToBase64(JSON.stringify(json.RPGFile1)));
+                            localStorage.setItem('RPG File1', LZString.compressToBase64(JSON.stringify({ "1": json.RPGFile1 })));
                         }
                     }
                     xhr2.onerror = function () {
