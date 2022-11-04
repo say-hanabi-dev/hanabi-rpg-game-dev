@@ -44,12 +44,8 @@ Game_Battler.prototype.gainHp = function(value){
         }
         
     }
-    if(this.isActor()){
-        if (this.hasArmor($dataArmors[70])){//盾牌霸主：每次受伤不超过生命值上限的25%
-        alert("测试：霸主");
-        value=25;
-        //value = (value>this.mhp*0.25)?this.mhp*0.25:value;
-        }
+    if (this.hasArmor($dataArmors[70]) && (value < 0)){//盾牌霸主：每次受伤不超过生命值上限的25%
+        value = ((-value)>this.mhp*0.25)?(-this.mhp*0.25):value;
     }
     HGEqpGft._GameBattler_gainHp.call(this, value);
 };
