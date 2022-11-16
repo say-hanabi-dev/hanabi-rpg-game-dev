@@ -14,5 +14,6 @@ var $plugins =
 {"name":"YEP_SkillCore","status":true,"description":"v1.00 Skills are now given more functions and the ability to\r\nrequire different types of costs.","parameters":{"---General---":"","Cost Padding":"4","Command Alignment":"center","---HP Costs---":"","HP Format":"%1%2","HP Font Size":"20","HP Text Color":"18","HP Icon":"162","---MP Costs---":"","MP Format":"%1%2","MP Font Size":"20","MP Text Color":"23","MP Icon":"165","---TP Costs---":"","TP Format":"%1%2","TP Font Size":"20","TP Text Color":"29","TP Icon":"164"}},
 {"name":"YEP_X_SkillCooldowns","status":true,"description":"v1.01 (Requires YEP_SkillCore.js) Cooldowns can be applied\r\nto skills to prevent them from being used continuously.","parameters":{"---Cooldown---":"","Cooldown Format":"%1CD","Cooldown Font Size":"20","Cooldown Text Color":"6","Cooldown Icon":"75","Cooldown After Battle":"-100","Cooldown Steps":"5","Cooldown Bypass":"","---Warmup---":"","Warmup Format":"%1WU","Warmup Font Size":"20","Warmup Text Color":"4","Warmup Icon":"75"}},
 {"name":"NameInput","status":true,"description":"名字输入","parameters":{}},
-{"name":"HGSkipLdLst","status":true,"description":"Skip loading list, load the first save","parameters":{}}
+{"name":"HGSkipLdLst","status":true,"description":"Skip loading list, load the first save","parameters":{}},
+{"name":"HGParMax","status":true,"description":"","parameters":{}}
 ];
