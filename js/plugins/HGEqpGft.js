@@ -46,7 +46,7 @@ Game_Battler.prototype.gainHp = function(value){
     }
     if (this.isActor()){
         if (this.hasArmor($dataArmors[70]) && (value < 0)){//盾牌霸主：每次受伤不超过生命值上限的25%
-            value = ((-value)>this.mhp*0.25)?(-this.mhp*0.25):value;
+            value = Math.floor(((-value)>this.mhp*0.25)?(-this.mhp*0.25):value);
         }
     }
     
