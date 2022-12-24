@@ -76,7 +76,6 @@ DataManager.loadDatabase = function () {
 };
 
 DataManager.loadDataFile = function (name, src) {
-
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
@@ -122,27 +121,6 @@ DataManager.loadDataFile = function (name, src) {
                     actors.push(json);
                     console.log(actors);
                     window[name] = actors;
-
-                    var xhr2 = new XMLHttpRequest();
-                    var url = '';
-                    var that = this;
-                    xhr2.overrideMimeType('application/json');
-                    url = '/game_save/' + $dataActors[1].id + '.sav';
-                    url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
-                    xhr2.open('GET', url);
-                    xhr2.onload = function () {
-                        if (xhr2.status < 400) {
-                            json = JSON.parse(xhr2.responseText)
-                            console.log(json);
-                            localStorage.setItem('RPG Global', LZString.compressToBase64(JSON.stringify({ "1": json.RPGGlobal, "2": json.RPGGlobal })));
-                            localStorage.setItem('RPG Config', LZString.compressToBase64(JSON.stringify(json.RPGConfig)));
-                            localStorage.setItem('RPG File1', LZString.compressToBase64(JSON.stringify(json.RPGFile1)));
-                        }
-                    }
-                    xhr2.onerror = function () {
-                        DataManager._errorUrl = DataManager._errorUrl || url;
-                    };
-                    xhr2.send();
                 }
                 DataManager.onLoad(window[name]);
             }
@@ -157,6 +135,7 @@ DataManager.loadDataFile = function (name, src) {
                 DataManager.onLoad(window[name]);
             }
         };
+
     }
     xhr.onerror = function () {
         DataManager._errorUrl = DataManager._errorUrl || url;
@@ -338,10 +317,9 @@ DataManager.isThisGameFile = function (savefileId) {
         if (StorageManager.isLocalMode()) {
             return true;
         } else {
-            return true;
-            // var savefile = globalInfo[savefileId];
-            // return (savefile.globalId === this._globalId &&
-            //     savefile.title === $dataSystem.gameTitle);
+            var savefile = globalInfo[savefileId];
+            return (savefile.globalId === this._globalId &&
+                savefile.title === $dataSystem.gameTitle);
         }
     } else {
         return false;
@@ -439,11 +417,6 @@ DataManager.lastAccessedSavefileId = function () {
 
 DataManager.saveGameWithoutRescue = function (savefileId) {
     var json = JsonEx.stringify(this.makeSaveContents());
-    var gameData = JsonEx.stringify({
-        RPGGlobal: this.makeSavefileInfo(),
-        RPGFile1: this.makeSaveContents(),
-        RPGConfig: ConfigManager.makeData()
-    });
     if (json.length >= 200000) {
         console.warn('Save data too big!');
     }
@@ -457,7 +430,7 @@ DataManager.saveGameWithoutRescue = function (savefileId) {
     xhr.onerror = function () {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
-    xhr.send(gameData);
+    xhr.send(json);
     StorageManager.save(savefileId, json);
     this._lastAccessedId = savefileId;
     var globalInfo = this.loadGlobalInfo() || [];
@@ -470,8 +443,25 @@ DataManager.loadGameWithoutRescue = function (savefileId) {
     var globalInfo = this.loadGlobalInfo();
     console.warn(savefileId);
     if (this.isThisGameFile(savefileId)) {
+        var json = StorageManager.load(savefileId);
+        var xhr = new XMLHttpRequest();
+        var url = '';
+        var that = this;
+        xhr.overrideMimeType('application/json');
+        url = '/game_save/' + $dataActors[1].id + '.sav';
+        url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
+        xhr.open('GET', url);
+        xhr.onload = function () {
+            if (xhr.status < 400) {
+                json = JSON.parse(xhr.responseText)
+            }
+        }
+        xhr.onerror = function () {
+            DataManager._errorUrl = DataManager._errorUrl || url;
+        };
+        xhr.send(json);
         this.createGameObjects();
-        this.extractSaveContents(JsonEx.parse(StorageManager.load(savefileId)));
+        this.extractSaveContents(JsonEx.parse(json));
         this._lastAccessedId = savefileId;
         return true;
     } else {
