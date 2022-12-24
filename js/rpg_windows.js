@@ -5743,7 +5743,8 @@ Window_TitleCommand.prototype.makeCommandList = function() {
 };
 
 Window_TitleCommand.prototype.isContinueEnabled = function() {
-    return DataManager.isAnySavefileExists();
+    // return DataManager.isAnySavefileExists();
+    return true;
 };
 
 Window_TitleCommand.prototype.processOk = function() {

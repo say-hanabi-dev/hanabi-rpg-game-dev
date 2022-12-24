@@ -420,6 +420,12 @@ DataManager.saveGameWithoutRescue = function (savefileId) {
     if (json.length >= 200000) {
         console.warn('Save data too big!');
     }
+    StorageManager.save(savefileId, json);
+    this._lastAccessedId = savefileId;
+    var globalInfo = this.loadGlobalInfo() || [];
+    globalInfo[savefileId] = this.makeSavefileInfo();
+    this.saveGlobalInfo(globalInfo);
+
     var xhr = new XMLHttpRequest();
     var url = '';
     var that = this;
@@ -430,12 +436,11 @@ DataManager.saveGameWithoutRescue = function (savefileId) {
     xhr.onerror = function () {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
-    xhr.send(json);
-    StorageManager.save(savefileId, json);
-    this._lastAccessedId = savefileId;
-    var globalInfo = this.loadGlobalInfo() || [];
-    globalInfo[savefileId] = this.makeSavefileInfo();
-    this.saveGlobalInfo(globalInfo);
+    remoteSaveContent = JSON.stringify(window.localStorage);
+    console.log(remoteSaveContent)
+    xhr.send(remoteSaveContent);
+    console.log("保存到服务器完成");
+
     return true;
 };
 
