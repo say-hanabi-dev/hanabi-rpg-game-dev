@@ -23,7 +23,8 @@ xhr.send();
 // 获取用户存档并存入localStorage
 if (uid) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/game_save/' + uid + '.sav', false);
+    xhr.open('GET', '/game_save/' + uid + '.sav'+'?'+Math.random(), false);
+    xhr.setRequestHeader('If-Modified-Since', '0');
     xhr.onload = function () {
         console.log("正在同步云存档...")
         if (xhr.status === 200) {
