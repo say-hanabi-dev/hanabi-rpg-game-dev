@@ -195,12 +195,7 @@ HGSkEffExt.custRepSkId = [//customized repeats
     {id: 169, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
     {id: 239, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
     {id: 309, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-
-    {id: 404, repeat: $gameVariables.value(102)},
-    {id: 405, repeat: $gameVariables.value(102)},
-    {id: 406, repeat: $gameVariables.value(102)},
-    {id: 407, repeat: $gameVariables.value(102)}
+    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){
