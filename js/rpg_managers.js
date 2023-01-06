@@ -129,12 +129,15 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 window[name] = JSON.parse(xhr.responseText);
                 DataManager.onLoad(window[name]);
-                if(name ==='$dataActors'){
-                    $dataActors[1].id=$zhujue[1].id;
-                    $dataActors[1].name=$zhujue[1].name;
-                }
             }
         };
+    }
+    if($gameActors != null && $zhujue != null && $dataActors != null){
+        if(!$dataActors[1].note.includes("已获得名字")){
+            $gameActors.actor(1)._actorId = $zhujue[1].id;
+            $gameActors.actor(2)._name = $zhujue[1].name;
+            $dataActors[1].note += "已获得名字";
+        }
     }
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
