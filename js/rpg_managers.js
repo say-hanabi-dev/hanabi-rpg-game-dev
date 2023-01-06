@@ -11,6 +11,7 @@ function DataManager() {
     throw new Error('This is a static class');
 }
 
+var $zhujue           = null;
 var $dataActors       = null;
 var $dataClasses      = null;
 var $dataSkills       = null;
@@ -46,6 +47,7 @@ DataManager._lastAccessedId = 1;
 DataManager._errorUrl       = null;
 
 DataManager._databaseFiles = [
+    { name: '$zhujue',           src: 'zhujue.json'       },
     { name: '$dataActors',       src: 'Actors.json'       },
     { name: '$dataClasses',      src: 'Classes.json'      },
     { name: '$dataSkills',       src: 'Skills.json'       },
@@ -79,7 +81,7 @@ DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    /*if(name ==='$dataActors'){
+    if(name ==='$zhujue'){
         url = '/hanabigame-api.html';
         url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
         xhr.open('GET', url);
@@ -93,8 +95,8 @@ DataManager.loadDataFile = function(name, src) {
                 document.write(xhr.responseText);
             }
             if (xhr.status < 400) {
-                if(name ==='$dataActors'){
-                    var actors = [];
+                if(name ==='$zhujue'){
+                    var zhujue = [];
                     json ={"id":dataActors.data.uid,
                            "battlerName":"Actor1_1",
                            "characterIndex":0,
@@ -110,16 +112,16 @@ DataManager.loadDataFile = function(name, src) {
                            "nickname":"",
                            "note":"",
                            "profile":"",
-                           "gold":dataActors.data.coin}; 
-                    actors.push(null);
-                    actors.push(json);
-                    console.log(actors);                    
-                    window[name] = actors;   
+                           "gold":0}; 
+                    zhujue.push(null);
+                    zhujue.push(json);
+                    console.log(zhujue);
+                    window[name] = zhujue;
                 }             
                 DataManager.onLoad(window[name]);
             }
         };
-    }else*/{
+    }else{
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
@@ -128,43 +130,11 @@ DataManager.loadDataFile = function(name, src) {
                 window[name] = JSON.parse(xhr.responseText);
                 DataManager.onLoad(window[name]);
                 if(name ==='$dataActors'){
-                    url = '/hanabigame-api.html';
-                    url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-                    xhr.open('GET', url);
-                    xhr.onload = function() {
-                        console.log(xhr.responseText);
-                        var json = {};
-                        var dataActors = {};
-                        try{
-                            dataActors = JSON.parse(xhr.responseText)
-                        }catch(e){
-                            document.write(xhr.responseText);
-                        }
-                        json = {
-                            "id": dataActors.data.uid,
-                            "battlerName": "Actor1_1",
-                            "characterIndex": 0,
-                            "characterName": "Actor1",
-                            "classId": 1,
-                            "equips": [0, 0, 0, 0, 0],
-                            "faceIndex": 0,
-                            "faceName": "A",
-                            "traits": [],
-                            "initialLevel": 1,
-                            "maxLevel": 9999,
-                            "name": dataActors.data.username,
-                            "nickname": "测试",
-                            "note": "",
-                            "profile": "",
-                            "gold": 0
-                        };
-                        $dataActors[1]=json;
-                        alert($dataActors[1].name);
-                    };
+                    $dataActors[1].id=$zhujue[1].id;
+                    $dataActors[1].name=$zhujue[1].name;
                 }
             }
         };
-        
     }
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
