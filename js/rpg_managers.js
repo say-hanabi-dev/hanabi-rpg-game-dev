@@ -136,6 +136,7 @@ DataManager.loadDataFile = function(name, src) {
         if(!$dataActors[1].note.includes("已获得名字")){
             $gameActors.actor(1)._actorId = $zhujue[1].id;
             $gameActors.actor(1)._name = $zhujue[1].name;
+            $dataActors[1] = $zhujue[1];
             $dataActors[1].note += "已获得名字";
         }
     }
