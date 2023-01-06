@@ -11,7 +11,6 @@ function DataManager() {
     throw new Error('This is a static class');
 }
 
-var $zhujue = null;
 var $dataActors = null;
 var $dataClasses = null;
 var $dataSkills = null;
@@ -47,7 +46,6 @@ DataManager._lastAccessedId = 1;
 DataManager._errorUrl = null;
 
 DataManager._databaseFiles = [
-    { name: '$zhujue', src: 'zhujue.json' },
     { name: '$dataActors', src: 'Actors.json' },
     { name: '$dataClasses', src: 'Classes.json' },
     { name: '$dataSkills', src: 'Skills.json' },
@@ -77,76 +75,74 @@ DataManager.loadDatabase = function () {
     }
 };
 
-DataManager.loadDataFile = function(name, src) {
+DataManager.loadDataFile = function (name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    if(name ==='$zhujue'){
+    if (name === '$dataActors') {
         url = '/hanabigame-api.html';
-        url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+        url = (typeof HGPlgCore != "undefined") ? (HGPlgCore.localTestURLParse(url)) : (url);
         xhr.open('GET', url);
-        xhr.onload = function() {
+        xhr.onload = function () {
             console.log(xhr.responseText);
             var json = {};
             var dataActors = {};
-            try{
+            try {
                 dataActors = JSON.parse(xhr.responseText)
-            }catch(e){
+            } catch (e) {
                 document.write(xhr.responseText);
             }
             if (xhr.status < 400) {
-                if(name ==='$zhujue'){
-                    var zhujue = [];
-                    json ={"id":dataActors.data.uid,
-                           "battlerName":"Actor1_1",
-                           "characterIndex":0,
-                           "characterName":"Actor1",
-                           "classId":1,
-                           "equips":[1,1,2,3,0],
-                           "faceIndex":0,
-                           "faceName":"A",
-                           "traits":[],
-                           "initialLevel":1,
-                           "maxLevel":9999,
-                           "name":dataActors.data.username,
-                           "nickname":"",
-                           "note":"",
-                           "profile":"",
-                           "gold":0}; 
-                    zhujue.push(null);
-                    zhujue.push(json);
-                    console.log(zhujue);
-                    window[name] = zhujue;
-                }             
+                if (name === '$dataActors') {
+                    var actors = [];
+                    json = {
+                        "id": dataActors.data.uid,
+                        "battlerName": "Actor1_1",
+                        "characterIndex": 0,
+                        "characterName": "Actor1",
+                        "classId": 1,
+                        "equips": [0, 0, 0, 0, 0],
+                        "faceIndex": 0,
+                        "faceName": "A",
+                        "traits": [],
+                        "initialLevel": 1,
+                        "maxLevel": 9999,
+                        "name": dataActors.data.username,
+                        "nickname": "测试",
+                        "note": "",
+                        "profile": "",
+                        "gold": dataActors.data.coin
+                    };
+                    actors.push(null);
+                    actors.push(json);
+                    json = { "id": 2, "battlerName": "Actor1_2", "characterIndex": 1, "characterName": "Actor1", "classId": 1, "equips": [0, 0, 0, 0, 0], "faceIndex": 1, "faceName": "Actor1", "traits": [], "initialLevel": 1, "maxLevel": 80, "name": "伙伴1", "nickname": "", "note": "", "profile": "" };
+                    actors.push(json);//对照data/Actors.json修改这里的json，并推进actors里面
+                    json = { "id": 3, "battlerName": "Actor2_5", "characterIndex": 4, "characterName": "Actor2", "classId": 1, "equips": [0, 0, 0, 0, 0], "faceIndex": 4, "faceName": "Actor2", "traits": [], "initialLevel": 1, "maxLevel": 80, "name": "伙伴2", "nickname": "", "note": "", "profile": "" };
+                    actors.push(json);
+                    console.log(actors);
+                    window[name] = actors;
+                }
                 DataManager.onLoad(window[name]);
             }
         };
-    }else{
+    } else {
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (xhr.status < 400) {
                 window[name] = JSON.parse(xhr.responseText);
                 DataManager.onLoad(window[name]);
             }
         };
+
     }
-    if($gameActors != null && $zhujue != null && $dataActors != null){
-        if(!$dataActors[1].note.includes("已获得名字")){
-            $gameActors.actor(1)._actorId = $zhujue[1].id;
-            $gameActors.actor(1)._name = $zhujue[1].name;
-            $dataActors[1] = $zhujue[1];
-            $dataActors[1].note += "已获得名字";
-        }
-    }
-    xhr.onerror = function() {
+    xhr.onerror = function () {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
     window[name] = null;
     xhr.send();
 };
-
 
 DataManager.isDatabaseLoaded = function () {
     this.checkError();
