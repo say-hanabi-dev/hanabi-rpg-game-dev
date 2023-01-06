@@ -2361,6 +2361,7 @@ Game_BattlerBase.prototype.traitObjects = function() {
 
 Game_BattlerBase.prototype.allTraits = function() {
     return this.traitObjects().reduce(function(r, obj) {
+        if(!obj.traits){obj.traits = [];}
         return r.concat(obj.traits);
     }, []);
 };
