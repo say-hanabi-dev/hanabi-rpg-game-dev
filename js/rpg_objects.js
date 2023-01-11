@@ -1717,7 +1717,7 @@ Game_Action.prototype.elementsMaxRate = function(target, elements) {
 };
 
 Game_Action.prototype.applyCritical = function(damage) {
-    return damage * 2.5;
+    return damage * 3;
 };
 
 Game_Action.prototype.applyVariance = function(damage, variance) {
@@ -2361,7 +2361,6 @@ Game_BattlerBase.prototype.traitObjects = function() {
 
 Game_BattlerBase.prototype.allTraits = function() {
     return this.traitObjects().reduce(function(r, obj) {
-        if(!obj.traits){obj.traits = [];}
         return r.concat(obj.traits);
     }, []);
 };

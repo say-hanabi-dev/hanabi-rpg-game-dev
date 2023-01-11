@@ -116,16 +116,36 @@ DataManager.loadDataFile = function(name, src) {
             }
         };
     }
+    
     if($gameActors != null && $zhujue != null && $dataActors != null){
-        /*if(!$dataActors[1].note.includes("已获得名字")){
-            $gameActors.actor(1)._actorId = $zhujue[0];
+        if(!$dataActors[1].note.includes("已获得名字")){
+            /*$gameActors.actor(1)._actorId = $zhujue[0];
             $dataActors[1].id = $zhujue[0];
             $gameActors.actor(1)._name = $zhujue[1];
             $dataActors[1].name = $zhujue[1];
             $dataActors[1].note += "已获得名字";
-        }*/
-        alert("1");
+            $dataActors[1].gold = 0;*/
+            $dataActors[1] = {
+                "id":$zhujue[0],
+                "battlerName":"Actor1_1",
+                "characterIndex":0,
+                "characterName":"Actor1",
+                "classId":1,
+                "equips":[0,0,0,0,0],
+                "faceIndex":0,
+                "faceName":"Actor1",
+                "traits":[],
+                "initialLevel":1,
+                "maxLevel":99,
+                "name":$zhujue[1],
+                "nickname":"",
+                "note":"",
+                "profile":"",
+                "gold":0
+            }
+        }//这个if有问题
     }
+
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
