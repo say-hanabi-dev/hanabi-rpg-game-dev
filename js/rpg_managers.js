@@ -81,38 +81,44 @@ DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    if(name ==='$dataActors'){
+    if(name ==='$zhujue'){
+        url = '/hanabigame-api.html';
+        url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+        xhr.open('GET', url);
+        xhr.onload = function() {
+            console.log(xhr.responseText);
+            var json = {};
+            var dataActors = {};
+            try{
+                dataActors = JSON.parse(xhr.responseText)
+            }catch(e){
+                document.write(xhr.responseText);
+            }
+            if (xhr.status < 400) {
+                if(name ==='$zhujue'){
+                    var zhujue = [];
+                    zhujue.push(dataActors.data.uid);
+                    zhujue.push(dataActors.data.username);
+                    console.log(zhujue);
+                    window[name] = zhujue;
+                }
+                DataManager.onLoad(window[name]);
+            }
+        };
+    }else if(name ==='$dataActors'){
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
         xhr.onload = function() {
             if (xhr.status < 400) {
                 window[name] = JSON.parse(xhr.responseText);
-                
-                url = '/hanabigame-api.html';
-                url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
-                xhr.open('GET', url);
-                xhr.onload = function() {
-                    console.log(xhr.responseText);
-                    var dataActors = {};
-                    try{
-                        dataActors = JSON.parse(xhr.responseText)
-                    }catch(e){
-                        document.write(xhr.responseText);
-                    }
-                    if (xhr.status < 400) {
-                        if(name ==='$dataActors'){
-                            window[name][1].id = dataActors.data.uid;
-                            window[name][1].name = dataActors.data.username;
-                            window[name][1].gold = 0;
-                        }
-                    }
-                };
+                window[name][1].id = $zhujue[0].id;
+                window[name][1].name = $zhujue[0].name;
+                window[name][1].gold = 0;
                 DataManager.onLoad(window[name]);
             }
         };
 
-        
     }else{
         url = 'data/' + src;
         xhr.open('GET', url);
@@ -151,7 +157,7 @@ DataManager.loadDataFile = function(name, src) {
                 "profile":"",
                 "gold":0
             }
-        }
+        }//这个if有问题
     }*/
 
     xhr.onerror = function() {
