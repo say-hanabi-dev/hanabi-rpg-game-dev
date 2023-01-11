@@ -88,8 +88,7 @@ DataManager.loadDataFile = function(name, src) {
         xhr.onload = function() {
             if (xhr.status < 400) {
                 window[name] = JSON.parse(xhr.responseText);
-                DataManager.onLoad(window[name]);
-
+                
                 url = '/hanabigame-api.html';
                 url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
                 xhr.open('GET', url);
@@ -103,29 +102,13 @@ DataManager.loadDataFile = function(name, src) {
                     }
                     if (xhr.status < 400) {
                         if(name ==='$dataActors'){
-                            var zhujue = {
-                                "id":dataActors.data.uid,
-                                "battlerName":"Actor1_1",
-                                "characterIndex":0,
-                                "characterName":"Actor1",
-                                "classId":1,
-                                "equips":[0,0,0,0,0],
-                                "faceIndex":0,
-                                "faceName":"Actor1",
-                                "traits":[],
-                                "initialLevel":1,
-                                "maxLevel":9999,
-                                "name":dataActors.data.username,
-                                "nickname":"",
-                                "note":"已获得名字",
-                                "profile":"",
-                                "gold":0
-                            };
-                            console.log(zhujue);
-                            $dataActors[1] = zhujue;
+                            window[name][1].id = dataActors.data.uid;
+                            window[name][1].name = dataActors.data.username;
+                            window[name][1].gold = 0;
                         }
                     }
                 };
+                DataManager.onLoad(window[name]);
             }
         };
 
@@ -168,7 +151,7 @@ DataManager.loadDataFile = function(name, src) {
                 "profile":"",
                 "gold":0
             }
-        }//这个if有问题
+        }
     }*/
 
     xhr.onerror = function() {
