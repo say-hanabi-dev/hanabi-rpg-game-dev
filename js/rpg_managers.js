@@ -81,30 +81,55 @@ DataManager.loadDataFile = function(name, src) {
     var xhr = new XMLHttpRequest();
     var url = '';
     xhr.overrideMimeType('application/json');
-    if(name ==='$zhujue'){
-        url = '/hanabigame-api.html';
-        url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+    if(name ==='$dataActors'){
+        url = 'data/' + src;
         xhr.open('GET', url);
+        xhr.overrideMimeType('application/json');
         xhr.onload = function() {
-            console.log(xhr.responseText);
-            var json = {};
-            var dataActors = {};
-            try{
-                dataActors = JSON.parse(xhr.responseText)
-            }catch(e){
-                document.write(xhr.responseText);
-            }
             if (xhr.status < 400) {
-                if(name ==='$zhujue'){
-                    var zhujue = [];
-                    zhujue.push(dataActors.data.uid);
-                    zhujue.push(dataActors.data.username);
-                    console.log(zhujue);
-                    window[name] = zhujue;
-                }             
+                window[name] = JSON.parse(xhr.responseText);
                 DataManager.onLoad(window[name]);
+
+                url = '/hanabigame-api.html';
+                url = (typeof HGPlgCore != "undefined")?(HGPlgCore.localTestURLParse(url)):(url);
+                xhr.open('GET', url);
+                xhr.onload = function() {
+                    console.log(xhr.responseText);
+                    var dataActors = {};
+                    try{
+                        dataActors = JSON.parse(xhr.responseText)
+                    }catch(e){
+                        document.write(xhr.responseText);
+                    }
+                    if (xhr.status < 400) {
+                        if(name ==='$dataActors'){
+                            var zhujue = {
+                                "id":dataActors.data.uid,
+                                "battlerName":"Actor1_1",
+                                "characterIndex":0,
+                                "characterName":"Actor1",
+                                "classId":1,
+                                "equips":[0,0,0,0,0],
+                                "faceIndex":0,
+                                "faceName":"Actor1",
+                                "traits":[],
+                                "initialLevel":1,
+                                "maxLevel":9999,
+                                "name":dataActors.data.username,
+                                "nickname":"",
+                                "note":"已获得名字",
+                                "profile":"",
+                                "gold":0
+                            };
+                            console.log(zhujue);
+                            $dataActors[1] = zhujue;
+                        }
+                    }
+                };
             }
         };
+
+        
     }else{
         url = 'data/' + src;
         xhr.open('GET', url);
@@ -117,14 +142,14 @@ DataManager.loadDataFile = function(name, src) {
         };
     }
     
-    if($gameActors != null && $zhujue != null && $dataActors != null){
+    /*if($gameActors != null && $zhujue != null && $dataActors != null){
         if(!$dataActors[1].note.includes("已获得名字")){
             /*$gameActors.actor(1)._actorId = $zhujue[0];
             $dataActors[1].id = $zhujue[0];
             $gameActors.actor(1)._name = $zhujue[1];
             $dataActors[1].name = $zhujue[1];
             $dataActors[1].note += "已获得名字";
-            $dataActors[1].gold = 0;*/
+            $dataActors[1].gold = 0;
             $dataActors[1] = {
                 "id":$zhujue[0],
                 "battlerName":"Actor1_1",
@@ -136,15 +161,15 @@ DataManager.loadDataFile = function(name, src) {
                 "faceName":"Actor1",
                 "traits":[],
                 "initialLevel":1,
-                "maxLevel":99,
+                "maxLevel":9999,
                 "name":$zhujue[1],
                 "nickname":"",
-                "note":"",
+                "note":"已获得名字",
                 "profile":"",
                 "gold":0
             }
         }//这个if有问题
-    }
+    }*/
 
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
