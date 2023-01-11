@@ -116,15 +116,16 @@ DataManager.loadDataFile = function(name, src) {
             }
         };
     }
-    /*if($gameActors != null && $zhujue != null && $dataActors != null){
-        if(!$dataActors[1].note.includes("已获得名字")){
+    if($gameActors != null && $zhujue != null && $dataActors != null){
+        /*if(!$dataActors[1].note.includes("已获得名字")){
             $gameActors.actor(1)._actorId = $zhujue[0];
             $dataActors[1].id = $zhujue[0];
             $gameActors.actor(1)._name = $zhujue[1];
             $dataActors[1].name = $zhujue[1];
             $dataActors[1].note += "已获得名字";
-        }
-    }*/
+        }*/
+        alert("1");
+    }
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
     };
