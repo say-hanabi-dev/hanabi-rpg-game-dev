@@ -97,8 +97,8 @@ DataManager.loadDataFile = function(name, src) {
             if (xhr.status < 400) {
                 if(name ==='$zhujue'){
                     var zhujue = [];
-                    zhujue.push(dataActors.data.uid);
-                    zhujue.push(dataActors.data.username);
+                    var json = {"id":dataActors.data.uid,"name":dataActors.data.username};
+                    zhujue.push(json);
                     console.log(zhujue);
                     window[name] = zhujue;
                 }
