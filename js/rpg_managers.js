@@ -105,21 +105,15 @@ DataManager.loadDataFile = function(name, src) {
                 DataManager.onLoad(window[name]);
             }
         };
-    }else if(name ==='$dataActors'){
-        url = 'data/' + src;
-        xhr.open('GET', url);
-        xhr.overrideMimeType('application/json');
-        xhr.onload = function() {
-            if (xhr.status < 400) {
-                window[name] = JSON.parse(xhr.responseText);
-                window[name][1].id = $zhujue[0].id;
-                window[name][1].name = $zhujue[0].name;
-                window[name][1].gold = 0;
-                DataManager.onLoad(window[name]);
-            }
-        };
-
     }else{
+        if(name ==='$dataMap'){
+            if(!$dataActors[1].note.includes("已获得名字")){
+                $dataActors[1].id = $zhujue[0].id;
+                $dataActors[1].name = $zhujue[0].name;
+                $gameActors.actor(1)._name = $zhujue[0].name;
+                $dataActors[1].note += "已获得名字";
+            }
+        }
         url = 'data/' + src;
         xhr.open('GET', url);
         xhr.overrideMimeType('application/json');
@@ -131,34 +125,6 @@ DataManager.loadDataFile = function(name, src) {
         };
     }
     
-    /*if($gameActors != null && $zhujue != null && $dataActors != null){
-        if(!$dataActors[1].note.includes("已获得名字")){
-            /*$gameActors.actor(1)._actorId = $zhujue[0];
-            $dataActors[1].id = $zhujue[0];
-            $gameActors.actor(1)._name = $zhujue[1];
-            $dataActors[1].name = $zhujue[1];
-            $dataActors[1].note += "已获得名字";
-            $dataActors[1].gold = 0;
-            $dataActors[1] = {
-                "id":$zhujue[0],
-                "battlerName":"Actor1_1",
-                "characterIndex":0,
-                "characterName":"Actor1",
-                "classId":1,
-                "equips":[0,0,0,0,0],
-                "faceIndex":0,
-                "faceName":"Actor1",
-                "traits":[],
-                "initialLevel":1,
-                "maxLevel":9999,
-                "name":$zhujue[1],
-                "nickname":"",
-                "note":"已获得名字",
-                "profile":"",
-                "gold":0
-            }
-        }//这个if有问题
-    }*/
 
     xhr.onerror = function() {
         DataManager._errorUrl = DataManager._errorUrl || url;
