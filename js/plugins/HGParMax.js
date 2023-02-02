@@ -1,10 +1,6 @@
-/*
- * - Developer Info -
- * at rpg_objects.js
- *      Method "Game_Actor.prototype.paramMax" is overwritten in 
- *      this plugin.
- *      Method "Game_BattlerBase.prototype.paramMax" is overwritten in 
- *      this plugin.
+/*:
+ * @plugindesc 属性值上限
+ * @author Lars
  */
 var HGParMax = window.HGParMax || {} ;
 

@@ -489,3 +489,13 @@ HGSkEffExt.getParamPlus = function(battler, paramId, mat){
         return r * info.formula(mat);
     }, 1));
 };
+
+HGSkEffExt._GameBattler_useItem = Game_Battler.prototype.useItem;
+Game_Battler.prototype.useItem = function(item) {
+    if (DataManager.isSkill(item)) {
+        //1、判断是否是防御术
+        //2、若是，技能二度驰援=该技能
+        //3、二度驰援的id，name，description修改（note内是CD）
+    }
+    HGSkEffExt._GameBattler_useItem.call(this,item);
+};
