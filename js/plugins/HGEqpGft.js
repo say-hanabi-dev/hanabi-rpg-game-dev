@@ -90,86 +90,6 @@ BattleManager.startAction = function(){
         }
     }
     
-    //技能相关：极意、天眼、明镜、宇宙
-    if(this._subject.isActor()){
-        var list = [13,22,24,38,41,59,61,82,84,96];//盾，剑，法，奶，枪    置零
-        for(var i = 0; i < list.length; i = i + 2){
-            if($dataSkills[list[i]].damage.formula != $dataSkills[list[i] + 118].damage.formula || $dataSkills[list[i]].damage.variance != $dataSkills[list[i] + 118].damage.variance){
-                for(var j = list[i]; j <= list[i + 1]; j++){
-                    $dataSkills[j].damage.formula = $dataSkills[j + 118].damage.formula;
-                    $dataSkills[j].damage.variance = $dataSkills[j + 118].damage.variance;
-                }
-            }
-        }
-        
-        var list2 = [];
-        var gift1 = "";
-        var gift2 = "";
-        
-        if(this._subject.equips()[0] != null){
-            var item = this._subject.equips()[0];
-            if(item.wtypeId === 1)list2.push(2);
-            if(item.wtypeId === 2 || item.wtypeId === 4)list2.push(4);  //治疗只受宇宙影响
-            if(item.wtypeId === 5)list2.push(8);
-            if(item.description.includes("极意"))gift1 = "极意";
-            if(item.description.includes("天眼"))gift1 = "天眼";
-            if(item.description.includes("明镜止水"))gift1 = "明镜止水";
-            if(item.description.includes("宇宙")){gift1 = "宇宙";list2.push(6);}
-        }
-
-        if(this._subject.equips()[1] != null){
-            var item = this._subject.equips()[1];
-            list2.push(0);
-            if(item.description.includes("极意"))gift2 = "极意";
-            if(item.description.includes("天眼"))gift2 = "天眼";
-            if(item.description.includes("明镜止水"))gift2 = "明镜止水";
-            
-        }
-        
-        
-        if(gift1 != ""){
-            switch(gift1){
-                case "极意":
-                    for(var i = list[list2[0]]; i <= list[list2[0] + 1]; i++)
-                        $dataSkills[i].damage.formula += "b.mhp * 0.01";
-                    break;
-                case "天眼":
-                    for(var i = list[list2[0]]; i <= list[list2[0] + 1]; i++){
-                        $dataSkills[i].damage.formula.replace("b.def","b.def * 0.8");
-                        $dataSkills[i].damage.formula.replace("b.mdf","b.mdf * 0.8");
-                    }
-                    break;
-                case "明镜止水":
-                    for(var i = list[list2[0]]; i <= list[list2[0] + 1]; i++)
-                        $dataSkills[i].damage.variance = 0;
-                    break;
-                case "宇宙":
-                    for(var i = list[list2[0]]; i <= list[list2[0] + 1]; i++)
-                        $dataSkills[i].damage.formula = "(" + $dataSkills[i].damage.formula + ") * 1.3";
-                    for(var i = list[list2[1]]; i <= list[list2[1] + 1]; i++)
-                        $dataSkills[i].damage.formula = "(" + $dataSkills[i].damage.formula + ") * 1.3";
-                    break;
-            }
-        }
-        if(gift2 != ""){
-            switch(gift1){
-                case "极意":
-                    for(var i = list[0]; i <= list[1]; i++)
-                        $dataSkills[i].damage.formula += "b.mhp * 0.01";
-                    break;
-                case "天眼":
-                    for(var i = list[0]; i <= list[1]; i++){
-                        $dataSkills[i].damage.formula.replace("b.def","b.def * 0.8");
-                        $dataSkills[i].damage.formula.replace("b.mdf","b.mdf * 0.8");
-                    }
-                    break;
-                case "明镜止水":
-                    for(var i = list[0]; i <= list[1]; i++)
-                        $dataSkills[i].damage.variance = 0;
-                    break;
-            }
-        }
-    }
 };
 HGEqpGft._GameAction_executeDamage = Game_Action.prototype.executeDamage;
 Game_Action.prototype.executeDamage = function(target, value){
@@ -187,4 +107,62 @@ Game_Action.prototype.executeDamage = function(target, value){
     }
     HGEqpGft._GameAction_executeDamage.call(this, target, value);
 };
+
+
+HGEqpGft.GameAction_apply = Game_Action.prototype.apply;
+Game_Action.prototype.apply = function(target) {
+    var item = this.item();
+    var formula = item.damage.formula;
+    var variance = item.damage.variance;
+    var subject = this.subject();
+    if(subject.isActor()){
+        var type = [item.stypeId,0];
+        if(type[0] === 2)type = [1,0];     //剑
+        if(type[0] === 3)type = [0,0];     //盾
+        if(type[0] === 4)type = [5,0];    //枪
+        if(type[0] === 5)type = [2,4];    //法
+        if(type[0] === 6)type = [2,4];    //奶
+
+        var gift = "";
+        var equip = subject.equips()[0];
+        if(type[0] === 0){
+            equip = subject.equips()[1];
+            if(equip) gift ="1";
+        }else{
+            if(equip)
+                for(var i = 0; i < type.length; i++){
+                    if(equip.wtypeId === type[i]) gift = "1";
+                }
+        }
+        if(equip && gift === "1") gift = HGEqpGft.EqpGft(equip);
+
+        if(gift != ""){
+            if(gift === "极意"){
+                this.item().damage.formula += " + b.mhp * 0.05";
+            };
+            if(gift === "天眼"){
+                this.item().damage.formula = this.item().damage.formula.replace("b.def","b.def * 0.8");
+                this.item().damage.formula = this.item().damage.formula.replace("b.mdf","b.mdf * 0.8");
+            };
+            if(gift === "明镜止水"){
+                this.item().damage.variance = 0;
+            };
+            if(gift === "宇宙"){
+                this.item().damage.formula = "(" + this.item().damage.formula + ") * 1.3";
+            };
+        }
+    }
+    HGEqpGft.GameAction_apply.call(this,target);
+    this.item().damage.formula = formula;
+    this.item().damage.variance = variance;
+}
+
+HGEqpGft.EqpGft = function(item){
+    var gift = "";
+    if(item.description.includes("极意")) gift = "极意";
+    if(item.description.includes("天眼")) gift = "天眼";
+    if(item.description.includes("明镜止水")) gift = "明镜止水";
+    if(item.description.includes("宇宙")) gift = "宇宙";
+    return gift;
+}
 
