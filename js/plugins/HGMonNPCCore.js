@@ -5,7 +5,7 @@
 
 var HGMonNPCCore = window.HGMonNPCCore || {} ;
 
-HGMonNPCCore.AddActor = function(id,classid){
+HGMonNPCCore.CreateActor = function(id,classid){
     if(!$dataActors[id]){
         var list1 = ["Actor1_4","Actor3_8","Actor2_4"]; //打架图
         var list2 = [3,7,3];                            //行走图的序号
@@ -30,22 +30,23 @@ HGMonNPCCore.AddActor = function(id,classid){
             "nickname":"",
             "note":"",
             "profile":""
-        };/*
-        alert("2")
-        $gameActors.setup(id);
-        alert("3")*/
-        
+        };
+        DataManager.processSCDNotetags2($dataActors);
+        DataManager.processSCDNotetags3($dataActors);
     }
+}
 
+HGMonNPCCore.AddActor = function(id){
     $gameParty.addActor(id);
     if(!HGSPCore.level[id]) HGSPCore.level[id] = 1;
     if(!HGSPCore.point[id]) HGSPCore.point[id] = 0;
-
+}
+HGMonNPCCore.RemoveActor = function(id){
+    $gameParty.removeActor(id);
 }
 
 
-
-
+HGMonNPCCore.RunMember = [];
 HGMonNPCCore._GameBattler_gainHp = Game_Battler.prototype.gainHp;
 Game_Battler.prototype.gainHp = function(value){
     
@@ -73,12 +74,26 @@ Game_Battler.prototype.gainHp = function(value){
         }
     }
     HGMonNPCCore._GameBattler_gainHp.call(this, value);
+
+    if(this.isActor()){
+        if(this._classId === 4){
+            if(this.hp < this.mhp * 0.5){
+                $gameMessage.add("有个家伙害怕了，她跑啦！！！");
+                this.hide();
+                HGMonNPCCore.RunMember.push(this._actorId);
+            }
+        }
+    }
 }
 
 
-
-
-
-
-
+HGMonNPCCore.DataManager_loadDataFile = DataManager.loadDataFile;
+DataManager.loadDataFile = function(name,src){
+    HGMonNPCCore.DataManager_loadDataFile.call(this,name,src);
+    if(name = '$dataMap'){
+        for(var i = 0;i < HGMonNPCCore.RunMember.length; i++)
+            $gameParty.removeActor(HGMonNPCCore.RunMember[i]);
+        HGMonNPCCore.RunMember = [];
+    }
+}
 
