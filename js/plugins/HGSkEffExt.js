@@ -158,8 +158,12 @@ HGSkEffExt.stDepCritSkId = [
 ];//state dependent critical damage
 HGSkEffExt._GameAction_makeDamageValue = Game_Action.prototype.makeDamageValue;
 Game_Action.prototype.makeDamageValue = function(target, critical) {
-    return HGSkEffExt._GameAction_makeDamageValue.call(this, target, 
+    var value = HGSkEffExt._GameAction_makeDamageValue.call(this, target, 
         (critical || HGSkEffExt.critical(this, target)));
+    if(this.item().damage.formula.includes("b.def") && target.isStateAffected(76)){
+        value = Math.floor(value / 2);
+    }
+    return value;
 };
 HGSkEffExt.critical = function(action, target){
     return (DataManager.isSkill(action.item())) 
@@ -177,25 +181,13 @@ HGSkEffExt.stDepCritical = function(skId, target){
 
 HGSkEffExt.custRepSkId = [//customized repeats
     {id: 36, repeat: 12},
-    {id: 154, repeat: 12},
-    {id: 224, repeat: 12},
-    {id: 294, repeat: 12},
-
     {id: 89, repeat: 10},
-    {id: 184, repeat: 10},
-    {id: 254, repeat: 10},
-    {id: 324, repeat: 10},
-
     {id: 90, repeat: 12},
-    {id: 185, repeat: 12},
-    {id: 255, repeat: 12},
-    {id: 325, repeat: 12},
-
-    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 169, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 239, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 309, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))},
-    {id: 351, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
+    {id: 51, repeat: 6, add: 3, cond: (skill)=>(($gameTroop.members().filter((member)=>(member.isAlive())).length == 1) && ($gameTroop.members()[0].isStateAffected(22)))}
+];
+HGSkEffExt.strepeats = [
+    {id:156, state:"燃烧", add:1},
+    {id:157, state:"燃烧", add:1}
 ];
 HGSkEffExt._GameAction_numRepeats = Game_Action.prototype.numRepeats;
 Game_Action.prototype.numRepeats = function(){
@@ -204,6 +196,16 @@ Game_Action.prototype.numRepeats = function(){
             return HGSkEffExt.custRepSkId[i].repeat 
                 + ((('add' in HGSkEffExt.custRepSkId[i]) && 
                     ((!('cond' in HGSkEffExt.custRepSkId[i])) || (HGSkEffExt.custRepSkId[i].cond(this.item))))?(HGSkEffExt.custRepSkId[i].add):0);
+        }else if(DataManager.isSkill(this.item())){
+            var skill = this.item();
+            for(var k = 0; k < HGSkEffExt.strepeats.length; k++)
+                if(skill.id === HGSkEffExt.strepeats[k].id){
+                    var states = this.states();
+                    for(var j = 0; j < states.length; j++)
+                        if(states[j].name === HGSkEffExt.strepeats[k].state){
+                            return HGSkEffExt._GameAction_numRepeats.call(this) + HGSkEffExt.strepeats[j].add;
+                        }
+                }
         }
     }
     return HGSkEffExt._GameAction_numRepeats.call(this);
@@ -226,8 +228,38 @@ Game_Battler.prototype.updateStateTurns = function(){
             }
         }
     }, this);
+    HGSkEffExt.buff_resetturns(this);
     HGSkEffExt._GameBattlerBase_updateStateTurns.call(this);
 };
+HGSkEffExt.buff_resetturns = function(subject){
+    for(var j = 0; j < 2; j++){
+        var note = [];
+        var i = 0;
+        for(i = 81 + j * 4; i <= 84 + j * 4; i++){
+            if(subject.isStateAffected(i)){
+                note = $dataStates[i].note.split(";");
+                break;
+            }
+        }
+        
+        if(note != []){
+            for (var k = 0; k < note.length; k++){
+                
+                var line = note[k];
+                var list = line.match(/((IF - (.+?) - )?[S|A] - \d+ - \d+%? - )(\d+)/i);    //单/群，属性id，数值（百分比），回合
+                if(list){
+                    var result = "";
+                    list[4] = parseInt(list[4]) - 1;
+                    
+                    if(list[4] > 0){
+                        result = list[1] + list[4] + ";";
+                    }
+                    $dataStates[i].note = $dataStates[i].note.replace((list[0] + ";"),result);
+                }
+            }
+        }
+    }
+}
 
 HGSkEffExt.aftEffStId = [//post state effect: next state
     {id: 26, nid: 14},
@@ -353,7 +385,146 @@ Game_Action.prototype.apply = function(target){
         }
     }
     HGSkEffExt._GameAction_apply.call(this, target);
+
+    if(!target.result().missed && this.isSkill()){      //获得buff
+        var item = this.item();
+        HGSkEffExt.gainbuff(target,item);
+        HGSkEffExt.ifstgainbuff(this,target,item);
+        HGSkEffExt.zibao(this,item);
+    }
 };
+HGSkEffExt.gainbuff = function(target, skill){
+    var notedata = skill.note.split(/[\r\n]+/);
+    var turns = 0;
+    for (var i = 0; i < notedata.length; i++){
+        var line = notedata[i];
+        var result = "";
+        var flag = 0;
+        if(line.includes("降低")){
+            flag = 1;
+        }else if(line.includes("提升")){
+            flag = 2;
+        }
+        if(line.includes("若")){
+            flag += 2;
+        }
+        
+        if(flag != 0){
+            if(flag >= 3){
+                result += "IF - " + line.match(/若(.+?)，/i)[1] + " - ";
+                flag -= 2;
+            }
+            if(skill.scope === 2 || skill.scope === 8 || skill.scope === 10) result += "A - ";
+            else result += "S - ";      //All全体Single单体
+
+            if(line.match(/攻击(\d+)/i))
+                result += "2 - " + line.match(/攻击(\d+)/i)[1];
+            if(line.match(/防御(\d+)/i))
+                result += "3 - " + line.match(/防御(\d+)/i)[1];
+            if(line.match(/魔攻(\d+)/i))
+                result += "4 - " + line.match(/魔攻(\d+)/i)[1];
+            if(line.match(/魔防(\d+)/i))
+                result += "5 - " + line.match(/魔防(\d+)/i)[1];
+            if(line.match(/敏捷(\d+)/i))
+                result += "6 - " + line.match(/敏捷(\d+)/i)[1];
+            
+            if(line.match("%"))
+                result += "%";
+            
+            if(line.match(/(\d+)回合/i))
+                result += " - " + line.match(/(\d+)回合/i)[1];
+            
+            result += ";";
+            var list = [];
+            if(flag === 1) list = [81,84];
+            if(flag === 2) list = [85,88];
+            
+            var j = list[0];
+            while(j < list[1]){
+                for(var k = 0; k < $gameTroop.members().length; k++){
+                    if($gameTroop.members()[k].isStateAffected(j))
+                        if($gameTroop.members()[k] === target){
+                            flag = 0;
+                            break;
+                        }
+                        else
+                            j++;
+                    
+                }
+            }
+            if(flag === 0) $dataStates[j].note = "";
+            target.addState(j);
+
+            var key = /(IF - (.+?) - )?([S|A]) - (\d+) - (\d+%?) - (\d+)/i;
+            //   
+            var list1 = $dataStates[j].note.split(";");
+            
+            for(var k = 0; k < list1.length; k++){
+                var result1 = list1[k].match(key);
+                var result2 = result.match(key);
+                turns = (turns > parseInt(result2[6])) ? turns : parseInt(result2[6]);
+
+                if(result1){
+                    if(result1[3] === result2[3] && result1[4] === result2[4]){
+                        turns = parseInt((parseInt(result1[6]) > parseInt(result2[6])) ? result1[6] : result2[6]);
+                        
+                        var result3 = result2[3] + " - " + result2[4] + " - " + 
+                            ((parseInt(result1[5]) > parseInt(result2[5])) ? result1[5] : result2[5]) + " - " +
+                            ((parseInt(result1[6]) > parseInt(result2[6])) ? result1[6] : result2[6])+ ";";
+                        
+                        $dataStates[j].note = $dataStates[j].note.replace((result1[0] + ";"),result3);
+                        break;
+                    }
+                }else{
+                    $dataStates[j].note += result;
+                }
+                
+            }
+            target._stateTurns[j] = (turns > target._stateTurns[j]) ? turns : target._stateTurns[j];
+        }
+    }
+};
+HGSkEffExt.ifSt = [
+    {id:152, need:"寒霜", add:74, OriPer:0.5},
+    {id:160, need:"电击", add:74},
+    {id:163, need:"束缚", add:74},
+    {id:164, need:"束缚", add:74},
+    {id:166, need:"电击", add:74},
+    {id:166, add:76, own:true},
+    {id:175, add:77, own:true},
+    {id:176, add:78, own:true}
+];
+
+HGSkEffExt.ifstgainbuff = function(subject,target,skill){
+    for(var i = 0; i < HGSkEffExt.ifSt.length; i++){
+        if(skill.id === HGSkEffExt.ifSt[i].id){
+            if(HGSkEffExt.ifSt[i].own){
+                subject.addState(HGSkEffExt.ifSt[i].add);
+            }else{
+                var states = target.states();
+                for(var j = 0; j < states.length; j++){
+                    if(states[j].name === HGSkEffExt.ifSt[i].need){
+                        target.addState(HGSkEffExt.ifSt[i].add);
+                        break;
+                    }
+                }
+                if(HGSkEffExt.ifSt[i].OriPer){
+                    if(Math.random() < HGSkEffExt.ifSt[i].OriPer)
+                        target.addState(HGSkEffExt.ifSt[i].add);
+                }
+            }
+            break;
+        }
+    }
+};
+HGSkEffExt.zibao = function(subject,item){
+    if(item.id === 196){
+        subject.gainHp(-subject.hp);
+    }else if(item.id === 205){
+        subject.gainHp(1 - subject.hp);
+    }
+};
+
 
 HGSkEffExt.enemyStResSkIds = [//state-of-enemy restricted usage of skills
     {skId: 53, stId: HGSkEffExt.getStId("frost"), invalidMes: "只能对处于寒霜状态的敌方使用。"}
@@ -459,7 +630,7 @@ HGSkEffExt.stDepCustParam = [
     {stId: 214, prmId: 3, formula: (mat)=>(50 + (mat)* 2)},
     {stId: 214, prmId: 5, formula: (mat)=>(50 + (mat)* 2)},
 
-//宇宙
+
     {stId: 216, prmId: 2, formula: (mat)=>(13 + (mat)* 0.65)},
     {stId: 216, prmId: 4, formula: (mat)=>(13 + (mat)* 0.65)},
     {stId: 217, prmId: 2, formula: (mat)=>(39 + (mat)* 1.3)},
@@ -480,7 +651,9 @@ HGSkEffExt.stDepCustParam = [
 HGSkEffExt._GameBattlerBase_paramPlus = Game_BattlerBase.prototype.paramPlus;
 Game_BattlerBase.prototype.paramPlus = function(paramId){
     let curMat = HGSkEffExt._GameBattlerBase_paramPlus.call(this, 4);
-    return HGSkEffExt._GameBattlerBase_paramPlus.call(this, paramId) + HGSkEffExt.getParamPlus(this, paramId, curMat);
+    return HGSkEffExt._GameBattlerBase_paramPlus.call(this, paramId)
+        + HGSkEffExt.getParamPlus(this, paramId, curMat)
+        + HGSkEffExt.getparamPlus2(this, paramId);
 };
 HGSkEffExt.getParamPlus = function(battler, paramId, mat){
     return (HGSkEffExt.stDepCustParam.filter((info)=>((info.prmId == paramId) && (battler.isStateAffected(info.stId)))).length == 0)?
@@ -489,13 +662,42 @@ HGSkEffExt.getParamPlus = function(battler, paramId, mat){
         return r * info.formula(mat);
     }, 1));
 };
-
-HGSkEffExt._GameBattler_useItem = Game_Battler.prototype.useItem;
-Game_Battler.prototype.useItem = function(item) {
-    if (DataManager.isSkill(item)) {
-        //1、判断是否是防御术
-        //2、若是，技能二度驰援=该技能
-        //3、二度驰援的id，name，description修改（note内是CD）
+HGSkEffExt.getparamPlus2 = function(subject,paramid){
+    var result = 0;
+    for(var j = 0; j < 2; j++){
+        var note = [];
+        for(var i = 81 + j * 4; i <= 84 + j * 4; i++){
+            if(subject.isStateAffected(i)){
+                note = $dataStates[i].note.split(";");
+                break;
+            }
+        }
+        
+        if(note != ""){
+            for (var i = 0; i < note.length; i++){
+                var line = note[i];
+                var list = line.match(/(IF - (.+?) - )?[S|A] - (\d+) - (\d+)(%?) - (\d+)/i);    //条件，单/群，属性id，数值，（百分比），回合
+                if(list){
+                    var id = parseInt(list[3]);
+                    var param = parseInt(list[4]);
+                    if(id === paramid){
+                        if(list[5]) param = Math.floor(0.01 * param * subject.paramBase(paramid));
+                        if(j === 0) param = -param;
+                        if((list[2])){
+                            for(var k = 0; k < subject.states().length; k++){
+                                if(subject.states()[k].name === list[2]){
+                                    result += param;
+                                }
+                            }
+                        }else{
+                            result += param;
+                        }
+                        
+                    }
+                }
+            }
+        }
     }
-    HGSkEffExt._GameBattler_useItem.call(this,item);
-};
+    return result;
+}
+
