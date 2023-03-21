@@ -115,8 +115,9 @@ DataManager.loadDataFile = function(name, src) {
             }
             for(var i = 1; ; i++)
             if($gameActors.actor(i)){
-                if(!$gameActors.actor(i + 1) && $gameActors.actor(i).note().id)
-                    $dataActors[i + 1] = $gameActors.actor(i).note();
+                if(!$dataActors[i + 1] && $gameActors.actor(i).next() && $gameActors.actor(i).next().id){
+                    $dataActors[i + 1] = $gameActors.actor(i).next();
+                }
             }else break;
         }
         url = 'data/' + src;
