@@ -114,10 +114,10 @@ DataManager.loadDataFile = function(name, src) {
                 $dataActors[1].note += "已获得名字";
             }
             for(var i = 1; ; i++)
-            if($gameActors.actor(i)){
-                if(!$dataActors[i + 1] && $gameActors.actor(i).next() && $gameActors.actor(i).next().id){
-                    $dataActors[i + 1] = $gameActors.actor(i).next();
-                }
+                if($gameActors.actor(i)){
+                    if(!$dataActors[i + 1] && $gameActors.actor(i)._next && $gameActors.actor(i)._next.id){
+                        $dataActors[i + 1] = $gameActors.actor(i).next();
+                    }
             }else break;
         }
         url = 'data/' + src;

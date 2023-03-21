@@ -47,6 +47,30 @@ HGMonNPCCore.RemoveActor = function(id){
     $gameParty.removeActor(id);
 }
 
+HGMonNPCCore.jicunActor = function(){
+    var party = $gameParty.members();
+    party = party.filter(function(member){return member.actorId() != 1});
+    
+    var choice = party.map(function(member){return member.name()}).concat("取消");
+    $gameMessage.add("要寄存哪一位伙伴呢？");
+    $gameMessage.setChoices(choice,0,choice.length);
+    $gameMessage.setChoiceCallback(function(x){
+        if(x >= choice.length - 1) return;
+        HGMonNPCCore.RemoveActor(party[x]._actorId);
+    });
+}
+HGMonNPCCore.zhaohuiActor = function(){
+    var actors = $gameActors._data.filter(function(member){return !$gameParty.members().contains(member) && member._classId >= 2 && member._classId <= 4});
+    var choice = actors.map(function(member){return member.name()}).concat("取消");
+    $gameMessage.add("要召回哪一位伙伴呢？");
+    $gameMessage.add("需要1w金币才能抵消他们被你寄存时的寂寞哦~");
+    $gameMessage.add("（或者他们抛弃你时的不要脸）");
+    $gameMessage.setChoices(choice,0,choice.length);
+    $gameMessage.setChoiceCallback(function(x){
+        if(x >= choice.length - 1) return;
+        HGMonNPCCore.AddActor(actors[x]._actorId);
+    });
+}
 
 HGMonNPCCore.Game_Actor_setup = Game_Actor.prototype.setup;
 Game_Actor.prototype.setup = function(actorId){
