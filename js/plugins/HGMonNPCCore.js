@@ -48,6 +48,7 @@ HGMonNPCCore.RemoveActor = function(id){
     $gameParty.removeActor(id);
 }
 
+
 HGMonNPCCore.Game_Actor_setup = Game_Actor.prototype.setup;
 Game_Actor.prototype.setup = function(actorId){
     HGMonNPCCore.Game_Actor_setup.call(this,actorId);
