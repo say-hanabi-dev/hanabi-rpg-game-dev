@@ -168,7 +168,7 @@ Game_Action.prototype.apply = function(target) {
 
 HGEqpGft.EqpGft = function(item){
     var gift = "";
-    if(item.description){
+    if(item){
         if(item.description.includes("极意")) gift = "极意";
         if(item.description.includes("天眼")) gift = "天眼";
         if(item.description.includes("明镜止水")) gift = "明镜止水";
