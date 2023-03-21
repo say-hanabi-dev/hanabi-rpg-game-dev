@@ -113,6 +113,11 @@ DataManager.loadDataFile = function(name, src) {
                 $gameActors.actor(1)._name = $zhujue[0].name;
                 $dataActors[1].note += "已获得名字";
             }
+            for(var i = 1; ; i++)
+            if($gameActors.actor(i)){
+                if(!$gameActors.actor(i + 1) && $gameActors.actor(i).note().id)
+                    $dataActors[i + 1] = $gameActors.actor(i).note();
+            }else break;
         }
         url = 'data/' + src;
         xhr.open('GET', url);
