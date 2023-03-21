@@ -4,6 +4,7 @@
  */
 
 var HGMonNPCCore = window.HGMonNPCCore || {} ;
+HGMonNPCCore.NPClist = HGMonNPCCore.NPClist || [];
 
 HGMonNPCCore.CreateActor = function(id,classid){
     if(!$dataActors[id]){
@@ -28,11 +29,13 @@ HGMonNPCCore.CreateActor = function(id,classid){
             "maxLevel":80,
             "name":list6[classid - 2],
             "nickname":"",
-            "note":"",
+            "note":{},
             "profile":""
         };
-        DataManager.processSCDNotetags2($dataActors);
-        DataManager.processSCDNotetags3($dataActors);
+        HGMonNPCCore.NPClist.push($dataActors[id]);
+        $gameActors.actor(id - 1)._note = $dataActors[id];
+        // DataManager.processSCDNotetags2($dataActors);
+        // DataManager.processSCDNotetags3($dataActors);
     }
 }
 
@@ -45,6 +48,15 @@ HGMonNPCCore.RemoveActor = function(id){
     $gameParty.removeActor(id);
 }
 
+HGMonNPCCore.Game_Actor_setup = Game_Actor.prototype.setup;
+Game_Actor.prototype.setup = function(actorId){
+    HGMonNPCCore.Game_Actor_setup.call(this,actorId);
+    this._note = $dataActors[actorId].note;
+}
+
+Game_Actor.prototype.note = function(){
+    return this._note;
+}
 
 HGMonNPCCore.RunMember = [];
 HGMonNPCCore._GameBattler_gainHp = Game_Battler.prototype.gainHp;
