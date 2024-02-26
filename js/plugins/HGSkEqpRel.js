@@ -88,7 +88,7 @@ Game_Action.prototype.applyCritical = function(damage) {
     }
     return value;
 };
-
+/*
 HGSkEqpRel.shdSkTId = 3;//shields skills: require shield/Large shield; large shield skills: require Large shield
 HGSkEqpRel.shdTId = 5;
 HGSkEqpRel.bshdTId = 6;
@@ -141,7 +141,7 @@ HGSkEqpRel.dbTransOk = function(skill){
     }
     return true;
 };
-
+*/
 HGSkEqpRel.tauntId = 13;//add taunt state when guard with shield/Large shield equipped
 HGSkEqpRel._GameAction_Guard = Game_Action.prototype.setGuard;
 Game_Action.prototype.setGuard = function() {

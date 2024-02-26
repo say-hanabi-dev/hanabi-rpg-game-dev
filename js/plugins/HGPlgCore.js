@@ -72,7 +72,7 @@ HGPlgCore.localTestMethods = function(){
 HGPlgCore.localTestMethods();
 
 HGPlgCore.toNameChoices = function(arr, ccMes = "取消"){
-    return arr.map((item)=>{return item.name;}).concat(ccMes);
+    return arr.map(function(item){return item.name;}).concat(ccMes);
 };
 HGPlgCore.alertObj = function(obj){
     alert(JSON.stringify(obj));

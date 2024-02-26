@@ -179,6 +179,13 @@ HGEqpGft.EqpGft = function(item){
     return gift;
 }
 
+HGEqpGft._GameActor_performActionEnd = Game_Actor.prototype.performActionEnd;
+Game_Actor.prototype.performActionEnd = function() {
+    HGEqpGft._GameActor_performActionEnd.call(this);
+    HGEqpGft.L_shield(this);
+};
+
+
 HGEqpGft.L_shield = function(subject){
     if(subject.equips()){
         var shield = subject.equips()[1];
@@ -186,7 +193,7 @@ HGEqpGft.L_shield = function(subject){
             if(shield.atypeId === 2 || shield.atypeId === 6){
                 var value = Math.floor(((subject.param(0) <= 8000)? subject.param(0) : 8000) * 0.05
                  + ((subject.param(3) <= 800)? subject.param(3) : 800) * 0.5);
-                subject.gainHp(value)
+                subject.gainHp(value);
             }
             
         }

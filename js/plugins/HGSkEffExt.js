@@ -134,6 +134,7 @@ HGSkEffExt.stInfo = [
     {name: "burn_500$", stId: [21, 24]},
     {name: "burn_50$", stId: [65]},
     {name: "burn_1perc$", stId: [28]},
+    {name: "elect_50$", stId: [80]},
     {name: "frost_d10atk2$", stId: [23, 66]},
     {name: "frost_d10atk3$", stId: [25]}
 ];
@@ -146,7 +147,7 @@ HGSkEffExt.getStId = function(stName){
     }
     return res;
 };
-HGSkEffExt.acritSkId = [34, 91, 152, 186, 222, 256, 292, 326, 384, 385, 386, 387];//absolute critical damage
+HGSkEffExt.acritSkId = [34, 91, 384];//absolute critical damage
 HGSkEffExt.ancritSkId = [8];//absolute not critical damage
 HGSkEffExt.stDepCritSkId = [
     {skId: 54, stId: HGSkEffExt.getStId("frost")},
@@ -196,17 +197,19 @@ Game_Action.prototype.numRepeats = function(){
             return HGSkEffExt.custRepSkId[i].repeat 
                 + ((('add' in HGSkEffExt.custRepSkId[i]) && 
                     ((!('cond' in HGSkEffExt.custRepSkId[i])) || (HGSkEffExt.custRepSkId[i].cond(this.item))))?(HGSkEffExt.custRepSkId[i].add):0);
-        }else if(DataManager.isSkill(this.item())){
-            var skill = this.item();
-            for(var k = 0; k < HGSkEffExt.strepeats.length; k++)
-                if(skill.id === HGSkEffExt.strepeats[k].id){
-                    var states = this.states();
-                    for(var j = 0; j < states.length; j++)
-                        if(states[j].name === HGSkEffExt.strepeats[k].state){
-                            return HGSkEffExt._GameAction_numRepeats.call(this) + HGSkEffExt.strepeats[j].add;
-                        }
-                }
         }
+    }
+
+    if(DataManager.isSkill(this.item())){
+        var skill = this.item();
+        for(var k = 0; k < HGSkEffExt.strepeats.length; k++)
+            if(skill.id === HGSkEffExt.strepeats[k].id){
+                var states = this.subject().states();
+                for(var j = 0; j < states.length; j++)
+                    if(states[j].name === HGSkEffExt.strepeats[k].state){
+                        return HGSkEffExt._GameAction_numRepeats.call(this) + HGSkEffExt.strepeats[j].add;
+                    }
+            }
     }
     return HGSkEffExt._GameAction_numRepeats.call(this);
 };
@@ -214,7 +217,8 @@ Game_Action.prototype.numRepeats = function(){
 HGSkEffExt.tnDmgStId = [//turn based damage by states
     {id: HGSkEffExt.getStId("burn_500$"), dmg: 500, perc: false},
     {id: HGSkEffExt.getStId("burn_50$"), dmg: 50, perc: false},
-    {id: HGSkEffExt.getStId("burn_1perc$"), dmg: 1, perc: true}
+    {id: HGSkEffExt.getStId("burn_1perc$"), dmg: 1, perc: true},
+    {id: HGSkEffExt.getStId("elect_50$"), dmg: 50, perc: false}
 ];
 HGSkEffExt._GameBattlerBase_updateStateTurns = Game_BattlerBase.prototype.updateStateTurns;
 Game_Battler.prototype.updateStateTurns = function(){
@@ -292,15 +296,7 @@ Game_Battler.prototype.removeStatesAuto = function(timing){
 
 HGSkEffExt.stDepDmgPrsInfo = [//state dependent damage formula parse
     {skId: 56, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
-    {skId: 174, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
-    {skId: 244, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
-    {skId: 314, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
-    {skId: 356, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "", addFormulaEnd: "+ b.mdf * 2"},
     {skId: 48, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
-    {skId: 166, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
-    {skId: 236, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
-    {skId: 306, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
-    {skId: 348, stId: HGSkEffExt.getStId("burn"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
     {skId: 32, stId: HGSkEffExt.getStId("frost"), addFormulaHead: "(", addFormulaEnd: ") * 1.5"},
     {skId: -1, stId: [29], addFormulaHead: "(", addFormulaEnd: ") * 1.15"}//<0: any skill
 ];
@@ -389,8 +385,8 @@ Game_Action.prototype.apply = function(target){
     if(!target.result().missed && this.isSkill()){      //获得buff
         var item = this.item();
         HGSkEffExt.gainbuff(target,item);
-        HGSkEffExt.ifstgainbuff(this,target,item);
-        HGSkEffExt.zibao(this,item);
+        HGSkEffExt.ifstgainbuff(this.subject(),target,item);
+        HGSkEffExt.zibao(this.subject(),item);
     }
 };
 HGSkEffExt.gainbuff = function(target, skill){
@@ -440,18 +436,16 @@ HGSkEffExt.gainbuff = function(target, skill){
             if(flag === 2) list = [85,88];
             
             var j = list[0];
-            while(j < list[1]){
-                for(var k = 0; k < $gameTroop.members().length; k++){
-                    if($gameTroop.members()[k].isStateAffected(j))
-                        if($gameTroop.members()[k] === target){
-                            flag = 0;
-                            break;
-                        }
-                        else
-                            j++;
-                    
-                }
+            for(var k = 0; k < $gameTroop.members().length; k++){
+                if($gameTroop.members()[k].isStateAffected(j))
+                    if($gameTroop.members()[k] === target){
+                        flag = 0;
+                        break;
+                    }
+                    else
+                        j++;
             }
+            
             if(flag === 0) $dataStates[j].note = "";
             target.addState(j);
 
@@ -490,9 +484,8 @@ HGSkEffExt.ifSt = [
     {id:163, need:"束缚", add:74},
     {id:164, need:"束缚", add:74},
     {id:166, need:"电击", add:74},
-    {id:166, add:76, own:true},
-    {id:175, add:77, own:true},
-    {id:176, add:78, own:true}
+    {id:166, add:78, own:true},
+    {id:175, add:79, own:true}
 ];
 
 HGSkEffExt.ifstgainbuff = function(subject,target,skill){
@@ -513,7 +506,6 @@ HGSkEffExt.ifstgainbuff = function(subject,target,skill){
                         target.addState(HGSkEffExt.ifSt[i].add);
                 }
             }
-            break;
         }
     }
 };

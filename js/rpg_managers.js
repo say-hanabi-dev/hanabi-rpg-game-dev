@@ -107,6 +107,7 @@ DataManager.loadDataFile = function(name, src) {
         };
     }else{
         if(name ==='$dataMap'){
+            PluginManager.setup($plugins);
             if(!$dataActors[1].note.includes("已获得名字")){
                 $dataActors[1].id = $zhujue[0].id;
                 $dataActors[1].name = $zhujue[0].name;
@@ -2564,7 +2565,7 @@ PluginManager.setup = function (plugins) {
     plugins.forEach(function (plugin) {
         if (plugin.status && !this._scripts.contains(plugin.name)) {
             this.setParameters(plugin.name, plugin.parameters);
-            this.loadScript(plugin.name + '.js');
+            this.loadScript(plugin.name + '.js?20230525');
             this._scripts.push(plugin.name);
         }
     }, this);
