@@ -21,7 +21,7 @@ null,
 {"id":19,"expanded":false,"name":"剑术2","order":20,"parentId":11,"scrollX":1139,"scrollY":698.5},
 {"id":20,"expanded":false,"name":"法术2","order":24,"parentId":17,"scrollX":408,"scrollY":312.5},
 {"id":21,"expanded":true,"name":"治疗术2","order":26,"parentId":18,"scrollX":417,"scrollY":322.5},
-{"id":22,"expanded":false,"name":"幽灵的秘密书屋","order":5,"parentId":14,"scrollX":819,"scrollY":452},
+{"id":22,"expanded":false,"name":"幽灵的秘密书屋","order":5,"parentId":14,"scrollX":480.5,"scrollY":385},
 {"id":23,"expanded":false,"name":"隐藏关","order":9,"parentId":2,"scrollX":534,"scrollY":305},
 {"id":24,"expanded":false,"name":"隐藏关","order":11,"parentId":4,"scrollX":1139,"scrollY":698.5},
 {"id":25,"expanded":false,"name":"棺材","order":14,"parentId":6,"scrollX":1139,"scrollY":698.5},
@@ -50,7 +50,7 @@ null,
 {"id":48,"expanded":true,"name":"辅助3","order":34,"parentId":46,"scrollX":417,"scrollY":322.5},
 {"id":49,"expanded":true,"name":"联动技能","order":35,"parentId":41,"scrollX":832,"scrollY":640},
 {"id":50,"expanded":true,"name":"室内（未修改）","order":51,"parentId":33,"scrollX":811,"scrollY":508},
-{"id":51,"expanded":false,"name":"30层洋馆","order":45,"parentId":40,"scrollX":819,"scrollY":452},
+{"id":51,"expanded":false,"name":"30层洋馆","order":45,"parentId":40,"scrollX":480.5,"scrollY":385},
 {"id":52,"expanded":true,"name":"学校 教室","order":52,"parentId":50,"scrollX":819,"scrollY":452},
-{"id":53,"expanded":true,"name":"公寓1","order":53,"parentId":52,"scrollX":819,"scrollY":452}
+{"id":53,"expanded":true,"name":"公寓1","order":53,"parentId":52,"scrollX":819.5,"scrollY":377}
 ]
