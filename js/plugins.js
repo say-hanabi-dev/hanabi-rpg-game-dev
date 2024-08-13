@@ -18,5 +18,6 @@ var $plugins =
 {"name":"HGMonNPCCore","status":true,"description":"怪物与伙伴特性","parameters":{}},
 {"name":"HGSPCore","status":true,"description":"获得与使用技能点","parameters":{}},
 {"name":"ceshi","status":false,"description":"","parameters":{}},
-{"name":"HGPZCore","status":true,"description":"解密本核心","parameters":{}}
+{"name":"HGPZCore","status":true,"description":"解密本核心","parameters":{}},
+{"name":"HGFishCore","status":true,"description":"钓鱼与烹饪","parameters":{}}
 ];

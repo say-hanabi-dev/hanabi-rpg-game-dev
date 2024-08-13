@@ -44,6 +44,8 @@ Game_Action.prototype.evalDamageFormula = function(target){
     try{
         for(let i =0; i<HGSkEqpRel.rule.length; i++){
             if(HGSkEqpRel.rule[i].spec(this.item()) && HGSkEqpRel.rule[i].cond()){
+                
+                console.log(0)
                 res = HGSkEqpRel.rule[i].opr(res);
             }
         }
@@ -55,12 +57,14 @@ HGSkEqpRel.enchantedWpId = [8, 16, 24, 66, 74, 82];
 HGSkEqpRel.enchantedAmId = [27, 35, 43, 52, 60, 68];
 HGSkEqpRel.magOn = function(){
     if(HGPlgCore.isWpTpEqp(HGSkEqpRel.magWpTId)){
+        console.log(1)
         return true;
     }
     let curWp = $gameActors.actor(1).weapons().filter((item) => {return item && (item._itemId!=0);});
     for(let i=0; i<HGSkEqpRel.enchantedWpId.length; i++){
         for(let j=0; j<curWp.length; j++){
             if(HGSkEqpRel.enchantedWpId[i] == curWp[j].id){
+                console.log(2)
                 return true;
             }
         }
@@ -69,10 +73,12 @@ HGSkEqpRel.magOn = function(){
     for(let i=0; i<HGSkEqpRel.enchantedAmId.length; i++){
         for(let j=0; j<curAm.length; j++){
             if(HGSkEqpRel.enchantedAmId[i] == curAm[j].id){
+                console.log(3)
                 return true;
             }
         }
     }
+    console.log(4)
     return false;
 };
 
